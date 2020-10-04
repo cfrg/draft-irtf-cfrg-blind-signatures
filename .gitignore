@@ -10,7 +10,9 @@
 .targets.mk
 /*-[0-9][0-9].xml
 archive.json
+draft-wood-cfrg-blind-rsa-signatures.xml
+lib
 report.xml
 venv/
 lib
-draft-wood-cfrg-blind-rsa-signatures.xml
+draft-wood-cfrg-blind-signatures.xml

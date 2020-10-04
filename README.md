@@ -2,9 +2,9 @@
 
 This is the working area for the individual Internet-Draft, "Blind Signatures".
 
-* [Editor's Copy](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-wood-cfrg-blind-rsa-signatures.html)
-* [Individual Draft](https://tools.ietf.org/html/draft-wood-cfrg-blind-rsa-signatures)
-* [Compare Editor's Copy to Individual Draft](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-wood-cfrg-blind-rsa-signatures.diff)
+* [Editor's Copy](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-wood-cfrg-blind-signatures.html)
+* [Individual Draft](https://tools.ietf.org/html/draft-wood-cfrg-blind-signatures)
+* [Compare Editor's Copy to Individual Draft](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-wood-cfrg-blind-signatures.diff)
 
 ## Building the Draft
 
