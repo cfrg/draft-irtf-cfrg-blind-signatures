@@ -1,7 +1,7 @@
 ---
 title: Blind Signatures
 abbrev: Blind Signatures
-docname: draft-wood-cfrg-blind-rsa-signatures-latest
+docname: draft-wood-cfrg-blind-signatures-latest
 date:
 category: info
 
