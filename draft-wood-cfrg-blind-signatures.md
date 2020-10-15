@@ -17,25 +17,27 @@ author:
     org: Cloudflare
     email: caw@heapingbits.net
 
-normative:
-    ChaumBlindSignature:
-        title: Blind Signatures for Untraceable Payments
-        target: http://sceweb.sce.uhcl.edu/yang/teaching/csci5234WebSecurityFall2011/Chaum-blind-signatures.PDF
-        date: false
-        authors:
-          -
-            ins: D. Chaum
-            org: University of California, Santa Barbara, USA
+informative:
+  Chaum83:
+    title: Blind Signatures for Untraceable Payments
+    target: http://sceweb.sce.uhcl.edu/yang/teaching/csci5234WebSecurityFall2011/Chaum-blind-signatures.PDF
+    date: false
+    authors:
+      -
+        ins: D. Chaum
+        org: University of California, Santa Barbara, USA
 
 --- abstract
 
-TODO
+This document specifies RSA-based blind signatures, first introduced by Chaum
+for untraceable payments {{Chaum83}}.
 
 --- middle
 
 # Introduction
 
-TODO
+This document specifies RSA-based blind signatures, first introduced by Chaum
+for untraceable payments {{Chaum83}}.
 
 # Requirements Notation
 
@@ -67,19 +69,20 @@ The core issuance protocol runs as follows:
   ----------------------------------------------------------
     blinded_message, blind_inv = Blind(msg)
 
-                         blinded_message
+                      blinded_message
                         ---------->
 
-               evaluated_message = Evaluate(skS, pkS, blinded_message)
+           evaluated_message = Evaluate(skS, blinded_message)
 
                          evaluation
                         <----------
 
-    pre_signature = Unblind(pkS, evaluated_message, blind_inv)
-    sig = Finalize(msg, pre_signature)
+    pre_signature = Unblind(evaluated_message, blind_inv)
+    sig = Finalize(msg, pre_signature, pkS)
 ~~~
 
-XXX(caw): sketch the redemption/verify flow
+Upon completion, clients can verify a blind signature `sig` over input `msg` using
+the server public key `pkS`.
 
 ## RSA-PSS Blind Signature Instantiation
 
@@ -139,13 +142,12 @@ Steps:
 ~~~
 
 ~~~
-rsassa_pss_sign_unblind(pkS, evaluated_message, blind_inv)
+rsassa_pss_sign_unblind(evaluated_message, blind_inv)
 
 Parameters:
 - k, the length in octets of the RSA modulus n
 
 Inputs:
-- pkS, server public key
 - evaluated_message, signed and blinded element, an octet string of length k
 - blind_inv, inverse of the blind, an octet string of length k
 
@@ -160,18 +162,23 @@ Steps:
 ~~~
 
 ~~~
-rsassa_pss_sign_finalize(msg, pre_sig)
+rsassa_pss_sign_finalize(msg, pre_sig, pkS)
 
 Inputs:
 - msg, message to be signed, an octet string
 - pre_sig, an octet string of length k
+- pkS, server public key
 
 Outputs:
 - sig, an octet string of length k
 
+Errors:
+- "invalid signature"
+
 Steps:
 1. sig = I2OSP(pre_sig, k)
-2. output sig
+2. result = rsassa_pss_sign_verify(msg, sig, pkS)
+3. If result = true, return sig, else output "invalid signature" and stop
 ~~~
 
 ### Signature Verification
@@ -196,32 +203,31 @@ Steps:
 3. m = RSASP1(pkS, s)
 4. If RSAVP1 output "signature representative out of range", output false
 5. encoded_message = I2OSP(m, L_em)
-6. result = EMSA-PSS-VERIFY(m, encoded_message, k_bits - 1).
+6. result = EMSA-PSS-VERIFY(msg, encoded_message, k_bits - 1).
 7. If result = "consistent", output true, otherwise output false
+8. output result
 ~~~
-
-# Message Robustness Proof
-
-XXX(caw): how does the signer check the contents of the msg before signing it?
 
 # Security Considerations {#sec-considerations}
 
 TODO
 
-## Security Analysis
+## Partial Blindness
 
-XXX
+TODO(caw): use different public keys
+
+## Message Robustness
+
+TODO(caw): how does the signer check the contents of the msg before signing it? ZKPs if necessary
 
 ## Alternatives
 
-Different hardness assumptions underneath each. For example,
+TODO(caw): summarize the variants below
 
 - RSA-PKCS1v1.5
 - Blind Schnorr
 - Clause Blind Schnorr
 - Blind BLS
-
-XXX
 
 # IANA Considerations
 
