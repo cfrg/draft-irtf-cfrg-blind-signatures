@@ -37,7 +37,8 @@ for untraceable payments {{Chaum83}}.
 # Introduction
 
 This document specifies RSA-based blind signatures, first introduced by Chaum
-for untraceable payments {{Chaum83}}.
+for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified in
+{{!RFC8017}} to enable blind signature support.
 
 # Requirements Notation
 
@@ -58,31 +59,35 @@ protocol operations in this document:
 # Blind Signature Protocol
 
 In this section, we define the blind signature protocol wherein a client and server
-interact to compute `sig = Sign(skS, msg)`, where `msg` is the message to be signed
-and `skS` is the server's private key. In this protocol, the server learns nothing
-of `msg`, whereas the client learns `s` but nothing of `skS`.
+interact to compute `sig = Sign(skS, msg, aux)`, where `msg` is the private message
+to be signed, `aux` is the public auxiliary information included in the signature
+computation, and `skS` is the server's private key. In this protocol, the server
+learns nothing of `msg`, whereas the client learns `s` and nothing of `skS`.
 
 The core issuance protocol runs as follows:
 
 ~~~
-   Client(pkS, msg)                         Server(skS, pkS)
+   Client(pkS, msg, aux)                Server(skS, pkS, aux)
   ----------------------------------------------------------
-    blinded_message, blind_inv = Blind(msg)
+    blinded_message, blind_inv = Blind(pkS, msg, aux)
 
                       blinded_message
                         ---------->
 
-           evaluated_message = Evaluate(skS, blinded_message)
+           evaluated_message = Evaluate(skS, blinded_message, aux)
 
                          evaluation
                         <----------
 
-    pre_signature = Unblind(evaluated_message, blind_inv)
-    sig = Finalize(msg, pre_signature, pkS)
+    sig = Finalize(pkS, msg, aux, evaluated_message, blind_inv)
 ~~~
 
-Upon completion, clients can verify a blind signature `sig` over input `msg` using
-the server public key `pkS`.
+Upon completion, clients can verify a blind signature `sig` over private input
+message `msg` and public input `aux` using the server public key `pkS` as follows.
+
+~~~
+valid = Verify(pkS, msg, aux, sig)
+~~~
 
 ## RSA-PSS Blind Signature Instantiation
 
@@ -93,13 +98,13 @@ define a blinded variant of this algorithm.
 ### Signature Generation
 
 ~~~
-rsassa_pss_sign_blind(skS, msg)
+rsassa_pss_sign_blind(pkS, msg)
 
 Parameters:
 - k_bits, the length in bits of the RSA modulus n
-- L, \lambda(n) as defined in {{RFC8017}}
 
 Inputs:
+- pkS, server public key (n, e)
 - msg, message to be signed, an octet string
 
 Outputs:
@@ -107,19 +112,20 @@ Outputs:
 - blind_inv, an octet string of length k
 
 Errors:
-- "message too long": XXX
-- "encoding error": XXX
+- "message too long": Raised when the input message is too long.
+- "encoding error": Raised when the input message fails encoding.
 
 Steps:
 1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1)
 2. If EMSA-PSS-ENCODE outputs an error, output an error and stop.
 3. m = OS2IP(encoded_message)
 4. r = RandomInteger(0, n - 1)
-5. z = RSASP1((n, r), m)
-6. r_inv = MultInverse(r, L)
-7. blinded_message = I2OSP(z, k)
-8. blind_inv = I2OSP(r, k)
-8. return blinded_message, blind_inv
+5. x = RSASP1(pkS, m)
+6. z = m * x mod n
+7. r_inv = MultInverse(r, n)
+8. blinded_message = I2OSP(z, k)
+9. blind_inv = I2OSP(r, k)
+10. return blinded_message, blind_inv
 ~~~
 
 ~~~
@@ -142,65 +148,52 @@ Steps:
 ~~~
 
 ~~~
-rsassa_pss_sign_unblind(evaluated_message, blind_inv)
-
-Parameters:
-- k, the length in octets of the RSA modulus n
+rsassa_pss_sign_finalize(pkS, msg, evaluated_message, blind_inv)
 
 Inputs:
+- pkS, server public key
+- msg, message to be signed, an octet string
 - evaluated_message, signed and blinded element, an octet string of length k
 - blind_inv, inverse of the blind, an octet string of length k
-
-Outputs:
-- pre_sig, an octet string of length k
-
-Steps:
-1. s = OS2IP(evaluated_message)
-2. r_inv = OS2IP(blind_inv)
-3. pre_sig = RSASP1(s, (n, r_inv))
-4. output pre_sig
-~~~
-
-~~~
-rsassa_pss_sign_finalize(msg, pre_sig, pkS)
-
-Inputs:
-- msg, message to be signed, an octet string
-- pre_sig, an octet string of length k
-- pkS, server public key
 
 Outputs:
 - sig, an octet string of length k
 
 Errors:
-- "invalid signature"
+- "invalid signature": Raised when the signature is invalid
 
 Steps:
-1. sig = I2OSP(pre_sig, k)
-2. result = rsassa_pss_sign_verify(msg, sig, pkS)
-3. If result = true, return sig, else output "invalid signature" and stop
+1. z = OS2IP(evaluated_message)
+2. r_inv = OS2IP(blind_inv)
+3. s = RSASP1(z, (n, r_inv))
+4. result = rsassa_pss_sign_verify(pkS, msg, s)
+5. sig = I2OSP(s, k)
+6. If result = true, return s, else output "invalid signature" and stop
 ~~~
 
 ### Signature Verification
 
 ~~~
-rsassa_pss_sign_verify(msg, sig, pkS)
+rsassa_pss_sign_verify(pkS, msg, sig)
 
 Parameters:
 - L_em = ceil((k_bits - 1)/8), where k_bits is the length in bits of the RSA modulus n
 
 Inputs:
+- pkS, server public key
 - msg, message to be signed, an octet string
 - sig, message signature, an octet string of length k
-- pkS, server public key
 
 Outputs:
 - valid, a boolean value that is true if the signature is valid, and false otherwise
 
+Errors:
+- ""
+
 Steps:
-1. If len(s) != k, output false
+1. If len(sig) != k, output false
 2. s = OS2IP(sig)
-3. m = RSASP1(pkS, s)
+3. m = RSAVP1(pkS, s)
 4. If RSAVP1 output "signature representative out of range", output false
 5. encoded_message = I2OSP(m, L_em)
 6. result = EMSA-PSS-VERIFY(msg, encoded_message, k_bits - 1).
@@ -208,13 +201,50 @@ Steps:
 8. output result
 ~~~
 
+### Partially-Blind Key Augmentation
+
+To implement partially blinded signatures, public auxiliary information is used
+to augment the public and private keys used during the signature verification.
+This section describes how clients and servers augment a public key pair `(pkS, skS)`
+using information `aux`.
+
+[[OPEN ISSUE: need to specify H, a one-way hash function into Z_\lambda(n)\*]]
+
+~~~
+rsassa_pss_augment_public_key(pkS = (n, e), aux)
+
+Parameters:
+- H(), a one-way hash function
+
+Inputs:
+- pkS, server public key (n, e)
+- aux, public auxiliary information, an octet string
+
+Steps:
+1. c = 2^(k-1) + 2*H(aux) + 1
+2. return (n, (e * c))
+~~~
+
+~~~
+rsassa_pss_augment_private_key(pkS = (n, d), aux)
+
+Parameters:
+- H(), a one-way hash function
+- L, \lambda(n) as defined in {{RFC8017}}
+
+Inputs:
+- skS, server public key (n, d)
+- aux, public auxiliary information, an octet string
+
+Steps:
+1. c = 2^(k-1) + 2*H(aux) + 1
+2. c_inv = ModInverse(c, L)
+3. return (n, (d * c))
+~~~
+
 # Security Considerations {#sec-considerations}
 
-TODO
-
-## Partial Blindness
-
-TODO(caw): use different public keys
+TODO:
 
 ## Message Robustness
 
