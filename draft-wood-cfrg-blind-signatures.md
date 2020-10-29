@@ -97,6 +97,8 @@ define a blinded variant of this algorithm.
 
 ### Signature Generation
 
+[[OPEN ISSUE: should this take `msg` as input, or `msg_hash`?]]
+
 ~~~
 rsassa_pss_sign_blind(pkS, msg)
 
@@ -120,7 +122,7 @@ Steps:
 2. If EMSA-PSS-ENCODE outputs an error, output an error and stop.
 3. m = OS2IP(encoded_message)
 4. r = RandomInteger(0, n - 1)
-5. x = RSASP1(pkS, m)
+5. x = RSASP1(pkS, r)
 6. z = m * x mod n
 7. r_inv = MultInverse(r, n)
 8. blinded_message = I2OSP(z, k)
@@ -165,7 +167,7 @@ Errors:
 Steps:
 1. z = OS2IP(evaluated_message)
 2. r_inv = OS2IP(blind_inv)
-3. s = RSASP1(z, (n, r_inv))
+3. s = z * r_inv mod n
 4. result = rsassa_pss_sign_verify(pkS, msg, s)
 5. sig = I2OSP(s, k)
 6. If result = true, return s, else output "invalid signature" and stop
@@ -209,6 +211,8 @@ This section describes how clients and servers augment a public key pair `(pkS, 
 using information `aux`.
 
 [[OPEN ISSUE: need to specify H, a one-way hash function into Z_\lambda(n)\*]]
+[[OPEN ISSUE: Hash input `aux` into value, that's then hashed into ]]
+[[OPEN ISSUE: the augmentation strings MUST be enumerable]]
 
 ~~~
 rsassa_pss_augment_public_key(pkS = (n, e), aux)
@@ -244,7 +248,7 @@ Steps:
 
 # Security Considerations {#sec-considerations}
 
-TODO:
+TODO
 
 ## Message Robustness
 
@@ -257,6 +261,7 @@ TODO(caw): summarize the variants below
 - RSA-PKCS1v1.5
 - Blind Schnorr
 - Clause Blind Schnorr
+- ABE (https://eprint.iacr.org/2020/1071.pdf)
 - Blind BLS
 
 # IANA Considerations
