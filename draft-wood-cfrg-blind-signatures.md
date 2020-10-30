@@ -52,7 +52,7 @@ protocol operations in this document:
 - I2OSP and OS2IP: Convert a byte string to and from a non-negative integer as
   described in {{!RFC8017}}. Note that these functions operate on byte strings
   in big-endian byte order.
-- RandomInteger(M, N): Generate a random, uniformly distributed integer r
+- random_integer(M, N): Generate a random, uniformly distributed integer r
   such that M < R <= N.
 - MultInverse(n, p): Compute the multiplicative inverse of n mod p.
 
@@ -103,6 +103,7 @@ define a blinded variant of this algorithm.
 rsassa_pss_sign_blind(pkS, msg)
 
 Parameters:
+- k, the length in bytes of the RSA modulus n
 - k_bits, the length in bits of the RSA modulus n
 
 Inputs:
@@ -121,13 +122,13 @@ Steps:
 1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1)
 2. If EMSA-PSS-ENCODE outputs an error, output an error and stop.
 3. m = OS2IP(encoded_message)
-4. r = RandomInteger(0, n - 1)
-5. x = RSASP1(pkS, r)
+4. r = random_integer(0, n - 1)
+5. x = RSAVP1(pkS, r)
 6. z = m * x mod n
-7. r_inv = MultInverse(r, n)
+7. r_inv = inverse_mod(r, n)
 8. blinded_message = I2OSP(z, k)
-9. blind_inv = I2OSP(r, k)
-10. return blinded_message, blind_inv
+9. blind_inv = I2OSP(r_inv, k)
+10. output blinded_message, blind_inv
 ~~~
 
 ~~~
@@ -140,13 +141,13 @@ Inputs:
 - blinded_msg, encoded and blinded message to be signed, an octet string
 
 Outputs:
-- encoded_message, an octet string of length k
+- evaluated_message, an octet string of length k
 
 Steps:
 1. m = OS2IP(blinded_msg)
 2. s = RSASP1(skS, m)
-3. encoded_message = I2OSP(s, k)
-4. output encoded_message
+3. evaluated_message = I2OSP(s, k)
+4. output evaluated_message
 ~~~
 
 ~~~
@@ -168,9 +169,9 @@ Steps:
 1. z = OS2IP(evaluated_message)
 2. r_inv = OS2IP(blind_inv)
 3. s = z * r_inv mod n
-4. result = rsassa_pss_sign_verify(pkS, msg, s)
-5. sig = I2OSP(s, k)
-6. If result = true, return s, else output "invalid signature" and stop
+4. sig = I2OSP(s, k)
+5. result = rsassa_pss_sign_verify(pkS, msg, sig)
+6. If result = true, output sig, else output "invalid signature" and stop
 ~~~
 
 ### Signature Verification
@@ -242,7 +243,7 @@ Inputs:
 
 Steps:
 1. c = 2^(k-1) + 2*H(aux) + 1
-2. c_inv = ModInverse(c, L)
+2. c_inv = inverse_mod(c, L)
 3. return (n, (d * c))
 ~~~
 
