@@ -297,6 +297,10 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
+## Partial Blind Message Space
+
+[[OPEN ISSUE: describe the criteria and provide sample code to search for the tweak]]
+
 ## Alternative RSA Encoding Functions
 
 - RSA-PKCS1v1.5
