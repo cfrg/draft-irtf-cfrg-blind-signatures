@@ -252,7 +252,7 @@ Steps:
 3. return (n, (d * c))
 ~~~
 
-## RSA-PSS Options {#pss-options}
+## Encoding Options {#pss-options}
 
 The RSA-PSS encoding functions take the following optional parameterss:
 
@@ -261,6 +261,14 @@ The RSA-PSS encoding functions take the following optional parameterss:
 - sLen: intended length in octets of the salt
 
 The blinded functions above are orthogonal to the choice of these options.
+
+## Key Generation
+
+TODO: specify the key generation routine here, assuming p, q are already chosen. The algorithm
+should take the set of aux data as input and output a set of public (e, d) pairs -- if C is empty,
+then normal (e, d), else use augmentation function.
+
+
 
 # Blind Signature Certificate Extension {#cert-oid}
 
