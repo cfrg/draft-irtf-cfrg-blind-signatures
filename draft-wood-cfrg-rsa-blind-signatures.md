@@ -353,6 +353,8 @@ The blinded functions above are orthogonal to the choice of these options.
 
 # Blind Signature Certificate Extension {#cert-oid}
 
+[[OPEN ISSUE: we also need to convey the tweak somehow -- do we use an OID for that, too?]]
+
 We define a new X.509 extension, BlindSignature, to be used in the certificate
 when the certificate permits the usage of the corresponding public key for
 the blind signature scheme described in this document. What follows is the
