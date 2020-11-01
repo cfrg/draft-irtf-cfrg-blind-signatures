@@ -214,45 +214,134 @@ Steps:
 To implement partially blinded signatures, public auxiliary information is used
 to augment the public and private keys used during the signature verification.
 This section describes how clients and servers augment a public key pair `(pkS, skS)`
-using information `aux`.
-
-[[OPEN ISSUE: need to specify H, a one-way hash function into Z_\lambda(n)\*]]
-[[OPEN ISSUE: Hash input `aux` into value, that's then hashed into ]]
-[[OPEN ISSUE: the augmentation strings MUST be enumerable]]
+using information `aux` and tweak `tweak`.
 
 ~~~
-rsassa_pss_augment_public_key(pkS = (n, e), aux)
+rsassa_pss_augment_public_key(pkS = (n, e), tweak, aux)
 
 Parameters:
-- H(), a one-way hash function
+- H, a cryptographic hash function
+- l, H output truncation length
 
 Inputs:
 - pkS, server public key (n, e)
+- tweak, Public key tweak
 - aux, public auxiliary information, an octet string
 
 Steps:
-1. c = 2^(k-1) + 2*H(aux) + 1
-2. return (n, (e * c))
+1. c = H(aux || tweak)[0:l]
+2. t = OS2IP(c)
+3. e_aug = 2 * t + 1
+4. return (n, e_aug)
 ~~~
 
 ~~~
-rsassa_pss_augment_private_key(pkS = (n, d), aux)
+rsassa_pss_augment_private_key(skS = (n, d), tweak, aux)
 
 Parameters:
-- H(), a one-way hash function
-- L, \lambda(n) as defined in {{RFC8017}}
+- H, a cryptographic hash function
+- l, H output truncation length
 
 Inputs:
-- skS, server public key (n, d)
+- skS, server private key (n, d)
+- tweak, Public key tweak
 - aux, public auxiliary information, an octet string
 
 Steps:
-1. c = 2^(k-1) + 2*H(aux) + 1
-2. c_inv = inverse_mod(c, L)
-3. return (n, (d * c))
+1. c = H(aux || tweak)[0:l]
+2. t = OS2IP(c)
+3. e_aug = 2 * t + 1
+4. d_aug = inverse_mod(e_aug, phi(n))
+5. return (n, d_aug)
+~~~
+
+### Tweak Generation
+
+The augmentation function defined above computes the following value for each
+auxiliary input:
+
+~~~
+   augment(aux, tweak) = (2 * H_l(aux || tweak)) + 1
+~~~
+
+where `H\_l` is `H` truncated to `l` bytes. Let `f(aux)` denote shorthand for
+`augment(aux, tweak)`, where `tweak` is implicit from context. This function MUST
+be collision resistant and deterministic. Moreover, it must generate outputs that are
+relatively prime to one another. Specifically, let `p\_k(x)` denote the k-th largest
+prime factor of input `x`, and let `k(x)` denote the number of prime factors for
+input `x`. The augmentation function MUST satisfy the following condition:
+
+For all distinct `aux\_i` and `aux\_j` that belong to the set of auxiliary information
+elements, there must exists a prime factor `p\k(f(aux\_i))` that does not divide
+`f(aux\_j)` and is also relatively prime to `\lambda(n)`, the Carmichael function of
+RSA modulus n.
+
+In other words, each output of `f` must have at least one prime factor that foes not
+appear in all other outputs of `f`. To ensure this, the server must check that its
+given tweak produces such outputs for all possible auxiliary information inputs.
+The following Python-like code presents an algorithm for finding a tweak suitable
+for a given set of auxiliary information elements, denoted `C`.
+
+~~~
+def augment(aux, H, tweak):
+    return (2 * H(aux + tweak)) + 1
+
+def prime_factors(n):
+    factors = []
+    factor = 1
+    i = 3
+
+    if n % 2 == 0:
+        factors.append(2)
+
+    while i <= (n / i):
+        if n % i == 0:
+            factor = int(i)
+            factors.append(factor)
+            while n % i == 0:
+                n = n / i
+        else:
+            i += 1
+
+    if factor < n:
+        factor = int(n)
+    factors.append(factor)
+
+    return factors
+
+def find_augmenter(C, H, L):
+    '''
+    For all c_i, c_j such that c_i != cj:
+    1. The largest prime factor of f(c_i) must not divide f(c_j)
+    2. f(c_i) must be relatively prime to L = \lambda = 2((p-1)/2)((q-1)/2)
+    '''
+    def is_valid_tweak(s, C, H, L):
+        augmented = [augment(c, H, s) for c in C]
+        for fci in augmented:
+            if not math.gcd(fci, L) == 1:
+                return False
+            for fcj in augmented:
+                if fci != fcj:
+                    unique_factor = False
+                    for pki in prime_factors(fci):
+                        if (fcj % pki) != 0:
+                            unique_factor = True
+                            break
+                    if not unique_factor:
+                        return False
+        return True
+
+    while True:
+        s = os.urandom(32)
+        if is_valid_tweak(s, C, H, L):
+            return s
 ~~~
 
 ## Encoding Options {#pss-options}
+
+[[OPEN ISSUE: should we pin MGF to MGF1, using the same hash that was used for the content?]]
+[{OPEN ISSUE: should we fix the salt length, or would that be a burden for interoperability?]]
+[[OPEN ISSUE: https://mailarchive.ietf.org/arch/msg/tls/BtJer4yKeigyPuac4tjC2eUhi3Y/]]
 
 The RSA-PSS encoding functions take the following optional parameterss:
 
@@ -261,14 +350,6 @@ The RSA-PSS encoding functions take the following optional parameterss:
 - sLen: intended length in octets of the salt
 
 The blinded functions above are orthogonal to the choice of these options.
-
-## Key Generation
-
-TODO: specify the key generation routine here, assuming p, q are already chosen. The algorithm
-should take the set of aux data as input and output a set of public (e, d) pairs -- if C is empty,
-then normal (e, d), else use augmentation function.
-
-
 
 # Blind Signature Certificate Extension {#cert-oid}
 
@@ -291,6 +372,10 @@ ASN.1 module for the BlindSignature certificate extension.
 The extension MUST be marked non-critical. (See Section 4.2 of {{!RFC5280}}.)
 
 # Security Considerations {#sec-considerations}
+
+## Timing Side Channels
+
+[[OPEN ISSUE: what do we want to say here, other than that `evaluate` must run in constant time?]]
 
 ## Message Robustness
 
