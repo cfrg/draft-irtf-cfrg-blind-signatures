@@ -352,7 +352,6 @@ def find_augmenter(C, H, L):
 The RSASSA-PSS parameters are defined as in {{!RFC8230}}.
 Implementations MUST support PS384-encoding, using SHA-384 as hash function for the message and mask generation function with a 48-byte salt.
 
-[[OPEN ISSUE: https://mailarchive.ietf.org/arch/msg/tls/BtJer4yKeigyPuac4tjC2eUhi3Y/]]
 
 The RSA-PSS encoding functions take the following optional parameterss:
 
