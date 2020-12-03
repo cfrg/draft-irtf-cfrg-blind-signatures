@@ -33,8 +33,9 @@ informative:
 
 --- abstract
 
-This document specifies the RSA-based blind signature scheme with appendix (RSA-BSSA). RSA blind signatures were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified in {{!RFC8017}} to enable
-blind signature support. It also specifies an extension for partially blind signatures.
+This document specifies the RSA-based blind signature scheme with appendix (RSA-BSSA). RSA blind signatures
+were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
+in {{!RFC8017}} to enable blind signature support. It also specifies an extension for partially blind signatures.
 
 --- middle
 
@@ -44,16 +45,21 @@ Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
-Recently, interest in blind signatures has grown to address operational shortcomings from ECVOPRFs 
-for which the private key is required VOPRF evaluations and therefore required for both issuance and redemption of tokens in anonymous authentication protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
-This limitation complicates deployments where it is not desirable to distribute secret keys entities performing token verification.
-Additionally, if the private key is kept in a Hardware Security Module, the number of operations on the key are doubled compared to a scheme where the private key is only required for issuance of the tokens.
+Recently, interest in blind signatures has grown to address operational shortcomings from ECVOPRFs
+for which the private key is required VOPRF evaluations and therefore required for both issuance and
+redemption of tokens in anonymous authentication protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
+This limitation complicates deployments where it is not desirable to distribute secret keys entities
+performing token verification. Additionally, if the private key is kept in a Hardware Security Module,
+the number of operations on the key are doubled compared to a scheme where the private key is only
+required for issuance of the tokens.
 
-In order to facilitate the deployment of our scheme, we define it in such a way that the resulting (unblinded) signature can be verified with a standard RSA-PSS library.
+In order to facilitate the deployment of our scheme, we define it in such a way that the resulting (unblinded)
+signature can be verified with a standard RSA-PSS library.
 
-Cryptographic signatures provide a primitive that is publicly verifiable and does not require access to the private key to verify. 
-
-In order to facilitate adoption in protocols that have additional requirements, such as the ability to provide public metadata as input to the signature, we specify an extension of the signature scheme that enables partial blindness through key augmentation.
+Cryptographic signatures provide a primitive that is publicly verifiable and does not require access to
+the private key to verify. Moreover, to facilitate protocols that require public metadata as input
+into the signature, we specify an extension of the signature scheme that enables partial blindness
+through key augmentation.
 
 This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA), and its extension for partial blindness.
 
@@ -143,7 +149,7 @@ Steps:
 6. x = RSAVP1(pkS, r)
 7. z = m * x mod n
 8. r_inv = inverse_mod(r, n)
-9. If finding the inverse fails, output an "invalid blind" error and stop. 
+9. If finding the inverse fails, output an "invalid blind" error and stop.
 10. blinded_message = I2OSP(z, k)
 11. blind_inv = I2OSP(r_inv, k)
 12. output blinded_message, blind_inv
@@ -196,6 +202,7 @@ Steps:
 
 Signature verification can be performed by invoking the RSASSA-PSS-VERIFY routine defined in {{!RFC3447}}.
 
+~~~
 rsabssa_verify(pkS, msg, sig)
 
 Parameters:
@@ -212,8 +219,9 @@ Inputs:
 Outputs:
 - valid, a boolean value that is true if the signature is valid, and false otherwise
 
--Steps:
+Steps:
 1. Output RSASSA-PSS-VERIFY(pkS, msg, sig) with H and MGF as defined in the parameters.
+~~~
 
 ## Partially-Blind Key Augmentation
 
