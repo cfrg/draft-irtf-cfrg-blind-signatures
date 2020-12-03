@@ -44,7 +44,7 @@ Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
-Recently, the interest in blind signatures has grown to address operational shortcomings from ECVOPRFs 
+Recently, interest in blind signatures has grown to address operational shortcomings from ECVOPRFs 
 for which the private key is required VOPRF evaluations and therefore required for both issuance and redemption of tokens in authentication protocols.
 
 This limitation complicates deployments where it is not desirable to distribute the keys to each of the hosts who will be performing verification of the tokens.
