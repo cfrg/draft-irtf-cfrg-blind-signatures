@@ -52,7 +52,7 @@ Additionally, if the private key is kept in a Hardware Security Module, the numb
 
 In order to facilitate the deployement of our scheme, we define it in such a way that the resulting, unblinded, signature can be verified with a standard RSA-PSS library.
 
-Cryptographic signatures do provide a primitive that is publicly verifiable and does not require access to the private key to verify. 
+Cryptographic signatures provide a primitive that is publicly verifiable and does not require access to the private key to verify. 
 Therefore, blind signatures are an excellent candidate to address those limitations.
 
 In order to facilitate adoption in protocols that have additional requirements, such as the ability to provide an expiry for signatures, we do provide an extension of the signature scheme to provide partial blindness through key augmentation.
