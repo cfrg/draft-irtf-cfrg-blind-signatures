@@ -45,16 +45,15 @@ for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
 Recently, interest in blind signatures has grown to address operational shortcomings from ECVOPRFs 
-for which the private key is required VOPRF evaluations and therefore required for both issuance and redemption of tokens in authentication protocols.
-
-This limitation complicates deployments where it is not desirable to distribute the keys to each of the hosts who will be performing verification of the tokens.
+for which the private key is required VOPRF evaluations and therefore required for both issuance and redemption of tokens in anonymous authentication protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
+This limitation complicates deployments where it is not desirable to distribute secret keys entities performing token verification.
 Additionally, if the private key is kept in a Hardware Security Module, the number of operations on the key are doubled compared to a scheme where the private key is only required for issuance of the tokens.
 
-In order to facilitate the deployement of our scheme, we define it in such a way that the resulting, unblinded, signature can be verified with a standard RSA-PSS library.
+In order to facilitate the deployment of our scheme, we define it in such a way that the resulting (unblinded) signature can be verified with a standard RSA-PSS library.
 
 Cryptographic signatures provide a primitive that is publicly verifiable and does not require access to the private key to verify. 
 
-In order to facilitate adoption in protocols that have additional requirements, such as the ability to provide an expiry for signatures, we do provide an extension of the signature scheme to provide partial blindness through key augmentation.
+In order to facilitate adoption in protocols that have additional requirements, such as the ability to provide public metadata as input to the signature, we specify an extension of the signature scheme that enables partial blindness through key augmentation.
 
 This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA), and its extension for partial blindness.
 
@@ -138,13 +137,13 @@ Errors:
 Steps:
 1. msg_hash = H(msg)
 2. encoded_message = EMSA-PSS-ENCODE(msg_hash, k_bits - 1) with MGF as defined in the parameters.
-3. If EMSA-PSS-ENCODE outputs an error, output an error and stop.
+3. If EMSA-PSS-ENCODE outputs an error, output the error and stop.
 4. m = OS2IP(encoded_message)
 5. r = random_integer(0, n - 1)
 6. x = RSAVP1(pkS, r)
 7. z = m * x mod n
 8. r_inv = inverse_mod(r, n)
-9. If finding the inverse fails, output an error and stop. 
+9. If finding the inverse fails, output an "invalid blind" error and stop. 
 10. blinded_message = I2OSP(z, k)
 11. blind_inv = I2OSP(r_inv, k)
 12. output blinded_message, blind_inv
@@ -195,7 +194,7 @@ Steps:
 
 ## Signature Verification
 
-Signature verification can be performed simply by invoking the RSASSA-PSS-VERIFY routine defined in {{!RFC3447}}.
+Signature verification can be performed by invoking the RSASSA-PSS-VERIFY routine defined in {{!RFC3447}}.
 
 rsabssa_verify(pkS, msg, sig)
 
