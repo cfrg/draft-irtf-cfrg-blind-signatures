@@ -345,8 +345,6 @@ def find_augmenter(C, H, L):
             return s
 ~~~
 
-
-
 ## Encoding Options {#pss-options}
 
 The RSASSA-PSS parameters are defined as in {{!RFC8230}}.
