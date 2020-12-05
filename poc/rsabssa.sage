@@ -6,6 +6,7 @@ The code re-used below is in the public domain: https://github.com/pycrypto/pycr
 '''
 
 import os
+import json
 import numpy
 import math
 import struct
@@ -158,7 +159,6 @@ def rsassa_pss_sign_blind(pkS, msg_hash):
     10. return blinded_message, blind_inv
     """
     k = byte_length(pkS.n)
-
     encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
     m = OS2IP(encoded_message)
 
@@ -403,13 +403,16 @@ def rsa_key_gen(p_bits):
     return skS, pkS
 
 def run_signature_scheme(skS, pkS, msg):
-    msg_hash = SHA384.new()
+    msg_hash = SHA256.new()
     msg_hash.update(msg)
 
     # Run the non-blind variant
     sig = rsassa_pss_sign(skS, msg_hash)
     valid = rsassa_pss_sign_verify(pkS, msg_hash, sig)
     assert(valid)
+
+    k = byte_length(pkS.n)
+    encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
 
     # Run the blind variant
     blinded_message, blind_inv, blind = rsassa_pss_sign_blind(pkS, msg_hash)
@@ -425,6 +428,7 @@ def run_signature_scheme(skS, pkS, msg):
     vector["e"] = to_hex(I2OSP(pkS.e, byte_length(pkS.e)))
     vector["d"] = to_hex(I2OSP(skS.d, byte_length(skS.d)))
     vector["msg"] = to_hex(msg)
+    vector["encoded_msg"] = to_hex(encoded_message)
     vector["blinded_message"] = to_hex(blinded_message)
     vector["blind_inv"] = to_hex(blind_inv)
     vector["blind"] = to_hex(blind)
@@ -432,7 +436,7 @@ def run_signature_scheme(skS, pkS, msg):
     vector["sig"] = to_hex(sig)
     vector["salt_length"] = to_hex(bytes([0]))
     vector["mgf"] = "MGF1"
-    vector["hash"] = "SHA384"
+    vector["hash"] = "SHA256"
 
     return [vector] # TODO(caw): vary more parameters
 
@@ -440,7 +444,7 @@ def run_partially_blind_signature_scheme(skS, pkS, msg, tweak, C, H):
     vectors = []
     for c in C:
         # First, augment the message input
-        msg_hash = SHA384.new()
+        msg_hash = SHA256.new()
         msg_hash.update(c)
         msg_hash.update(msg)
 
@@ -454,6 +458,9 @@ def run_partially_blind_signature_scheme(skS, pkS, msg, tweak, C, H):
         # servers will derive it on the fly
         skS = PrivateKey(skS.n, skS.p, skS.q, private_tweak)
         pkS = PublicKey(pkS.n, public_tweak)
+
+        k = byte_length(pkS.n)
+        encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
 
         # Run the blind variant
         blinded_message, blind_inv, blind = rsassa_pss_sign_blind(pkS, msg_hash)
@@ -471,6 +478,7 @@ def run_partially_blind_signature_scheme(skS, pkS, msg, tweak, C, H):
         vector["private_tweak"] = to_hex(I2OSP(private_tweak, byte_length(private_tweak)))
         vector["n"] = to_hex(I2OSP(pkS.n, byte_length(pkS.n)))
         vector["msg"] = to_hex(msg)
+        vector["encoded_msg"] = to_hex(encoded_message)
         vector["blinded_message"] = to_hex(blinded_message)
         vector["blind_inv"] = to_hex(blind_inv)
         vector["blind"] = to_hex(blind)
@@ -478,7 +486,7 @@ def run_partially_blind_signature_scheme(skS, pkS, msg, tweak, C, H):
         vector["sig"] = to_hex(sig)
         vector["salt_length"] = to_hex(bytes([0]))
         vector["mgf"] = "MGF1"
-        vector["hash"] = "SHA384"
+        vector["hash"] = "SHA256"
 
         vectors.append(vector)
     return vectors
@@ -547,12 +555,13 @@ msg = 'hello world'.encode("utf-8")
 test_vectors = []
 test_vectors.extend(run_signature_scheme(skS, pkS, msg))
 
-for C_len in C_lengths:
-    C = [str(i).encode("utf-8") for i in range(C_len)]
-    try:
-        s = find_augmenter(C, H_32, phi)
-        test_vectors.extend(run_partially_blind_signature_scheme(skS, pkS, msg, s, C, H_32))
-    except:
-        pass
+# for C_len in C_lengths:
+#     C = [str(i).encode("utf-8") for i in range(C_len)]
+#     try:
+#         s = find_augmenter(C, H_32, phi)
+#         test_vectors.extend(run_partially_blind_signature_scheme(skS, pkS, msg, s, C, H_32))
+#     except:
+#         pass
 
-print_vectors(test_vectors)
+# print_vectors(test_vectors)
+print(json.dumps(test_vectors, indent=4))
