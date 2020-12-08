@@ -30,6 +30,18 @@ informative:
       -
         ins: D. Chaum
         org: University of California, Santa Barbara, USA
+  RemoteTiming:
+    title: "Remote Timing Attacks are Practical"
+    target: https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf
+    date: 2003
+    venue: 12th Usenix Security Symposium
+    authors:
+      -
+        ins: D. Boneh
+        org: Stanford University
+      -
+        ins: D. Brumley
+        org: Stanford University
 
 --- abstract
 
@@ -118,9 +130,10 @@ Section 8.1 of {{!RFC8017}} defines RSASSA-PSS RSAE, which is a signature algori
 using RSASSA-PSS {{RFC8017}} with mask generation function 1. In this section, we
 define RSABSSA, blinded variant of this algorithm.
 
-## Signature Generation
+## Signature Generation {#generation}
+
 ~~~
-rsabssa_sign(pkS, msg)
+rsabssa_sign_blind(pkS, msg)
 
 Parameters:
 - k, the length in bytes of the RSA modulus n
@@ -159,9 +172,11 @@ Steps:
 rsabssa_sign_evaluate(skS, blinded_msg)
 
 Parameters:
+- n, the private key RSA modulus
 - k, the length in octets of the RSA modulus n
 
 Inputs:
+- skS, server private key with corresponding public key pkS
 - blinded_msg, encoded and blinded message to be signed, an octet string
 
 Outputs:
@@ -169,16 +184,21 @@ Outputs:
 
 Steps:
 1. m = OS2IP(blinded_msg)
-2. s = RSASP1(skS, m)
-3. evaluated_message = I2OSP(s, k)
-4. output evaluated_message
+2. r = random_integer(0, n - 1)
+3. r_inv = inverse_mod(r, n)
+4. x = RSAVP1(pkS, r)
+5. z = x * m mod n
+6. y = RSAP1(skS, z)
+7. s = r * r_inv mod n
+8. evaluated_message = I2OSP(s, k)
+9. output evaluated_message
 ~~~
 
 ~~~
 rsabssa_sign_finalize(pkS, msg, evaluated_message, blind_inv)
 
 Inputs:
-- pkS, server public key
+- pkS, server public key (n, e)
 - msg, message to be signed, an octet string
 - evaluated_message, signed and blinded element, an octet string of length k
 - blind_inv, inverse of the blind, an octet string of length k
@@ -353,9 +373,9 @@ def find_augmenter(C, H, L):
 
 ## Encoding Options {#pss-options}
 
-The RSASSA-PSS parameters are defined as in {{!RFC8230}}.
-Implementations MUST support PS384-encoding, using SHA-384 as hash function for the message and mask generation function with a 48-byte salt.
-
+The RSASSA-PSS parameters are defined as in {{!RFC8230}}. Implementations MUST support
+PS384-encoding, using SHA-384 as hash function for the message and mask generation function
+with a 48-byte salt.
 
 The RSA-PSS encoding functions take the following optional parameterss:
 
@@ -391,7 +411,11 @@ The extension MUST be marked non-critical. (See Section 4.2 of {{!RFC5280}}.)
 
 ## Timing Side Channels
 
-[[OPEN ISSUE: what do we want to say here, other than that `evaluate` must run in constant time?]]
+rsabssa_sign_evaluate is functionally a remote procedure call for applying the RSA private
+key operation. As such, side channel resistance is paramount to protect the private key
+from exposure {{RemoteTiming}}. The specification in {{generation}} includes an RSA blinding
+variant, as described in {{RemoteTiming}}, timing information leaked through this function
+is not dependent entirely upon the attacker-controlled input.
 
 ## Message Robustness
 
