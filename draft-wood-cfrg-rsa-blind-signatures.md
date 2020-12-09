@@ -439,8 +439,13 @@ X.509v3 {{?RFC4055}}, and even PKCS#1 itself. According to {{?RFC3447}}, "Althou
 attacks are known against RSASSA-PKCS#1 v1.5, in the interest of increased robustness,
 RSA-PSS is recommended for eventual adoption in new applications." While RSA-PSS is
 more complex than RSASSA-PKCS#1 v1.5 encoding, ubiquity of RSA-PSS support influenced
-the design decision in this draft. Full Domain Hash (FDH) {{RSA-FDH}} encoding is also
-possible, though less standard and not used widely in related stadnards.
+the design decision in this draft, despite PKCS#1 v1.5 having equivalent security
+properties for digital signatures {{?JKM18=DOI.10.1145/3243734.3243798}}
+
+Full Domain Hash (FDH) {{RSA-FDH}} encoding is also possible, and this variant has
+equivalent security to PSS {{?KK18=DOI.10.1007/s00145-017-9257-9}}. However, FDH is
+less standard and not used widely in related technologies. Moreover, FDH is
+deterministic, whereas PSS is probabilistic.
 
 ## Alternative Blind Signature Schemes
 
