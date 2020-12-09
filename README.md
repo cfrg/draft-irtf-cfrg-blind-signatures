@@ -1,6 +1,6 @@
-# Blind Signatures
+# Blind RSA Signatures
 
-This is the working area for the individual Internet-Draft, "Blind Signatures".
+This is the working area for the individual Internet-Draft, "Blind RSA Signatures".
 
 * [Editor's Copy](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-wood-cfrg-blind-signatures.html)
 * [Individual Draft](https://tools.ietf.org/html/draft-wood-cfrg-blind-signatures)
