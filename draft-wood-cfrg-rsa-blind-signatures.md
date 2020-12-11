@@ -22,6 +22,27 @@ author:
     email: caw@heapingbits.net
 
 informative:
+  KLRX20:
+    title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
+    target: https://eprint.iacr.org/2020/1071
+  BLS-Proposal:
+    title: "[Privacy-pass] External verifiability: a concrete proposal"
+    target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
+    authors:
+      -
+        ins: W. Ladd
+  PolytimeROS:
+    title: "On the (in)security of ROS"
+    target: https://eprint.iacr.org/2020/945.pdf
+  RSA-FDH:
+    title: "Random Oracles are Practical: A Paradigm for Designing Efficient Protocols"
+    target: https://cseweb.ucsd.edu/~mihir/papers/ro.pdf
+    date: October, 1995
+    authors:
+      -
+        ins: M. Bellare
+      -
+        ins: P. Rogaway
   Chaum83:
     title: Blind Signatures for Untraceable Payments
     target: http://sceweb.sce.uhcl.edu/yang/teaching/csci5234WebSecurityFall2011/Chaum-blind-signatures.PDF
@@ -428,15 +449,56 @@ could be useful for this purpose. Defining such a proof is out of scope for this
 
 ## Alternative RSA Encoding Functions
 
-- RSA-PKCS1v1.5
-- FDH
+This document document uses PSS encoding as specified in {{!RFC3447}} for a number of
+reasons. First, it is recommended in recent standards, including TLS 1.3 {{?RFC8446}},
+X.509v3 {{?RFC4055}}, and even PKCS#1 itself. According to {{?RFC3447}}, "Although no
+attacks are known against RSASSA-PKCS#1 v1.5, in the interest of increased robustness,
+RSA-PSS is recommended for eventual adoption in new applications." While RSA-PSS is
+more complex than RSASSA-PKCS#1 v1.5 encoding, ubiquity of RSA-PSS support influenced
+the design decision in this draft, despite PKCS#1 v1.5 having equivalent security
+properties for digital signatures {{?JKM18=DOI.10.1145/3243734.3243798}}
+
+Full Domain Hash (FDH) {{RSA-FDH}} encoding is also possible, and this variant has
+equivalent security to PSS {{?KK18=DOI.10.1007/s00145-017-9257-9}}. However, FDH is
+less standard and not used widely in related technologies. Moreover, FDH is
+deterministic, whereas PSS is probabilistic.
 
 ## Alternative Blind Signature Schemes
 
-- Blind Schnorr
-- Clause Blind Schnorr
-- ABE (https://eprint.iacr.org/2020/1071.pdf)
-- Blind BLS
+There are a number of blind signature protocols beyond RSA. This section summarizes these
+at a high level, and discusses why an RSA-based variant was chosen for the basis of this
+specification.
+
+- Blind Schnorr {{?Sch01=DOI.10.1007/3-540-45600-7_1}}: This is a three-message protocol based on the classical Schnorr
+signature scheme over elliptic curve groups. Although simple, the hardness problem upon
+which this is based -- Random inhomogeneities in a Overdetermined Solvable system of linear
+equations, or ROS -- can be broken in polynomial time when a small number of concurrent
+signing sessions are invoked {{PolytimeROS}}. This can lead to signature forgeries in practice.
+Signers can enforce concurrent sessions, though the limit (approximately 256) for reasonably
+secure elliptic curve groups is small enough to make large-scale signature generation
+prohibitive. In contrast, the variant in this specification has no such concurrency limit.
+- Clause Blind Schnorr {{?FPS20=DOI.10.1007/978-3-030-45724-2_3}}: This is a three-message protocol
+based on a variant of the blind Schnorr signature scheme. This variant of the protocol is not
+known to be vulnerable to the attack in {{PolytimeROS}}, though the protocol is still new and
+under consideration. In the future, this may be a candidate for future blind signatures based
+on blind signatures. However, the three-message flow necessarily requires two round trips
+between the client and server, which may be prohibitive for large-scale signature generation.
+Further analysis and experimentation with this scheme is needed.
+- BSA {{?Abe01=DOI.10.1007/3-540-44987-6_9}}: This is a three-message protocol based on elliptic
+curve groups similar to blind Schnorr. It is also not known to be vulnerable to the ROS attack
+in {{PolytimeROS}}. Kastner et al. {{KLRX20}} proved concurrent security with a polynomial number
+of sessions. For similar reasons to the clause blind Schnorr scheme above, the additional
+number of round trips requires further analysis and experimentation.
+- Blind BLS {{BLS-Proposal}}: The Boneh-Lynn-Shacham {{?I-D.irtf-cfrg-bls-signature}} scheme can
+incorporate message blinding when properly instantiated with Type III pairing group. This is a
+two-message protocol similar to the RSA variant, though it requires pairing support, which is
+not common in widely deployed cryptographic libraries backing protocols such as TLS. In contrast,
+the specification in this document relies upon widely deployed cryptographic primitives.
+
+## Post-Quantum Readiness
+
+The blind signature scheme specified in this document is not post-quantum ready since it
+is based on RSA. (Shor's polynomial-time factorization algorithm readily applies.)
 
 # IANA Considerations
 
