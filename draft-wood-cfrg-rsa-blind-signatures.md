@@ -30,6 +30,18 @@ informative:
       -
         ins: D. Chaum
         org: University of California, Santa Barbara, USA
+  RemoteTiming:
+    title: "Remote Timing Attacks are Practical"
+    target: https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf
+    date: 2003
+    venue: 12th Usenix Security Symposium
+    authors:
+      -
+        ins: D. Boneh
+        org: Stanford University
+      -
+        ins: D. Brumley
+        org: Stanford University
 
 --- abstract
 
@@ -118,7 +130,7 @@ Section 8.1 of {{!RFC8017}} defines RSASSA-PSS RSAE, which is a signature algori
 using RSASSA-PSS {{RFC8017}} with mask generation function 1. In this section, we
 define RSABSSA, blinded variant of this algorithm.
 
-## Signature Generation
+## Signature Generation {#generation}
 ~~~
 rsabssa_sign(pkS, msg)
 
@@ -353,9 +365,9 @@ def find_augmenter(C, H, L):
 
 ## Encoding Options {#pss-options}
 
-The RSASSA-PSS parameters are defined as in {{!RFC8230}}.
-Implementations MUST support PS384-encoding, using SHA-384 as hash function for the message and mask generation function with a 48-byte salt.
-
+The RSASSA-PSS parameters are defined as in {{!RFC8230}}. Implementations MUST support
+PS384-encoding, using SHA-384 as hash function for the message and mask generation
+function with a 48-byte salt.
 
 The RSA-PSS encoding functions take the following optional parameterss:
 
@@ -391,7 +403,11 @@ The extension MUST be marked non-critical. (See Section 4.2 of {{!RFC5280}}.)
 
 ## Timing Side Channels
 
-[[OPEN ISSUE: what do we want to say here, other than that `evaluate` must run in constant time?]]
+rsabssa_sign_evaluate is functionally a remote procedure call for applying the RSA private
+key operation. As such, side channel resistance is paramount to protect the private key
+from exposure {{RemoteTiming}}. Implementations MUST include side channel attack mitigations,
+such as RSA blinding, to avoid leaking information about the private key through timing
+side channels.
 
 ## Message Robustness
 
