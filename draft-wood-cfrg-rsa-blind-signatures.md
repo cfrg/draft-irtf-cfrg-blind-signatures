@@ -68,7 +68,7 @@ informative:
 
 This document specifies the RSA-based blind signature scheme with appendix (RSA-BSSA). RSA blind signatures
 were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
-in {{!RFC8017}} to enable blind signature support. It also specifies an extension for partially blind signatures.
+in {{!RFC8017}} to enable blind signature support.
 
 --- middle
 
@@ -86,15 +86,12 @@ performing token verification. Additionally, if the private key is kept in a Har
 the number of operations on the key are doubled compared to a scheme where the private key is only
 required for issuance of the tokens.
 
-In order to facilitate the deployment of our scheme, we define it in such a way that the resulting (unblinded)
-signature can be verified with a standard RSA-PSS library.
+Cryptographic signatures provide a primitive that is publicly verifiable and does not require access
+to the private key to verify. Moreover, in order to facilitate the deployment of the protocol in this
+document, it is defined in such a way that the resulting (unblinded) signature can be verified with
+a standard RSA-PSS library.
 
-Cryptographic signatures provide a primitive that is publicly verifiable and does not require access to
-the private key to verify. Moreover, to facilitate protocols that require public metadata as input
-into the signature, we specify an extension of the signature scheme that enables partial blindness
-through key augmentation.
-
-This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA), and its extension for partial blindness.
+This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA).
 
 # Requirements Notation
 
@@ -256,134 +253,6 @@ Steps:
 1. Output RSASSA-PSS-VERIFY(pkS, msg, sig) with H and MGF as defined in the parameters.
 ~~~
 
-## Partially-Blind Key Augmentation
-
-To implement partially blinded signatures, public auxiliary information is used
-to augment the public and private keys used during the signature verification.
-This section describes how clients and servers augment a public key pair `(pkS, skS)`
-using information `aux` and tweak `tweak`.
-
-~~~
-rsassa_pss_augment_public_key(pkS = (n, e), tweak, aux)
-
-Parameters:
-- H, a cryptographic hash function
-- l, H output truncation length
-
-Inputs:
-- pkS, server public key (n, e)
-- tweak, Public key tweak
-- aux, public auxiliary information, an octet string
-
-Steps:
-1. c = H(aux || tweak)[0:l]
-2. t = OS2IP(c)
-3. e_aug = 2 * t + 1
-4. return (n, e_aug)
-~~~
-
-~~~
-rsassa_pss_augment_private_key(skS = (n, d), tweak, aux)
-
-Parameters:
-- H, a cryptographic hash function
-- l, H output truncation length
-
-Inputs:
-- skS, server private key (n, d)
-- tweak, Public key tweak
-- aux, public auxiliary information, an octet string
-
-Steps:
-1. c = H(aux || tweak)[0:l]
-2. t = OS2IP(c)
-3. e_aug = 2 * t + 1
-4. d_aug = inverse_mod(e_aug, phi(n))
-5. return (n, d_aug)
-~~~
-
-### Tweak Generation
-
-The augmentation function defined above computes the following value for each
-auxiliary input:
-
-~~~
-   augment(aux, tweak) = (2 * H_l(aux || tweak)) + 1
-~~~
-
-where `H\_l` is `H` truncated to `l` bytes. Let `f(aux)` denote shorthand for
-`augment(aux, tweak)`, where `tweak` is implicit from context. This function MUST
-be collision resistant and deterministic. Moreover, it must generate outputs that are
-relatively prime to one another. Specifically, let `p\_k(x)` denote the k-th largest
-prime factor of input `x`, and let `k(x)` denote the number of prime factors for
-input `x`. The augmentation function MUST satisfy the following condition:
-
-For all distinct `aux\_i` and `aux\_j` that belong to the set of auxiliary information
-elements, there must exists a prime factor `p\k(f(aux\_i))` that does not divide
-`f(aux\_j)` and is also relatively prime to `\lambda(n)`, the Carmichael function of
-RSA modulus n.
-
-In other words, each output of `f` must have at least one prime factor that foes not
-appear in all other outputs of `f`. To ensure this, the server must check that its
-given tweak produces such outputs for all possible auxiliary information inputs.
-The following Python-like code presents an algorithm for finding a tweak suitable
-for a given set of auxiliary information elements, denoted `C`.
-
-~~~
-def augment(aux, H, tweak):
-    return (2 * H(aux + tweak)) + 1
-
-def prime_factors(n):
-    factors = []
-    factor = 1
-    i = 3
-
-    if n % 2 == 0:
-        factors.append(2)
-
-    while i <= (n / i):
-        if n % i == 0:
-            factor = int(i)
-            factors.append(factor)
-            while n % i == 0:
-                n = n / i
-        else:
-            i += 1
-
-    if factor < n:
-        factor = int(n)
-    factors.append(factor)
-
-    return factors
-
-def find_augmenter(C, H, L):
-    '''
-    For all c_i, c_j such that c_i != cj:
-    1. The largest prime factor of f(c_i) must not divide f(c_j)
-    2. f(c_i) must be relatively prime to L = \lambda = 2((p-1)/2)((q-1)/2)
-    '''
-    def is_valid_tweak(s, C, H, L):
-        augmented = [augment(c, H, s) for c in C]
-        for fci in augmented:
-            if not math.gcd(fci, L) == 1:
-                return False
-            for fcj in augmented:
-                if fci != fcj:
-                    unique_factor = False
-                    for pki in prime_factors(fci):
-                        if (fcj % pki) != 0:
-                            unique_factor = True
-                            break
-                    if not unique_factor:
-                        return False
-        return True
-
-    while True:
-        s = os.urandom(32)
-        if is_valid_tweak(s, C, H, L):
-            return s
-~~~
-
 ## Encoding Options {#pss-options}
 
 The RSASSA-PSS parameters are defined as in {{!RFC8230}}. Implementations MUST support
@@ -442,10 +311,6 @@ is one such way to differentiate keys for blind signatures from other protocols.
 An alternative solution to this problem of message blindness is to give signers proof that the
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
-
-## Partial Blind Message Space
-
-[[OPEN ISSUE: describe the criteria and provide sample code to search for the tweak]]
 
 ## Alternative RSA Encoding Functions
 
@@ -810,7 +675,3 @@ salt_length = 0x00
 mgf = MGF1
 hash = SHA256
 ~~~
-
-## Partially-Blind Test Vector
-
-[[OPEN ISSUE: add me]]
