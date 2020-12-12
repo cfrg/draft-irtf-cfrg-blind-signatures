@@ -398,27 +398,10 @@ The RSA-PSS encoding functions take the following optional parameterss:
 
 The blinded functions above are orthogonal to the choice of these options.
 
-# Blind Signature Certificate Extension {#cert-oid}
+# Public Key Certification {#cert-oid}
 
-[[OPEN ISSUE: we also need to convey the tweak somehow -- do we use an OID for that, too?]]
-
-We define a new X.509 extension, BlindSignature, to be used in the certificate
-when the certificate permits the usage of the corresponding public key for
-the blind signature scheme described in this document. What follows is the
-ASN.1 module for the BlindSignature certificate extension.
-
-~~~~~~~~~~
-    ext-BlindSignature EXTENSION  ::= {
-        SYNTAX BlindSignature IDENTIFIED BY id-pe-BlindSignature
-    }
-
-    PrivacyPass ::= NULL
-
-    id-pe-BlindSignature OBJECT IDENTIFIER ::=
-        { id-pe TBD }
-~~~~~~~~~~
-
-The extension MUST be marked non-critical. (See Section 4.2 of {{!RFC5280}}.)
+If the server public key is carried in an X.509 certificate, it MUST use the RSASSA-PSS 
+OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 
 # Security Considerations {#sec-considerations}
 
@@ -436,8 +419,7 @@ An essential property of blind signature schemes is that signer learns nothing o
 being signed. In some circumstances, this may raise concerns of arbitrary signing oracles. Applications
 using blind signature schemes should take precautions to ensure that such oracles do not cause
 cross-protocol attacks. This can be done, for example, by keeping blind signature keys distinct
-from signature keys used for other protocols, such as TLS. The certificate extension in {{cert-oid}}
-is one such way to differentiate keys for blind signatures from other protocols.
+from signature keys used for other protocols, such as TLS. 
 
 An alternative solution to this problem of message blindness is to give signers proof that the
 message being signed is well-structured. Depending on the application, zero knowledge proofs
