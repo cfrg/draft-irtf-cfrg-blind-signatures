@@ -1,4 +1,6 @@
 import sys
+import json
+
 
 def wrap_print(arg, *args):
     line_length = 68
@@ -7,9 +9,18 @@ def wrap_print(arg, *args):
         if hunk and len(hunk.strip()) > 0:
             print(hunk)
 
+
 def print_value(name, value):
     wrap_print(name + ' = ' + value)
 
-for line in sys.stdin:
-    data = line.strip().split(": ")
-    print_value(data[0], data[1])
+
+if len(sys.argv) > 1 and sys.argv[1] == "-json":
+    vector = {}
+    for line in sys.stdin:
+        data = line.strip().split(": ")
+        vector[data[0]] = data[1]
+    print(json.dumps([vector]))
+else:
+    for line in sys.stdin:
+        data = line.strip().split(": ")
+        print_value(data[0], data[1])
