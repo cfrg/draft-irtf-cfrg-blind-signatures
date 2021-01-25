@@ -22,9 +22,31 @@ author:
     email: caw@heapingbits.net
 
 informative:
+  WM99:
+    title: "Unknown key-share attacks on the station-to-station (STS) protocol"
+    venue: International Workshop on Public Key Cryptography
+    authors:
+      -
+        ins: S. Blake-Wilson
+      -
+        ins: A. Menezes
   KLRX20:
     title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
     target: https://eprint.iacr.org/2020/1071
+  JKK14:
+    title:  "Round-Optimal Password-Protected Secret Sharing and T-PAKE in the Password-Only model"
+    target: https://eprint.iacr.org/2014/650
+    date: false
+    authors:
+      -
+        ins: S. Jarecki
+        org: UC Irvine, CA, USA
+      -
+        ins: A. Kiayias
+        org: University of Athens, Greece
+      -
+        ins: H. Krawczyk
+        org: IBM Research, NY, USA
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
@@ -78,14 +100,18 @@ Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
-Recently, interest in blind signatures has grown to address operational shortcomings from ECVOPRFs
-for which the private key is required VOPRF evaluations and therefore required for both issuance and
-redemption of tokens in anonymous authentication protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
+Recently, interest in blind signatures has grown to address operational shortcomings from VOPRFs
+such as {{?I-D.ietf-cfrg-voprf}}. Specifically, VOPRF evaluation requires access to the private key,
+and is therefore required for both issuance and redemption of tokens in anonymous authentication
+protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
 This limitation complicates deployments where it is not desirable to distribute secret keys entities
 performing token verification. Additionally, if the private key is kept in a Hardware Security Module,
 the number of operations on the key are doubled compared to a scheme where the private key is only
-required for issuance of the tokens. In contrast, cryptographic signatures provide a primitive that is
-publicly verifiable and does not require access to the private key for verification.
+required for issuance of the tokens.
+
+In contrast, cryptographic signatures provide a primitive that is publicly verifiable and does not
+require access to the private key for verification. Moreover, {{?JKK14}} show that one can realize
+a VOPRF in the Random Oracle Model by hashing a (deterministic) blind signature-message pair.
 
 This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA). In order to facilitate
 deployment, we define it in such a way that the resulting (unblinded) signature can be verified with a
@@ -280,6 +306,22 @@ from signature keys used for other protocols, such as TLS.
 An alternative solution to this problem of message blindness is to give signers proof that the
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
+
+## Salt State
+
+The PSS salt a randomly generated string chosen when a message is encoded. If the salt is not
+generated randomly, or is otherwise constructed maliciously, it might be possible for the salt
+to carry client information to the server. For example, the salt might be maliciously
+constructed to encode the local IP address of the client. Implementations MUST ensure that
+the salt is generated correctly to mitigate such issues.
+
+## Key Substitution Attacks
+
+RSA is well known to permit key substitution attacks, wherein an attacker generates a key pair
+(skA, pkA) that verify some known (message, signature) pair produced under a different (skS, pkS)
+key pair. This means it may be possible for an attacker to use a (message, signature) pair from one
+context in another. Entities that verify signatures must take care to ensure a (message, signature)
+pair verifies with the expected public key.
 
 ## Alternative RSA Encoding Functions
 
