@@ -101,7 +101,7 @@ for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
 Recently, interest in blind signatures has grown to address operational shortcomings from VOPRFs
-such as {{?I-D.ietf-cfrg-voprf}}. Specifically, VOPRF evaluation requires access to the private key,
+such as {{?I-D.irtf-cfrg-voprf}}. Specifically, VOPRF evaluation requires access to the private key,
 and is therefore required for both issuance and redemption of tokens in anonymous authentication
 protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
 This limitation complicates deployments where it is not desirable to distribute secret keys entities
@@ -110,7 +110,7 @@ the number of operations on the key are doubled compared to a scheme where the p
 required for issuance of the tokens.
 
 In contrast, cryptographic signatures provide a primitive that is publicly verifiable and does not
-require access to the private key for verification. Moreover, {{?JKK14}} show that one can realize
+require access to the private key for verification. Moreover, {{JKK14}} show that one can realize
 a VOPRF in the Random Oracle Model by hashing a (deterministic) blind signature-message pair.
 
 This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA). In order to facilitate
@@ -319,9 +319,9 @@ the salt is generated correctly to mitigate such issues.
 
 RSA is well known to permit key substitution attacks, wherein an attacker generates a key pair
 (skA, pkA) that verify some known (message, signature) pair produced under a different (skS, pkS)
-key pair. This means it may be possible for an attacker to use a (message, signature) pair from one
-context in another. Entities that verify signatures must take care to ensure a (message, signature)
-pair verifies with the expected public key.
+key pair {{WM99}}. This means it may be possible for an attacker to use a (message, signature) pair
+from one context in another. Entities that verify signatures must take care to ensure a
+(message, signature) pair verifies with the expected public key.
 
 ## Alternative RSA Encoding Functions
 
