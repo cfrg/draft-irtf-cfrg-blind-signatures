@@ -68,7 +68,7 @@ informative:
 
 This document specifies the RSA-based blind signature scheme with appendix (RSA-BSSA). RSA blind signatures
 were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
-in {{!RFC8017}} to enable blind signature support. It also specifies an extension for partially blind signatures.
+in {{!RFC8017}} to enable blind signature support.
 
 --- middle
 
@@ -84,17 +84,12 @@ redemption of tokens in anonymous authentication protocols such as Privacy Pass 
 This limitation complicates deployments where it is not desirable to distribute secret keys entities
 performing token verification. Additionally, if the private key is kept in a Hardware Security Module,
 the number of operations on the key are doubled compared to a scheme where the private key is only
-required for issuance of the tokens.
+required for issuance of the tokens. In contrast, cryptographic signatures provide a primitive that is
+publicly verifiable and does not require access to the private key for verification.
 
-In order to facilitate the deployment of our scheme, we define it in such a way that the resulting (unblinded)
-signature can be verified with a standard RSA-PSS library.
-
-Cryptographic signatures provide a primitive that is publicly verifiable and does not require access to
-the private key to verify. Moreover, to facilitate protocols that require public metadata as input
-into the signature, we specify an extension of the signature scheme that enables partial blindness
-through key augmentation.
-
-This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA), and its extension for partial blindness.
+This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA). In order to facilitate
+deployment, we define it in such a way that the resulting (unblinded) signature can be verified with a
+standard RSA-PSS library.
 
 # Requirements Notation
 
@@ -108,11 +103,11 @@ protocol operations in this document:
 - I2OSP and OS2IP: Convert a byte string to and from a non-negative integer as
   described in {{!RFC8017}}. Note that these functions operate on byte strings
   in big-endian byte order.
-- random_integer(M, N): Generate a random, uniformly distributed integer r
+- random_integer(M, N): Generate a random, uniformly distributed integer R
   such that M < R <= N.
 - inverse_mod(n, p): Compute the multiplicative inverse of n mod p.
 
-# Blind Signature Protocol Overview
+# Blind Signature Protocol Overview {#overview}
 
 In this section, we sketch the blind signature protocol wherein a client and server
 interact to compute `sig = Sign(skS, msg, aux)`, where `msg` is the private message
@@ -125,12 +120,12 @@ The core issuance protocol runs as follows:
 ~~~
    Client(pkS, msg, aux)                Server(skS, pkS, aux)
   ----------------------------------------------------------
-  encoded_message, inv = Encode(pkS, msg, aux)
+  blinded_message, inv = Blind(pkS, msg, aux)
 
-                      encoded_message
+                      blinded_message
                         ---------->
 
-       evaluated_message = Evaluate(skS, encoded_message, aux)
+       evaluated_message = Evaluate(skS, blinded_message, aux)
 
                      evaluated_message
                         <----------
@@ -152,8 +147,18 @@ using RSASSA-PSS {{RFC8017}} with mask generation function 1. In this section, w
 define RSABSSA, blinded variant of this algorithm.
 
 ## Signature Generation {#generation}
+
+As outlined in {{overview}}, signature generation involves three subroutines: Blind,
+Evaluate, and Finalize. The output from Finalize is a signature over the input to Blind.
+A specification of these subroutines is below.
+
+Signature verification can be performed by invoking the RSASSA-PSS-VERIFY routine defined
+in {{!RFC3447}}.
+
+### Blind
+
 ~~~
-rsabssa_sign_encode(pkS, msg)
+rsabssa_sign_blind(pkS, msg)
 
 Parameters:
 - k, the length in bytes of the RSA modulus n
@@ -166,7 +171,7 @@ Inputs:
 - MGF, the mask generation function
 
 Outputs:
-- encoded_message, an octet string of length k
+- blinded_message, an octet string of length k
 - inv, an octet string of length k
 
 Errors:
@@ -183,29 +188,33 @@ Steps:
 7. z = m * x mod n
 8. r_inv = inverse_mod(r, n)
 9. If finding the inverse fails, output an "invalid blind" error and stop.
-10. encoded_message = I2OSP(z, k)
+10. blinded_message = I2OSP(z, k)
 11. inv = I2OSP(r_inv, k)
-12. output encoded_message, inv
+12. output blinded_message, inv
 ~~~
 
+### Evaluate
+
 ~~~
-rsabssa_sign_evaluate(skS, encoded_message)
+rsabssa_sign_evaluate(skS, blinded_message)
 
 Parameters:
 - k, the length in octets of the RSA modulus n
 
 Inputs:
-- encoded_message, encoded and blinded message to be signed, an octet string
+- blinded_message, encoded and blinded message to be signed, an octet string
 
 Outputs:
 - evaluated_message, an octet string of length k
 
 Steps:
-1. m = OS2IP(encoded_message)
+1. m = OS2IP(blinded_message)
 2. s = RSASP1(skS, m)
 3. evaluated_message = I2OSP(s, k)
 4. output evaluated_message
 ~~~
+
+### Finalize
 
 ~~~
 rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
@@ -229,159 +238,6 @@ Steps:
 4. sig = I2OSP(s, k)
 5. result = rsassa_pss_sign_verify(pkS, msg, sig)
 6. If result = true, output sig, else output "invalid signature" and stop
-~~~
-
-## Signature Verification
-
-Signature verification can be performed by invoking the RSASSA-PSS-VERIFY routine defined in {{!RFC3447}}.
-
-~~~
-rsabssa_verify(pkS, msg, sig)
-
-Parameters:
-- k, the length in octets of the RSA modulus n
-- k_bits, the length in bits of the RSA modulus n
-- H, the hash function used to hash the message
-- MGF, the mask generation function
-
-Inputs:
-- pkS, server public key
-- msg, message to be signed, an octet string
-- sig, message signature, an octet string of length k
-
-Outputs:
-- valid, a boolean value that is true if the signature is valid, and false otherwise
-
-Steps:
-1. Output RSASSA-PSS-VERIFY(pkS, msg, sig) with H and MGF as defined in the parameters.
-~~~
-
-## Partially-Blind Key Augmentation
-
-To implement partially blinded signatures, public auxiliary information is used
-to augment the public and private keys used during the signature verification.
-This section describes how clients and servers augment a public key pair `(pkS, skS)`
-using information `aux` and tweak `tweak`.
-
-~~~
-rsassa_pss_augment_public_key(pkS = (n, e), tweak, aux)
-
-Parameters:
-- H, a cryptographic hash function
-- l, H output truncation length
-
-Inputs:
-- pkS, server public key (n, e)
-- tweak, Public key tweak
-- aux, public auxiliary information, an octet string
-
-Steps:
-1. c = H(aux || tweak)[0:l]
-2. t = OS2IP(c)
-3. e_aug = 2 * t + 1
-4. return (n, e_aug)
-~~~
-
-~~~
-rsassa_pss_augment_private_key(skS = (n, d), tweak, aux)
-
-Parameters:
-- H, a cryptographic hash function
-- l, H output truncation length
-
-Inputs:
-- skS, server private key (n, d)
-- tweak, Public key tweak
-- aux, public auxiliary information, an octet string
-
-Steps:
-1. c = H(aux || tweak)[0:l]
-2. t = OS2IP(c)
-3. e_aug = 2 * t + 1
-4. d_aug = inverse_mod(e_aug, phi(n))
-5. return (n, d_aug)
-~~~
-
-### Tweak Generation
-
-The augmentation function defined above computes the following value for each
-auxiliary input:
-
-~~~
-   augment(aux, tweak) = (2 * H_l(aux || tweak)) + 1
-~~~
-
-where `H\_l` is `H` truncated to `l` bytes. Let `f(aux)` denote shorthand for
-`augment(aux, tweak)`, where `tweak` is implicit from context. This function MUST
-be collision resistant and deterministic. Moreover, it must generate outputs that are
-relatively prime to one another. Specifically, let `p\_k(x)` denote the k-th largest
-prime factor of input `x`, and let `k(x)` denote the number of prime factors for
-input `x`. The augmentation function MUST satisfy the following condition:
-
-For all distinct `aux\_i` and `aux\_j` that belong to the set of auxiliary information
-elements, there must exists a prime factor `p\k(f(aux\_i))` that does not divide
-`f(aux\_j)` and is also relatively prime to `\lambda(n)`, the Carmichael function of
-RSA modulus n.
-
-In other words, each output of `f` must have at least one prime factor that foes not
-appear in all other outputs of `f`. To ensure this, the server must check that its
-given tweak produces such outputs for all possible auxiliary information inputs.
-The following Python-like code presents an algorithm for finding a tweak suitable
-for a given set of auxiliary information elements, denoted `C`.
-
-~~~
-def augment(aux, H, tweak):
-    return (2 * H(aux + tweak)) + 1
-
-def prime_factors(n):
-    factors = []
-    factor = 1
-    i = 3
-
-    if n % 2 == 0:
-        factors.append(2)
-
-    while i <= (n / i):
-        if n % i == 0:
-            factor = int(i)
-            factors.append(factor)
-            while n % i == 0:
-                n = n / i
-        else:
-            i += 1
-
-    if factor < n:
-        factor = int(n)
-    factors.append(factor)
-
-    return factors
-
-def find_augmenter(C, H, L):
-    '''
-    For all c_i, c_j such that c_i != cj:
-    1. The largest prime factor of f(c_i) must not divide f(c_j)
-    2. f(c_i) must be relatively prime to L = \lambda = 2((p-1)/2)((q-1)/2)
-    '''
-    def is_valid_tweak(s, C, H, L):
-        augmented = [augment(c, H, s) for c in C]
-        for fci in augmented:
-            if not math.gcd(fci, L) == 1:
-                return False
-            for fcj in augmented:
-                if fci != fcj:
-                    unique_factor = False
-                    for pki in prime_factors(fci):
-                        if (fcj % pki) != 0:
-                            unique_factor = True
-                            break
-                    if not unique_factor:
-                        return False
-        return True
-
-    while True:
-        s = os.urandom(32)
-        if is_valid_tweak(s, C, H, L):
-            return s
 ~~~
 
 ## Encoding Options {#pss-options}
@@ -424,10 +280,6 @@ from signature keys used for other protocols, such as TLS.
 An alternative solution to this problem of message blindness is to give signers proof that the
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
-
-## Partial Blind Message Space
-
-[[OPEN ISSUE: describe the criteria and provide sample code to search for the tweak]]
 
 ## Alternative RSA Encoding Functions
 
@@ -498,7 +350,7 @@ Each test vector specifies the following parameters:
   hash function identified by the 'hash' test vector parameter.
 - salt: Randomly-generated salt used when computing the signature.
 - inv: The message blinding inverse, encoded as a hexadecimal string.
-- encoded\_message, evaluated\_message: The protocol values exchanged during the computation,
+- blinded\_message, evaluated\_message: The protocol values exchanged during the computation,
   encoded hexadecimal strings.
 - sig: The message signature.
 
@@ -512,7 +364,7 @@ p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
 8602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b312048
 b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d9632
 2493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f277401
-7e32ebca06308a12ecc290c7cd1156dcccfb2311 
+7e32ebca06308a12ecc290c7cd1156dcccfb2311
 q = c601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353c8
 06426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b945
 2c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7a8
@@ -520,7 +372,7 @@ q = c601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353c8
 daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0a3
 c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da00
 8ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc7c
-9803879d2fc4a28e69291d73dbd799f8bc238385 
+9803879d2fc4a28e69291d73dbd799f8bc238385
 n = aec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e047
 a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963be3
 35d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c533
@@ -536,8 +388,8 @@ c8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33cf
 d1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d00
 0a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23bf8
 b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b329
-48bdead5 
-e = 010001 
+48bdead5
+e = 010001
 d = 0d43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a2870771
 80b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1d
 ac97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dcf
@@ -553,11 +405,11 @@ afd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731d
 131b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e3
 ac52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34b
 6d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecfe
-b877a051 
+b877a051
 msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c80023a
-a6b59f8cfec5fdbb36331372ebefedae7d 
+a6b59f8cfec5fdbb36331372ebefedae7d
 salt = 051722b35f458781397c3a671a7d3bd3096503940e4c4f1aaa269d60300ce
-449555cd7340100df9d46944c5356825abf 
+449555cd7340100df9d46944c5356825abf
 inv = 80682c48982407b489d53d1261b19ec8627d02b8cda5336750b8cee332ae26
 0de57b02d72609c1e0e9f28e2040fc65b6f02d56dbd6aa9af8fde656f70495dfb723
 ba01173d4707a12fddac628ca29f3e32340bd8f7ddb557cf819f6b01e445ad96f874
@@ -573,7 +425,7 @@ aae46180e04e3584bd7ca054df18a1504b89d1d1675d0966c4ae1407be325cdf623c
 f13ff13e4a28b594d59e3eadbadf6136eee7a59d6a444c9eb4e2198e8a974f27a39e
 b63af2c9af3870488b8adaad444674f512133ad80b9220e09158521614f1faadfe85
 05ef57b7df6813048603f0dd04f4280177a11380fbfc861dbcbd7418d62155248dad
-5fdec0991f 
+5fdec0991f
 encoded_message = 10c166c6a711e81c46f45b18e5873cc4f494f003180dd7f115
 585d871a28930259654fe28a54dab319cc5011204c8373b50a57b0fdc7a678bd74c5
 23259dfe4fd5ea9f52f170e19dfa332930ad1609fc8a00902d725cfe50685c95e5b2
@@ -589,7 +441,7 @@ f5a9c63a1eb599f093ab401d0c6003a451931b6d124180305705845060ebba6b0036
 5ba683f9b78824b2eb005bc8a7d7179a36c152cb87c8219e5569bba911bb32a1b923
 ca83de0e03fb10fba75d85c55907dda5a2606bf918b056c3808ba496a4d955322120
 40a5f44f37e1097f26dc27b98a51837daa78f23e532156296b64352669c94a8a855a
-cf30533d8e0594ace7c442 
+cf30533d8e0594ace7c442
 evaluated_message = 364f6a40dbfbc3bbb257943337eeff791a0f290898a67912
 83bba581d9eac90a6376a837241f5f73a78a5c6746e1306ba3adab6067c32ff69115
 734ce014d354e2f259d4cbfb890244fd451a497fe6ecf9aa90d19a2d441162f7eaa7
@@ -605,7 +457,7 @@ ff42dd3da36c84e3e52508b891a00f50b4f62d112edb3b6b6cc3dbd546ba10f36b03
 f06c0d82aeec3b25e127af545fac28e1613a0517a6095ad18a98ab79f68801e05c17
 5e15bae21f821e80c80ab4fdec6fb34ca315e194502b8f3dcf7892b511aee45060e3
 994cd15e003861bc7220a2babd7b40eda03382548a34a7110f9b1779bf3ef6011361
-611e6bc5c0dc851e1509de1a 
+611e6bc5c0dc851e1509de1a
 sig = 6fef8bf9bc182cd8cf7ce45c7dcf0e6f3e518ae48f06f3c670c649ac737a8b
 8119a34d51641785be151a697ed7825fdfece82865123445eab03eb4bb91cecf4d69
 51738495f8481151b62de869658573df4e50a95c17c31b52e154ae26a04067d5ecdc
@@ -621,9 +473,5 @@ e15f32c7b22cde755c8a2fe50bd814a0434130b807dc1b7218d4e85342d70695a5d7
 f29306f25623ad1e8aa08ef71b54b8ee447b5f64e73d09bdd6c3b7ca224058d7c67c
 c7551e9241688ada12d859cb7646fbd3ed8b34312f3b49d69802f0eaa11bc4211c2f
 7a29cd5c01ed01a39001c5856fab36228f5ee2f2e1110811872fe7c865c42ed59029
-c706195d52 
+c706195d52
 ~~~
-
-## Partially-Blind Test Vector
-
-[[OPEN ISSUE: TODO]]
