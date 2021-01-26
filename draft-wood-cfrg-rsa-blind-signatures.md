@@ -309,7 +309,7 @@ could be useful for this purpose. Defining such a proof is out of scope for this
 
 ## Salt State
 
-The PSS salt a randomly generated string chosen when a message is encoded. If the salt is not
+The PSS salt is a randomly generated string chosen when a message is encoded. If the salt is not
 generated randomly, or is otherwise constructed maliciously, it might be possible for the salt
 to carry client information to the server. For example, the salt might be maliciously
 constructed to encode the local IP address of the client. Implementations MUST ensure that
