@@ -310,7 +310,7 @@ def EMSA_PSS_ENCODE(mhash, emBits, randFunc, mgf, sLen):
     # Step 10
     maskedDB = strxor(db,dbMask)
     # Step 11
-    maskedDB = bchr(bord(maskedDB[0]) & ~lmask) + maskedDB[1:]
+    maskedDB = bchr(bord(maskedDB[0]) & int(~lmask)) + maskedDB[1:]
     # Step 12
     em = maskedDB + h.digest() + bchr(0xBC)
     return em
@@ -370,7 +370,7 @@ def EMSA_PSS_VERIFY(mhash, em, emBits, mgf, sLen):
     # Step 8
     db = strxor(maskedDB, dbMask)
     # Step 9
-    db = bchr(bord(db[0]) & ~lmask) + db[1:]
+    db = bchr(bord(db[0]) & int(~lmask)) + db[1:]
     # Step 10
     if not db.startswith(bchr(0x00)*(emLen-mhash.digest_size-sLen-2) + bchr(0x01)):
         return False
@@ -428,10 +428,10 @@ def run_signature_scheme(skS, pkS, msg):
     vector["e"] = to_hex(I2OSP(pkS.e, byte_length(pkS.e)))
     vector["d"] = to_hex(I2OSP(skS.d, byte_length(skS.d)))
     vector["msg"] = to_hex(msg)
-    vector["encoded_msg"] = to_hex(encoded_message)
+    vector["encoded_message"] = to_hex(encoded_message)
     vector["blinded_message"] = to_hex(blinded_message)
-    vector["blind_inv"] = to_hex(blind_inv)
-    vector["blind"] = to_hex(blind)
+    vector["inv"] = to_hex(blind_inv)
+    vector["r"] = to_hex(blind)
     vector["evaluated_message"] = to_hex(evaluated_message)
     vector["sig"] = to_hex(sig)
     vector["salt_length"] = to_hex(bytes([0]))
