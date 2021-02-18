@@ -132,6 +132,7 @@ protocol operations in this document:
 - random_integer(M, N): Generate a random, uniformly distributed integer R
   such that M < R <= N.
 - inverse_mod(n, p): Compute the multiplicative inverse of n mod p.
+- len(s): The length of a byte string, in octets.
 
 # Blind Signature Protocol Overview {#overview}
 
@@ -203,6 +204,7 @@ Outputs:
 Errors:
 - "message too long": Raised when the input message is too long.
 - "encoding error": Raised when the input message fails encoding.
+- "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
 1. msg_hash = H(msg)
@@ -234,16 +236,20 @@ Outputs:
 - evaluated_message, an octet string of length k
 
 Steps:
-1. m = OS2IP(blinded_message)
-2. s = RSASP1(skS, m)
-3. evaluated_message = I2OSP(s, k)
-4. output evaluated_message
+1. If len(blinded_message) != k, output "unexpected input size" and stop.
+2. m = OS2IP(blinded_message)
+3. s = RSASP1(skS, m)
+4. evaluated_message = I2OSP(s, k)
+5. output evaluated_message
 ~~~
 
 ### Finalize
 
 ~~~
 rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
+
+Parameters:
+- k, the length in octets of the RSA modulus n
 
 Inputs:
 - pkS, server public key
@@ -258,12 +264,14 @@ Errors:
 - "invalid signature": Raised when the signature is invalid
 
 Steps:
-1. z = OS2IP(evaluated_message)
-2. r_inv = OS2IP(inv)
-3. s = z * r_inv mod n
-4. sig = I2OSP(s, k)
-5. result = rsassa_pss_sign_verify(pkS, msg, sig)
-6. If result = true, output sig, else output "invalid signature" and stop
+1. If len(evaluated_message) != k, output "unexpected input size" and stop.
+2. If len(inv) != k, output "unexpected input size" and stop.
+3. z = OS2IP(evaluated_message)
+4. r_inv = OS2IP(inv)
+5. s = z * r_inv mod n
+6. sig = I2OSP(s, k)
+7. result = rsassa_pss_sign_verify(pkS, msg, sig)
+8. If result = true, output sig, else output "invalid signature" and stop
 ~~~
 
 ## Encoding Options {#pss-options}
