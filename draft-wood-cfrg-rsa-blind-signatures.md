@@ -248,6 +248,7 @@ rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
 Inputs:
 - pkS, server public key
 - msg, message to be signed, an octet string
+- H, the hash function used to hash the message
 - evaluated_message, signed and blinded element, an octet string of length k
 - inv, inverse of the blind, an octet string of length k
 
