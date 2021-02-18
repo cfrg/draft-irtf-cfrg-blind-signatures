@@ -205,18 +205,17 @@ Errors:
 - "encoding error": Raised when the input message fails encoding.
 
 Steps:
-1. msg_hash = H(msg)
-2. encoded_message = EMSA-PSS-ENCODE(msg_hash, k_bits - 1) with MGF as defined in the parameters.
-3. If EMSA-PSS-ENCODE outputs an error, output the error and stop.
-4. m = OS2IP(encoded_message)
-5. r = random_integer(0, n - 1)
-6. x = RSAVP1(pkS, r)
-7. z = m * x mod n
-8. r_inv = inverse_mod(r, n)
-9. If finding the inverse fails, output an "invalid blind" error and stop.
-10. blinded_message = I2OSP(z, k)
-11. inv = I2OSP(r_inv, k)
-12. output blinded_message, inv
+1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1) with MGF and hash function as defined in the parameters.
+2. If EMSA-PSS-ENCODE outputs an error, output the error and stop.
+3. m = OS2IP(encoded_message)
+4. r = random_integer(0, n - 1)
+5. x = RSAVP1(pkS, r)
+6. z = m * x mod n
+7. r_inv = inverse_mod(r, n)
+8. If finding the inverse fails, output an "invalid blind" error and stop.
+9. blinded_message = I2OSP(z, k)
+10. inv = I2OSP(r_inv, k)
+11. output blinded_message, inv
 ~~~
 
 ### Evaluate
