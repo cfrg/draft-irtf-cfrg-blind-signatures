@@ -204,7 +204,6 @@ Outputs:
 Errors:
 - "message too long": Raised when the input message is too long.
 - "encoding error": Raised when the input message fails encoding.
-- "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
 1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1) with MGF and hash function as defined in the parameters.
@@ -234,6 +233,9 @@ Inputs:
 Outputs:
 - evaluated_message, an octet string of length k
 
+Errors:
+- "unexpected input size": Raised when the blind message doesn't have the expected length.
+
 Steps:
 1. If len(blinded_message) != k, output "unexpected input size" and stop.
 2. m = OS2IP(blinded_message)
@@ -261,6 +263,7 @@ Outputs:
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
+- "unexpected input size": Raised when an input doesn't have the expected length.
 
 Steps:
 1. If len(evaluated_message) != k, output "unexpected input size" and stop.
@@ -272,6 +275,22 @@ Steps:
 7. result = rsassa_pss_sign_verify(pkS, msg, sig)
 8. If result = true, output sig, else output "invalid signature" and stop
 ~~~
+
+### Verify
+
+verify(pkS, msg_hash, sig)
+
+Inputs:
+- pkS, server public key
+- msg_hash, H(msg) with the same hash function H as in the blinding step
+- sig, an octet string of length k
+
+Errors:
+- "invalid signature": Raised when the signature is invalid
+
+Steps:
+1. result = rsassa_pss_sign_verify(pkS, msg_hash, sig)
+2. If result = true, output sig, else output "invalid signature" and stop
 
 ## Encoding Options {#pss-options}
 
