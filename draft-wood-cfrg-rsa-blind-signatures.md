@@ -268,8 +268,8 @@ Steps:
 4. r_inv = OS2IP(inv)
 5. s = z * r_inv mod n
 6. sig = I2OSP(s, k)
-7. result = rsassa_pss_sign_verify(pkS, msg, sig)
-8. If result = true, output sig, else output "invalid signature" and stop
+7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
+8. If result = "valid signature", output sig, else output "invalid signature" and stop
 ~~~
 
 ## Encoding Options {#pss-options}
