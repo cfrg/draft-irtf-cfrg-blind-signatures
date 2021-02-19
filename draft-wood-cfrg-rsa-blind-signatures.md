@@ -132,6 +132,7 @@ protocol operations in this document:
 - random_integer(M, N): Generate a random, uniformly distributed integer R
   such that M < R <= N.
 - inverse_mod(n, p): Compute the multiplicative inverse of n mod p.
+- len(s): The length of a byte string, in octets.
 
 # Blind Signature Protocol Overview {#overview}
 
@@ -203,20 +204,20 @@ Outputs:
 Errors:
 - "message too long": Raised when the input message is too long.
 - "encoding error": Raised when the input message fails encoding.
+- "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
-1. msg_hash = H(msg)
-2. encoded_message = EMSA-PSS-ENCODE(msg_hash, k_bits - 1) with MGF as defined in the parameters.
-3. If EMSA-PSS-ENCODE outputs an error, output the error and stop.
-4. m = OS2IP(encoded_message)
-5. r = random_integer(0, n - 1)
-6. x = RSAVP1(pkS, r)
-7. z = m * x mod n
-8. r_inv = inverse_mod(r, n)
-9. If finding the inverse fails, output an "invalid blind" error and stop.
-10. blinded_message = I2OSP(z, k)
-11. inv = I2OSP(r_inv, k)
-12. output blinded_message, inv
+1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1) with MGF and hash function as defined in the parameters.
+2. If EMSA-PSS-ENCODE outputs an error, output the error and stop.
+3. m = OS2IP(encoded_message)
+4. r = random_integer(0, n - 1)
+5. x = RSAVP1(pkS, r)
+6. z = m * x mod n
+7. r_inv = inverse_mod(r, n)
+8. If finding the inverse fails, output an "invalid blind" error and stop.
+9. blinded_message = I2OSP(z, k)
+10. inv = I2OSP(r_inv, k)
+11. output blinded_message, inv
 ~~~
 
 ### Evaluate
@@ -234,16 +235,20 @@ Outputs:
 - evaluated_message, an octet string of length k
 
 Steps:
-1. m = OS2IP(blinded_message)
-2. s = RSASP1(skS, m)
-3. evaluated_message = I2OSP(s, k)
-4. output evaluated_message
+1. If len(blinded_message) != k, output "unexpected input size" and stop.
+2. m = OS2IP(blinded_message)
+3. s = RSASP1(skS, m)
+4. evaluated_message = I2OSP(s, k)
+5. output evaluated_message
 ~~~
 
 ### Finalize
 
 ~~~
 rsabssa_sign_finalize(pkS, msg_hash, evaluated_message, inv)
+
+Parameters:
+- k, the length in octets of the RSA modulus n
 
 Inputs:
 - pkS, server public key
@@ -258,12 +263,14 @@ Errors:
 - "invalid signature": Raised when the signature is invalid
 
 Steps:
-1. z = OS2IP(evaluated_message)
-2. r_inv = OS2IP(inv)
-3. s = z * r_inv mod n
-4. sig = I2OSP(s, k)
-5. result = rsassa_pss_sign_verify(pkS, msg_hash, sig)
-6. If result = true, output sig, else output "invalid signature" and stop
+1. If len(evaluated_message) != k, output "unexpected input size" and stop.
+2. If len(inv) != k, output "unexpected input size" and stop.
+3. z = OS2IP(evaluated_message)
+4. r_inv = OS2IP(inv)
+5. s = z * r_inv mod n
+6. sig = I2OSP(s, k)
+7. result = rsassa_pss_sign_verify(pkS, msg_hash, sig)
+8. If result = true, output sig, else output "invalid signature" and stop
 ~~~
 
 ## Encoding Options {#pss-options}
@@ -468,7 +475,23 @@ f13ff13e4a28b594d59e3eadbadf6136eee7a59d6a444c9eb4e2198e8a974f27a39e
 b63af2c9af3870488b8adaad444674f512133ad80b9220e09158521614f1faadfe85
 05ef57b7df6813048603f0dd04f4280177a11380fbfc861dbcbd7418d62155248dad
 5fdec0991f
-encoded_message = 10c166c6a711e81c46f45b18e5873cc4f494f003180dd7f115
+encoded_message = 6e0c464d9c2f9fbc147b43570fc4f238e0d0b38870b3addcf7
+a4217df912ccef17a7f629aa850f63a063925f312d61d6437be954b45025e8282f9c
+0b1131bc8ff19a8a928d859b37113db1064f92a27f64761c181c1e1f9b251ae5a2f8
+a4047573b67a270584e089beadcb13e7c82337797119712e9b849ff56e04385d144d
+3ca9d8d92bf78adb20b5bbeb3685f17038ec6afade3ef354429c51c687b45a7018ee
+3a6966b3af15c9ba8f40e6461ba0a17ef5a799672ad882bab02b518f9da7c1a96294
+5c2e9b0f02f29b31b9cdf3e633f9d9d2a22e96e1de28e25241ca7dd04147112f5789
+73403e0f4fd80865965475d22294f065e17a1c4a201de93bd14223e6b1b999fd548f
+2f759f52db71964528b6f15b9c2d7811f2a0a35d534b8216301c47f4f04f412cae14
+2b48c4cdff78bc54df690fd43142d750c671dd8e2e938e6a440b2f825b6dbb3e19f1
+d7a3c0150428a47948037c322365b7fe6fe57ac88d8f80889e9ff38177bad8c8d8d9
+8db42908b389cb59692a58ce275aa15acb032ca951b3e0a3404b7f33f655b7c7d83a
+2f8d1b6bbff49d5fcedf2e030e80881aa436db27a5c0dea13f32e7d460dbf01240c2
+320c2bb5b3225b17145c72d61d47c8f84d1e19417ebd8ce3638a82d395cc6f7050b6
+209d9283dc7b93fecc04f3f9e7f566829ac41568ef799480c733c09759aa9734e201
+3d7640dc6151018ea902bc
+blinded_message = 10c166c6a711e81c46f45b18e5873cc4f494f003180dd7f115
 585d871a28930259654fe28a54dab319cc5011204c8373b50a57b0fdc7a678bd74c5
 23259dfe4fd5ea9f52f170e19dfa332930ad1609fc8a00902d725cfe50685c95e5b2
 968c9a2828a21207fcf393d15f849769e2af34ac4259d91dfd98c3a707c509e1af55
