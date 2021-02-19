@@ -146,7 +146,7 @@ The core issuance protocol runs as follows:
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
   ----------------------------------------------------------
-  blinded_message, encoded_message, inv = Blind(pkS, msg)
+  blinded_message, inv = Blind(pkS, msg)
 
                       blinded_message
                         ---------->
@@ -156,7 +156,7 @@ The core issuance protocol runs as follows:
                      evaluated_message
                         <----------
 
-  sig = Finalize(pkS, msg, encoded_message, evaluated_message, inv)
+  sig = Finalize(pkS, msg, evaluated_message, inv)
 ~~~
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
@@ -178,9 +178,8 @@ A specification of these subroutines is below.
 ### Blind
 
 rsabssa_sign_blind encodes an input message and blinds it with the server's public
-key. It outputs the blinded message to be sent to the server, encoded hash of the
-client's input message, and blinded message's inverse, all of which are encoded as
-octet strings.
+key. It outputs the blinded message to be sent to the server and the corresponding
+inverse, both encoded as octet strings.
 
 ~~~
 rsabssa_sign_blind(pkS, msg)
@@ -215,7 +214,7 @@ Steps:
 8. If finding the inverse fails, output an "invalid blind" error and stop
 9. blinded_message = I2OSP(z, k)
 10. inv = I2OSP(r_inv, k)
-11. output blinded_message, encoded_message, inv
+11. output blinded_message, inv
 ~~~
 
 ### Evaluate
@@ -247,13 +246,11 @@ Steps:
 
 rsabssa_sign_finalize validates the server's response, unblinds the message
 to produce a signature, verifies it for correctness, and outputs the signature
-upon success.
-
-It depends on an internal function rsassa_pss_sign_verify, which
-is specified in this section.
+upon success. Note that this function will internally hash the input message
+as is done in rsabssa_sign_blind.
 
 ~~~
-rsabssa_sign_finalize(pkS, encoded_message, evaluated_message, inv)
+rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
 
 Parameters:
 - k, the length in octets of the RSA modulus n
@@ -261,8 +258,6 @@ Parameters:
 Inputs:
 - pkS, server public key
 - msg, message to be signed, an octet string
-- encoded_message, encoding of input msg using EMSA-PSS-ENCODE, an octet
-  string of length k
 - evaluated_message, signed and blinded element, an octet string of length k
 - inv, inverse of the blind, an octet string of length k
 
@@ -274,46 +269,13 @@ Errors:
 
 Steps:
 1. If len(evaluated_message) != k, output "unexpected input size" and stop
-2. If len(encoded_message) != k, output "unexpected input size" and stop
-3. If len(inv) != k, output "unexpected input size" and stop
-4. z = OS2IP(evaluated_message)
-5. r_inv = OS2IP(inv)
-6. s = z * r_inv mod n
-7. sig = I2OSP(s, k)
-8. output rsassa_pss_sign_verify(pkS, msg, encoded_message, sig)
+2. If len(inv) != k, output "unexpected input size" and stop
+3. z = OS2IP(evaluated_message)
+4. r_inv = OS2IP(inv)
+5. s = z * r_inv mod n
+6. sig = I2OSP(s, k)
+7. output RSASSA-PSS-VERIFY(pkS, msg, sig)
 ~~~
-
-The internal rsassa_pss_sign_verify function is nearly identical to RSASSA-PSS-VERIFY
-in Section 8.1.2 from {{!RFC3447}}, except that it omits step (c), which redundantly
-encodes the input message.
-
-~~~
-rsassa_pss_sign_verify(pkS, msg, encoded_message, sig)
-
-Parameters:
-- k, the length in octets of the RSA modulus n
-
-Inputs:
-- pkS, server public key
-- msg, message to be signed, an octet string
-- encoded_message, encoded message computed with EMSA-PSS-ENCODE, an octet
-  string of length k
-- sig, an octet string of length k
-
-Outputs:
-- "valid signature" if the signature is valid, and "invalid signature" otherwise
-
-Steps:
-1. If len(encoded_message) != k, output "invalid signature" and stop
-2. If len(sig) != k, output "invalid signature" and stop
-3. s = OS2IP(sig)
-4. result = EMSA-PSS-VERIFY(msg, encoded_message, k_bits - 1)
-5. if result = "consistent," output "valid signature", else output "invalid signature"
-~~~
-
-Implementations MAY choose to call RSASSA-PSS-VERIFY directly with msg, pkS, and
-sig in rsassa_pss_sign_verify. Note that this will cause msg to be hashed and
-endoded twice.
 
 ## Encoding Options {#pss-options}
 
