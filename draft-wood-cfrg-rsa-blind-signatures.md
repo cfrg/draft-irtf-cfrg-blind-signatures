@@ -137,34 +137,33 @@ protocol operations in this document:
 # Blind Signature Protocol Overview {#overview}
 
 In this section, we sketch the blind signature protocol wherein a client and server
-interact to compute `sig = Sign(skS, msg, aux)`, where `msg` is the private message
-to be signed, `aux` is the public auxiliary information included in the signature
-computation, and `skS` is the server's private key. In this protocol, the server
+interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
+to be signed, and `skS` is the server's private key. In this protocol, the server
 learns nothing of `msg`, whereas the client learns `s` and nothing of `skS`.
 
 The core issuance protocol runs as follows:
 
 ~~~
-   Client(pkS, msg, aux)                Server(skS, pkS, aux)
+   Client(pkS, msg)                         Server(skS, pkS)
   ----------------------------------------------------------
-  blinded_message, inv = Blind(pkS, msg, aux)
+  blinded_message, inv = Blind(pkS, msg)
 
                       blinded_message
                         ---------->
 
-       evaluated_message = Evaluate(skS, blinded_message, aux)
+       evaluated_message = Evaluate(skS, blinded_message)
 
                      evaluated_message
                         <----------
 
-  sig = Finalize(pkS, msg, aux, evaluated_message, inv)
+  sig = Finalize(pkS, msg, evaluated_message, inv)
 ~~~
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
-input message `msg` and public input `aux` using the server public key `pkS` as follows.
+input message `msg` using the server public key `pkS` as follows.
 
 ~~~
-valid = Verify(pkS, msg, aux, sig)
+valid = Verify(pkS, msg, sig)
 ~~~
 
 # RSABSSA Signature Instantiation
