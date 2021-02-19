@@ -280,8 +280,7 @@ Steps:
 5. r_inv = OS2IP(inv)
 6. s = z * r_inv mod n
 7. sig = I2OSP(s, k)
-8. result = rsassa_pss_sign_verify(pkS, msg, encoded_message, sig)
-9. If result = true, output sig, else output "invalid signature" and stop
+8. output rsassa_pss_sign_verify(pkS, msg, encoded_message, sig)
 ~~~
 
 The internal rsassa_pss_sign_verify function is nearly identical to RSASSA-PSS-VERIFY
@@ -296,22 +295,25 @@ Parameters:
 
 Inputs:
 - pkS, server public key
-- msg, XXX
+- msg, message to be signed, an octet string
 - encoded_message, encoded message computed with EMSA-PSS-ENCODE, an octet
   string of length k
 - sig, an octet string of length k
 
 Outputs:
-- true if the signature is valid, and false otherwise
+- "valid signature" if the signature is valid, and "invalid signature" otherwise
 
 Steps:
-1. If len(encoded_message) != k, output false and stop
-2. If len(sig) != k, output false and stop
+1. If len(encoded_message) != k, output "invalid signature" and stop
+2. If len(sig) != k, output "invalid signature" and stop
 3. s = OS2IP(sig)
-4. m = RSAVP1(pkS, s)
-5. result = EMSA-PSS-VERIFY(msg, encoded_message, k_bits - 1)
-6. if result = "consistent," output true, else output false
+4. result = EMSA-PSS-VERIFY(msg, encoded_message, k_bits - 1)
+5. if result = "consistent," output "valid signature", else output "invalid signature"
 ~~~
+
+Implementations MAY choose to call RSASSA-PSS-VERIFY directly with msg, pkS, and
+sig in rsassa_pss_sign_verify. Note that this will cause msg to be hashed and
+endoded twice.
 
 ## Encoding Options {#pss-options}
 
