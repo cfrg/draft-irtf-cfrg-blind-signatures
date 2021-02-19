@@ -144,9 +144,9 @@ learns nothing of `msg`, whereas the client learns `s` and nothing of `skS`.
 The core issuance protocol runs as follows:
 
 ~~~
-   Client(pkS, msg)                         Server(skS, pkS)
+   Client(pkS, msg)                      Server(skS, pkS)
   ----------------------------------------------------------
-  blinded_message, inv = Blind(pkS, msg)
+  blinded_message, encoded_message, inv = Blind(pkS, msg)
 
                       blinded_message
                         ---------->
@@ -156,15 +156,12 @@ The core issuance protocol runs as follows:
                      evaluated_message
                         <----------
 
-  sig = Finalize(pkS, msg, evaluated_message, inv)
+  sig = Finalize(pkS, msg, encoded_message, evaluated_message, inv)
 ~~~
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
-input message `msg` using the server public key `pkS` as follows.
-
-~~~
-valid = Verify(pkS, msg, sig)
-~~~
+input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
+routine defined in {{!RFC3447}}.
 
 # RSABSSA Signature Instantiation
 
@@ -178,10 +175,12 @@ As outlined in {{overview}}, signature generation involves three subroutines: Bl
 Evaluate, and Finalize. The output from Finalize is a signature over the input to Blind.
 A specification of these subroutines is below.
 
-Signature verification can be performed by invoking the RSASSA-PSS-VERIFY routine defined
-in {{!RFC3447}}.
-
 ### Blind
+
+rsabssa_sign_blind encodes an input message and blinds it with the server's public
+key. It outputs the blinded message to be sent to the server, encoded hash of the
+client's input message, and blinded message's inverse, all of which are encoded as
+octet strings.
 
 ~~~
 rsabssa_sign_blind(pkS, msg)
@@ -206,20 +205,23 @@ Errors:
 - "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
-1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1) with MGF and hash function as defined in the parameters.
-2. If EMSA-PSS-ENCODE outputs an error, output the error and stop.
+1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1) with MGF and hash function as defined in the parameters
+2. If EMSA-PSS-ENCODE outputs an error, output the error and stop
 3. m = OS2IP(encoded_message)
 4. r = random_integer(0, n - 1)
 5. x = RSAVP1(pkS, r)
 6. z = m * x mod n
 7. r_inv = inverse_mod(r, n)
-8. If finding the inverse fails, output an "invalid blind" error and stop.
+8. If finding the inverse fails, output an "invalid blind" error and stop
 9. blinded_message = I2OSP(z, k)
 10. inv = I2OSP(r_inv, k)
-11. output blinded_message, inv
+11. output blinded_message, encoded_message, inv
 ~~~
 
 ### Evaluate
+
+rsabssa_sign_evaluate performs the RSA private key operation on the client's
+blinded message input and returns the output encoded as an octet string.
 
 ~~~
 rsabssa_sign_evaluate(skS, blinded_message)
@@ -234,7 +236,7 @@ Outputs:
 - evaluated_message, an octet string of length k
 
 Steps:
-1. If len(blinded_message) != k, output "unexpected input size" and stop.
+1. If len(blinded_message) != k, output "unexpected input size" and stop
 2. m = OS2IP(blinded_message)
 3. s = RSASP1(skS, m)
 4. evaluated_message = I2OSP(s, k)
@@ -243,8 +245,15 @@ Steps:
 
 ### Finalize
 
+rsabssa_sign_finalize validates the server's response, unblinds the message
+to produce a signature, verifies it for correctness, and outputs the signature
+upon success.
+
+It depends on an internal function rsassa_pss_sign_verify, which
+is specified in this section.
+
 ~~~
-rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
+rsabssa_sign_finalize(pkS, encoded_message, evaluated_message, inv)
 
 Parameters:
 - k, the length in octets of the RSA modulus n
@@ -252,6 +261,8 @@ Parameters:
 Inputs:
 - pkS, server public key
 - msg, message to be signed, an octet string
+- encoded_message, encoding of input msg using EMSA-PSS-ENCODE, an octet
+  string of length k
 - evaluated_message, signed and blinded element, an octet string of length k
 - inv, inverse of the blind, an octet string of length k
 
@@ -262,14 +273,44 @@ Errors:
 - "invalid signature": Raised when the signature is invalid
 
 Steps:
-1. If len(evaluated_message) != k, output "unexpected input size" and stop.
-2. If len(inv) != k, output "unexpected input size" and stop.
-3. z = OS2IP(evaluated_message)
-4. r_inv = OS2IP(inv)
-5. s = z * r_inv mod n
-6. sig = I2OSP(s, k)
-7. result = rsassa_pss_sign_verify(pkS, msg, sig)
-8. If result = true, output sig, else output "invalid signature" and stop
+1. If len(evaluated_message) != k, output "unexpected input size" and stop
+2. If len(encoded_message) != k, output "unexpected input size" and stop
+3. If len(inv) != k, output "unexpected input size" and stop
+4. z = OS2IP(evaluated_message)
+5. r_inv = OS2IP(inv)
+6. s = z * r_inv mod n
+7. sig = I2OSP(s, k)
+8. result = rsassa_pss_sign_verify(pkS, msg, encoded_message, sig)
+9. If result = true, output sig, else output "invalid signature" and stop
+~~~
+
+The internal rsassa_pss_sign_verify function is nearly identical to RSASSA-PSS-VERIFY
+in Section 8.1.2 from {{!RFC3447}}, except that it omits step (c), which redundantly
+encodes the input message.
+
+~~~
+rsassa_pss_sign_verify(pkS, msg, encoded_message, sig)
+
+Parameters:
+- k, the length in octets of the RSA modulus n
+
+Inputs:
+- pkS, server public key
+- msg, XXX
+- encoded_message, encoded message computed with EMSA-PSS-ENCODE, an octet
+  string of length k
+- sig, an octet string of length k
+
+Outputs:
+- true if the signature is valid, and false otherwise
+
+Steps:
+1. If len(encoded_message) != k, output false and stop
+2. If len(sig) != k, output false and stop
+3. s = OS2IP(sig)
+4. m = RSAVP1(pkS, s)
+5. result = EMSA-PSS-VERIFY(msg, encoded_message, k_bits - 1)
+6. if result = "consistent," output true, else output false
 ~~~
 
 ## Encoding Options {#pss-options}
@@ -278,7 +319,7 @@ The RSASSA-PSS parameters are defined as in {{!RFC8230}}. Implementations MUST s
 PS384-encoding, using SHA-384 as hash function for the message and mask generation
 function with a 48-byte salt.
 
-The RSA-PSS encoding functions take the following optional parameterss:
+The RSA-PSS encoding functions take the following optional parameters:
 
 - Hash: hash function (hLen denotes the length in octets of the hash function output)
 - MGF: mask generation function
