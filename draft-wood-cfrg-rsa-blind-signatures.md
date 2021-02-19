@@ -243,12 +243,11 @@ Steps:
 ### Finalize
 
 ~~~
-rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
+rsabssa_sign_finalize(pkS, msg_hash, evaluated_message, inv)
 
 Inputs:
 - pkS, server public key
-- msg, message to be signed, an octet string
-- H, the hash function used to hash the message
+- msg_hash, hash of the message to be signed, using the function H from the blinding step
 - evaluated_message, signed and blinded element, an octet string of length k
 - inv, inverse of the blind, an octet string of length k
 
@@ -263,7 +262,7 @@ Steps:
 2. r_inv = OS2IP(inv)
 3. s = z * r_inv mod n
 4. sig = I2OSP(s, k)
-5. result = rsassa_pss_sign_verify(pkS, msg, sig)
+5. result = rsassa_pss_sign_verify(pkS, msg_hash, sig)
 6. If result = true, output sig, else output "invalid signature" and stop
 ~~~
 
