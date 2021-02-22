@@ -186,35 +186,35 @@ inverse, both encoded as octet strings. RSAVP1 and EMSA-PSS-ENCODE are as define
 rsabssa_sign_blind(pkS, msg)
 
 Parameters:
-- k, the length in bytes of the RSA modulus n
-- k_bits, the length in bits of the RSA modulus n
+- kLen, the length in bytes of the RSA modulus n
+- kBits, the length in bits of the RSA modulus n
 
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, an octet string
-- H, the hash function used to hash the message
+- HF, the hash function used to hash the message
 - MGF, the mask generation function
 
 Outputs:
-- blinded_message, an octet string of length k
-- inv, an octet string of length k
+- blinded_message, an octet string of length kLen
+- inv, an octet string of length kLen
 
 Errors:
 - "message too long": Raised when the input message is too long.
 - "encoding error": Raised when the input message fails encoding.
-- "unexpected input size": Raised when a byte string input doesn't have the expected length.
+- "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_message = EMSA-PSS-ENCODE(msg, k_bits - 1) with MGF and hash function as defined in the parameters
-2. If EMSA-PSS-ENCODE outputs an error, output the error and stop
+1. encoded_message = EMSA-PSS-ENCODE(msg, kBits - 1) with MGF and HF as defined in the parameters
+2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = OS2IP(encoded_message)
 4. r = random_integer(0, n - 1)
 5. x = RSAVP1(pkS, r)
 6. z = m * x mod n
 7. r_inv = inverse_mod(r, n)
-8. If finding the inverse fails, output an "invalid blind" error and stop
-9. blinded_message = I2OSP(z, k)
-10. inv = I2OSP(r_inv, k)
+8. If finding the inverse fails, raise an "invalid blind" error and stop
+9. blinded_message = I2OSP(z, kLen)
+10. inv = I2OSP(r_inv, kLen)
 11. output blinded_message, inv
 ~~~
 
@@ -228,19 +228,22 @@ RSASP1 is as defined in {{!RFC3447}}.
 rsabssa_sign_evaluate(skS, blinded_message)
 
 Parameters:
-- k, the length in octets of the RSA modulus n
+- kLen, the length in octets of the RSA modulus n
 
 Inputs:
 - blinded_message, encoded and blinded message to be signed, an octet string
 
 Outputs:
-- evaluated_message, an octet string of length k
+- evaluated_message, an octet string of length kLen
+
+Errors:
+- "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
-1. If len(blinded_message) != k, output "unexpected input size" and stop
+1. If len(blinded_message) != kLen, raise "unexpected input size" and stop
 2. m = OS2IP(blinded_message)
 3. s = RSASP1(skS, m)
-4. evaluated_message = I2OSP(s, k)
+4. evaluated_message = I2OSP(s, kLen)
 5. output evaluated_message
 ~~~
 
@@ -255,29 +258,30 @@ as is done in rsabssa_sign_blind.
 rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
 
 Parameters:
-- k, the length in octets of the RSA modulus n
+- kLen, the length in octets of the RSA modulus n
 
 Inputs:
 - pkS, server public key
 - msg, message to be signed, an octet string
-- evaluated_message, signed and blinded element, an octet string of length k
-- inv, inverse of the blind, an octet string of length k
+- evaluated_message, signed and blinded element, an octet string of length kLen
+- inv, inverse of the blind, an octet string of length kLen
 
 Outputs:
-- sig, an octet string of length k
+- sig, an octet string of length kLen
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
+- "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
-1. If len(evaluated_message) != k, output "unexpected input size" and stop
-2. If len(inv) != k, output "unexpected input size" and stop
+1. If len(evaluated_message) != kLen, raise "unexpected input size" and stop
+2. If len(inv) != kLen, raise "unexpected input size" and stop
 3. z = OS2IP(evaluated_message)
 4. r_inv = OS2IP(inv)
 5. s = z * r_inv mod n
-6. sig = I2OSP(s, k)
+6. sig = I2OSP(s, kLen)
 7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
-8. If result = "valid signature", output sig, else output "invalid signature" and stop
+8. If result = "valid signature", output sig, else raise "invalid signature" and stop
 ~~~
 
 ## Encoding Options {#pss-options}
