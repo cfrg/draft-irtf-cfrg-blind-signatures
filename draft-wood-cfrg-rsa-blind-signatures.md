@@ -299,6 +299,12 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 
 # Security Considerations {#sec-considerations}
 
+Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved security of Chaum's original
+blind signature scheme based on RSA-FDH based on "one-more-RSA-inversion." Note that the
+design in this document differs only in message encoding, i.e., using PSS instead of FDH.
+
+[[OPEN ISSUE: confirm that results from BNPS03 apply to this construction]]
+
 ## Timing Side Channels
 
 rsabssa_sign_evaluate is functionally a remote procedure call for applying the RSA private
