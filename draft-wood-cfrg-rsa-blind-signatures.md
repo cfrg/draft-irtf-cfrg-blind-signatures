@@ -179,7 +179,8 @@ A specification of these subroutines is below.
 
 rsabssa_sign_blind encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server and the corresponding
-inverse, both encoded as octet strings.
+inverse, both encoded as octet strings. RSAVP1 and EMSA-PSS-ENCODE are as defined in
+{{!RFC3447}}.
 
 ~~~
 rsabssa_sign_blind(pkS, msg)
@@ -221,6 +222,7 @@ Steps:
 
 rsabssa_sign_evaluate performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as an octet string.
+RSASP1 is as defined in {{!RFC3447}}.
 
 ~~~
 rsabssa_sign_evaluate(skS, blinded_message)
