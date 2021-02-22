@@ -33,6 +33,15 @@ informative:
   KLRX20:
     title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
     target: https://eprint.iacr.org/2020/1071
+    authors: 
+      - 
+        ins: J. Kastner
+      - 
+        ins: J. Loss
+      - 
+        ins: M. Rosenberg
+      -
+        ins: J. Xu
   JKK14:
     title:  "Round-Optimal Password-Protected Secret Sharing and T-PAKE in the Password-Only model"
     target: https://eprint.iacr.org/2014/650
@@ -56,6 +65,17 @@ informative:
   PolytimeROS:
     title: "On the (in)security of ROS"
     target: https://eprint.iacr.org/2020/945.pdf
+    authors: 
+      - 
+        ins: F. Benhamouda
+      - 
+        ins: T. Lepoint
+      - 
+        ins: J. Loss
+      -
+        ins: M. Orru
+      - 
+        ins: M. Raykova
   RSA-FDH:
     title: "Random Oracles are Practical: A Paradigm for Designing Efficient Protocols"
     target: https://cseweb.ucsd.edu/~mihir/papers/ro.pdf
@@ -110,7 +130,7 @@ the number of operations on the key are doubled compared to a scheme where the p
 required for issuance of the tokens.
 
 In contrast, cryptographic signatures provide a primitive that is publicly verifiable and does not
-require access to the private key for verification. Moreover, {{JKK14}} show that one can realize
+require access to the private key for verification. Moreover, {{JKK14}} shows that one can realize
 a VOPRF in the Random Oracle Model by hashing a (deterministic) blind signature-message pair.
 
 This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA). In order to facilitate
@@ -131,7 +151,7 @@ protocol operations in this document:
   in big-endian byte order.
 - random_integer(M, N): Generate a random, uniformly distributed integer R
   such that M < R <= N.
-- inverse_mod(n, p): Compute the multiplicative inverse of n mod p.
+- inverse_mod(n, p): Compute the multiplicative inverse of n mod p where p is prime.
 - len(s): The length of a byte string, in octets.
 
 # Blind Signature Protocol Overview {#overview}
@@ -139,7 +159,7 @@ protocol operations in this document:
 In this section, we sketch the blind signature protocol wherein a client and server
 interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
 to be signed, and `skS` is the server's private key. In this protocol, the server
-learns nothing of `msg`, whereas the client learns `s` and nothing of `skS`.
+learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
 
 The core issuance protocol runs as follows:
 
@@ -168,7 +188,7 @@ returning the signature.
 
 Section 8.1 of {{!RFC8017}} defines RSASSA-PSS RSAE, which is a signature algorithm
 using RSASSA-PSS {{RFC8017}} with mask generation function 1. In this section, we
-define RSABSSA, blinded variant of this algorithm.
+define RSABSSA, a blinded variant of this algorithm.
 
 ## Signature Generation {#generation}
 
@@ -187,7 +207,7 @@ inverse, both encoded as octet strings. RSAVP1 and EMSA-PSS-ENCODE are as define
 rsabssa_sign_blind(pkS, msg)
 
 Parameters:
-- kLen, the length in bytes of the RSA modulus n
+- kLen, the length in octets of the RSA modulus n
 - kBits, the length in bits of the RSA modulus n
 
 Inputs:
