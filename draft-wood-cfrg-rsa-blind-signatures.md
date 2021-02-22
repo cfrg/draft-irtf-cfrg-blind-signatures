@@ -171,12 +171,12 @@ The core issuance protocol runs as follows:
                       blinded_message
                         ---------->
 
-       evaluated_message = Evaluate(skS, blinded_message)
+          blind_sig = BlindSign(skS, blinded_message)
 
-                     evaluated_message
+                         blind_sig
                         <----------
 
-  sig = Finalize(pkS, msg, evaluated_message, inv)
+  sig = Finalize(pkS, msg, blind_sig, inv)
 ~~~
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
@@ -193,7 +193,7 @@ define RSABSSA, a blinded variant of this algorithm.
 ## Signature Generation {#generation}
 
 As outlined in {{overview}}, signature generation involves three subroutines: Blind,
-Evaluate, and Finalize. The output from Finalize is a signature over the input to Blind.
+BlindSign, and Finalize. The output from Finalize is a signature over the input to Blind.
 A specification of these subroutines is below.
 
 ### Blind
@@ -239,7 +239,7 @@ Steps:
 11. output blinded_message, inv
 ~~~
 
-### Evaluate
+### BlindSign
 
 rsabssa_sign_evaluate performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as an octet string.
@@ -255,7 +255,7 @@ Inputs:
 - blinded_message, encoded and blinded message to be signed, an octet string
 
 Outputs:
-- evaluated_message, an octet string of length kLen
+- blind_sig, an octet string of length kLen
 
 Errors:
 - "unexpected input size": Raised when a byte string input doesn't have the expected length.
@@ -264,8 +264,8 @@ Steps:
 1. If len(blinded_message) != kLen, raise "unexpected input size" and stop
 2. m = OS2IP(blinded_message)
 3. s = RSASP1(skS, m)
-4. evaluated_message = I2OSP(s, kLen)
-5. output evaluated_message
+4. blind_sig = I2OSP(s, kLen)
+5. output blind_sig
 ~~~
 
 ### Finalize
@@ -276,7 +276,7 @@ upon success. Note that this function will internally hash the input message
 as is done in rsabssa_sign_blind.
 
 ~~~
-rsabssa_sign_finalize(pkS, msg, evaluated_message, inv)
+rsabssa_sign_finalize(pkS, msg, blind_sig, inv)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -284,7 +284,7 @@ Parameters:
 Inputs:
 - pkS, server public key
 - msg, message to be signed, an octet string
-- evaluated_message, signed and blinded element, an octet string of length kLen
+- blind_sig, signed and blinded element, an octet string of length kLen
 - inv, inverse of the blind, an octet string of length kLen
 
 Outputs:
@@ -295,9 +295,9 @@ Errors:
 - "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
-1. If len(evaluated_message) != kLen, raise "unexpected input size" and stop
+1. If len(blind_sig) != kLen, raise "unexpected input size" and stop
 2. If len(inv) != kLen, raise "unexpected input size" and stop
-3. z = OS2IP(evaluated_message)
+3. z = OS2IP(blind_sig)
 4. r_inv = OS2IP(inv)
 5. s = z * r_inv mod n
 6. sig = I2OSP(s, kLen)
@@ -545,7 +545,7 @@ f5a9c63a1eb599f093ab401d0c6003a451931b6d124180305705845060ebba6b0036
 ca83de0e03fb10fba75d85c55907dda5a2606bf918b056c3808ba496a4d955322120
 40a5f44f37e1097f26dc27b98a51837daa78f23e532156296b64352669c94a8a855a
 cf30533d8e0594ace7c442
-evaluated_message = 364f6a40dbfbc3bbb257943337eeff791a0f290898a67912
+blind_sig = 364f6a40dbfbc3bbb257943337eeff791a0f290898a67912
 83bba581d9eac90a6376a837241f5f73a78a5c6746e1306ba3adab6067c32ff69115
 734ce014d354e2f259d4cbfb890244fd451a497fe6ecf9aa90d19a2d441162f7eaa7
 ce3fc4e89fd4e76b7ae585be2a2c0fd6fb246b8ac8d58bcb585634e30c9168a43478
