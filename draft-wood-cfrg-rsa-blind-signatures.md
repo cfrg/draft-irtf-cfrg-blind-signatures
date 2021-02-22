@@ -161,7 +161,8 @@ The core issuance protocol runs as follows:
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
 input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in {{!RFC3447}}.
+routine defined in {{!RFC3447}}. The finalization function performs that check before
+returning the signature.
 
 # RSABSSA Signature Instantiation
 
