@@ -12,10 +12,6 @@ stand_alone: yes
 pi: [toc, sortrefs, symrefs]
 
 author:
- -  ins: F. Jacobs
-    name: Frederic Jacobs
-    org: Apple Inc.
-    email: frederic.jacobs@apple.com
  -  ins: C. A. Wood
     name: Christopher A. Wood
     org: Cloudflare
@@ -33,12 +29,12 @@ informative:
   KLRX20:
     title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
     target: https://eprint.iacr.org/2020/1071
-    authors: 
-      - 
+    authors:
+      -
         ins: J. Kastner
-      - 
+      -
         ins: J. Loss
-      - 
+      -
         ins: M. Rosenberg
       -
         ins: J. Xu
@@ -65,16 +61,16 @@ informative:
   PolytimeROS:
     title: "On the (in)security of ROS"
     target: https://eprint.iacr.org/2020/945.pdf
-    authors: 
-      - 
+    authors:
+      -
         ins: F. Benhamouda
-      - 
+      -
         ins: T. Lepoint
-      - 
+      -
         ins: J. Loss
       -
         ins: M. Orru
-      - 
+      -
         ins: M. Raykova
   RSA-FDH:
     title: "Random Oracles are Practical: A Paradigm for Designing Efficient Protocols"
