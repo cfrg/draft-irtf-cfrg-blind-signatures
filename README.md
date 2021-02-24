@@ -17,6 +17,13 @@ $ make
 This requires that you have the necessary software installed.  See
 [the instructions](https://github.com/martinthomson/i-d-template/blob/master/doc/SETUP.md).
 
+## Implementations
+
+| Implementation                                                                                  | Language | Dependencies         |
+| ----------------------------------------------------------------------------------------------- | :------- | :------------------- |
+| [**Reference**](https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/tree/master/poc) | Sage     | Sage                 |
+| [blind-rsa-signatures](https://github.com/jedisct1/blind-rsa-signatures)                        | C        | OpenSSL or BoringSSL |
+| [zig-blind-rsa-signatures](https://github.com/jedisct1/zig-blind-rsa-signatures)                | Zig      | OpenSSL or BoringSSL |
 
 ## Contributing
 
