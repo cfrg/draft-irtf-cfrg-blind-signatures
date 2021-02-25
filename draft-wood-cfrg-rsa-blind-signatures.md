@@ -16,6 +16,10 @@ author:
     name: Christopher A. Wood
     org: Cloudflare
     email: caw@heapingbits.net
+ -  ins: F. Jacobs
+    name: Frederic Jacobs
+    org: Apple Inc.
+    email: frederic.jacobs@apple.com
 
 informative:
   WM99:
