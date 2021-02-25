@@ -90,7 +90,7 @@ def hasher(x, l):
     assert(l <= 32)
     return int.from_bytes(SHA256.new(data=x).digest()[0:l], 'big')
 
-def random_integer(m, n):
+def random_integer_uniform(m, n):
     return getRandomRange(m, n) # numpy.random.randint(m, n)
 
 def random_bytes(n):
@@ -162,7 +162,7 @@ def rsassa_pss_sign_blind(pkS, msg_hash):
     encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
     m = OS2IP(encoded_message)
 
-    r = random_integer(1, pkS.n - 1)
+    r = random_integer_uniform(1, pkS.n)
     r_inv = inverse_mod(r, pkS.n)
     assert((r * r_inv) % pkS.n == 1)
 

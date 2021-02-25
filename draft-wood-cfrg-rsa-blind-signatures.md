@@ -149,8 +149,8 @@ protocol operations in this document:
 - I2OSP and OS2IP: Convert a byte string to and from a non-negative integer as
   described in {{!RFC8017}}. Note that these functions operate on byte strings
   in big-endian byte order.
-- random_integer(M, N): Generate a random, uniformly distributed integer R
-  such that M < R <= N.
+- random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
+  such that M <= R < N.
 - inverse_mod(n, p): Compute the multiplicative inverse of n mod p where p is prime.
 - len(s): The length of a byte string, in octets.
 
@@ -229,7 +229,7 @@ Steps:
 1. encoded_message = EMSA-PSS-ENCODE(msg, kBits - 1) with MGF and HF as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = OS2IP(encoded_message)
-4. r = random_integer(0, n - 1)
+4. r = random_integer_uniform(1, n)
 5. x = RSAVP1(pkS, r)
 6. z = m * x mod n
 7. r_inv = inverse_mod(r, n)
