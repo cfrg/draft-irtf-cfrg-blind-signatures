@@ -155,7 +155,7 @@ protocol operations in this document:
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   such that M <= R < N.
-- inverse_mod(n, p): Compute the multiplicative inverse of n mod p where p is prime.
+- inverse_mod(x, n): Compute the multiplicative inverse of x mod n.
 - len(s): The length of a byte string, in octets.
 
 # Blind Signature Protocol Overview {#overview}
