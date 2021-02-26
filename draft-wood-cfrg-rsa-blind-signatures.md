@@ -202,13 +202,13 @@ A specification of these subroutines is below.
 
 ### Blind
 
-rsabssa_sign_blind encodes an input message and blinds it with the server's public
+rsabssa_blind encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server and the corresponding
 inverse, both encoded as octet strings. RSAVP1 and EMSA-PSS-ENCODE are as defined in
 {{!RFC3447}}.
 
 ~~~
-rsabssa_sign_blind(pkS, msg)
+rsabssa_blind(pkS, msg)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -245,12 +245,12 @@ Steps:
 
 ### BlindSign
 
-rsabssa_sign_evaluate performs the RSA private key operation on the client's
+rsabssa_blindSign performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as an octet string.
 RSASP1 is as defined in {{!RFC3447}}.
 
 ~~~
-rsabssa_sign_evaluate(skS, blinded_message)
+rsabssa_blindSign(skS, blinded_message)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -274,13 +274,13 @@ Steps:
 
 ### Finalize
 
-rsabssa_sign_finalize validates the server's response, unblinds the message
+rsabssa_finalize validates the server's response, unblinds the message
 to produce a signature, verifies it for correctness, and outputs the signature
 upon success. Note that this function will internally hash the input message
-as is done in rsabssa_sign_blind.
+as is done in rsabssa_blind.
 
 ~~~
-rsabssa_sign_finalize(pkS, msg, blind_sig, inv)
+rsabssa_finalize(pkS, msg, blind_sig, inv)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -338,7 +338,7 @@ design in this document differs only in message encoding, i.e., using PSS instea
 
 ## Timing Side Channels
 
-rsabssa_sign_evaluate is functionally a remote procedure call for applying the RSA private
+rsabssa_blindSign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
 from exposure {{RemoteTiming}}. Implementations MUST include side channel attack mitigations,
 such as RSA blinding, to avoid leaking information about the private key through timing
