@@ -12,18 +12,18 @@ stand_alone: yes
 pi: [toc, sortrefs, symrefs]
 
 author:
- -  ins: C. A. Wood
-    name: Christopher A. Wood
-    org: Cloudflare
-    email: caw@heapingbits.net
- -  ins: F. Jacobs
-    name: Frederic Jacobs
-    org: Apple Inc.
-    email: frederic.jacobs@apple.com
  -  ins: F. Denis
     name: Frank Denis
     org: Fastly Inc.
     email: fd@00f.net
+ -  ins: F. Jacobs
+    name: Frederic Jacobs
+    org: Apple Inc.
+    email: frederic.jacobs@apple.com
+ -  ins: C. A. Wood
+    name: Christopher A. Wood
+    org: Cloudflare
+    email: caw@heapingbits.net
 
 informative:
   WM99:
