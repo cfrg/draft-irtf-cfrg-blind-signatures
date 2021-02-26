@@ -20,6 +20,10 @@ author:
     name: Frederic Jacobs
     org: Apple Inc.
     email: frederic.jacobs@apple.com
+ -  ins: F. Denis
+    name: Frank Denis
+    org: Fastly Inc.
+    email: fd@00f.net
 
 informative:
   WM99:
