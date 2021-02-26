@@ -227,7 +227,6 @@ Outputs:
 Errors:
 - "message too long": Raised when the input message is too long.
 - "encoding error": Raised when the input message fails encoding.
-- "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
 1. encoded_message = EMSA-PSS-ENCODE(msg, kBits - 1) with MGF and HF as defined in the parameters
@@ -237,7 +236,7 @@ Steps:
 5. x = RSAVP1(pkS, r)
 6. z = m * x mod n
 7. r_inv = inverse_mod(r, n)
-8. If finding the inverse fails, raise an "invalid blind" error and stop
+8. If finding the inverse fails, go back to step 4
 9. blinded_message = I2OSP(z, kLen)
 10. inv = I2OSP(r_inv, kLen)
 11. output blinded_message, inv
