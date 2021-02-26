@@ -245,12 +245,12 @@ Steps:
 
 ### BlindSign
 
-rsabssa_blindSign performs the RSA private key operation on the client's
+rsabssa_blind_sign performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as an octet string.
 RSASP1 is as defined in {{!RFC3447}}.
 
 ~~~
-rsabssa_blindSign(skS, blinded_message)
+rsabssa_blind_sign(skS, blinded_message)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -338,7 +338,7 @@ design in this document differs only in message encoding, i.e., using PSS instea
 
 ## Timing Side Channels
 
-rsabssa_blindSign is functionally a remote procedure call for applying the RSA private
+rsabssa_blind_sign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
 from exposure {{RemoteTiming}}. Implementations MUST include side channel attack mitigations,
 such as RSA blinding, to avoid leaking information about the private key through timing
