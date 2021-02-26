@@ -427,21 +427,19 @@ This document makes no IANA requests.
 
 --- back
 
-# Test Vectors
+# Test Vector
 
-This section includes test vectors for the blind signature scheme defined in this document.
-Each test vector specifies the following parameters:
+This section includes a test vector for the blind signature scheme defined in this document.
+The following parameters are specified:
 
 - p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
 - msg: Messsage being signed, encoded as a hexadecimal string. Its hash is computed using the
   hash function identified by the 'hash' test vector parameter.
 - salt: Randomly-generated salt used when computing the signature.
 - inv: The message blinding inverse, encoded as a hexadecimal string.
-- blinded\_message, evaluated\_message: The protocol values exchanged during the computation,
-  encoded hexadecimal strings.
+- blinded\_message, blind\_sig: The protocol values exchanged during the computation,
+  encoded as hexadecimal strings.
 - sig: The message signature.
-
-## Fully-Blind Test Vector
 
 ~~~
 p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
