@@ -234,10 +234,10 @@ Steps:
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = OS2IP(encoded_message)
 4. r = random_integer_uniform(1, n)
-5. x = RSAVP1(pkS, r)
-6. z = m * x mod n
-7. r_inv = inverse_mod(r, n)
-8. If finding the inverse fails, raise an "invalid blind" error and stop
+5. r_inv = inverse_mod(r, n)
+6. If finding the inverse fails, raise an "invalid blind" error and stop
+7. x = RSAVP1(pkS, r)
+8. z = m * x mod n
 9. blinded_message = I2OSP(z, kLen)
 10. inv = I2OSP(r_inv, kLen)
 11. output blinded_message, inv
