@@ -230,12 +230,14 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_message = EMSA-PSS-ENCODE(msg, kBits - 1) with MGF and HF as defined in the parameters
+1. encoded_message = EMSA-PSS-ENCODE(msg, kBits - 1)
+   with MGF and HF as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = OS2IP(encoded_message)
 4. r = random_integer_uniform(1, n)
 5. r_inv = inverse_mod(r, n)
-6. If finding the inverse fails, raise an "invalid blind" error and stop
+6. If finding the inverse fails, raise an "invalid blind" error
+   and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
 9. blinded_msg = I2OSP(z, kLen)
@@ -256,16 +258,19 @@ Parameters:
 - kLen, the length in octets of the RSA modulus n
 
 Inputs:
-- blinded_msg, encoded and blinded message to be signed, an octet string
+- blinded_msg, encoded and blinded message to be signed, an
+  octet string
 
 Outputs:
 - blind_sig, an octet string of length kLen
 
 Errors:
-- "unexpected input size": Raised when a byte string input doesn't have the expected length.
+- "unexpected input size": Raised when a byte string input doesn't
+  have the expected length.
 
 Steps:
-1. If len(blinded_msg) != kLen, raise "unexpected input size" and stop
+1. If len(blinded_msg) != kLen, raise "unexpected input size"
+   and stop
 2. m = OS2IP(blinded_msg)
 3. s = RSASP1(skS, m)
 4. blind_sig = I2OSP(s, kLen)
@@ -288,7 +293,8 @@ Parameters:
 Inputs:
 - pkS, server public key
 - msg, message to be signed, an octet string
-- blind_sig, signed and blinded element, an octet string of length kLen
+- blind_sig, signed and blinded element, an octet string of
+  length kLen
 - inv, inverse of the blind, an octet string of length kLen
 
 Outputs:
@@ -296,7 +302,8 @@ Outputs:
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
-- "unexpected input size": Raised when a byte string input doesn't have the expected length.
+- "unexpected input size": Raised when a byte string input doesn't
+  have the expected length.
 
 Steps:
 1. If len(blind_sig) != kLen, raise "unexpected input size" and stop
@@ -306,7 +313,8 @@ Steps:
 5. s = z * r_inv mod n
 6. sig = I2OSP(s, kLen)
 7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
-8. If result = "valid signature", output sig, else raise "invalid signature" and stop
+8. If result = "valid signature", output sig, else
+   raise "invalid signature" and stop
 ~~~
 
 ## Encoding Options {#pss-options}
