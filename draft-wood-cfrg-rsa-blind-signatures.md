@@ -169,13 +169,13 @@ The core issuance protocol runs as follows:
 
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
-  ----------------------------------------------------------
-  blinded_message, inv = Blind(pkS, msg)
+  -------------------------------------------------------
+  blinded_msg, inv = Blind(pkS, msg)
 
-                      blinded_message
+                        blinded_msg
                         ---------->
 
-          blind_sig = BlindSign(skS, blinded_message)
+                 blind_sig = BlindSign(skS, blinded_msg)
 
                          blind_sig
                         <----------
@@ -221,7 +221,7 @@ Inputs:
 - MGF, the mask generation function
 
 Outputs:
-- blinded_message, an octet string of length kLen
+- blinded_msg, an octet string of length kLen
 - inv, an octet string of length kLen
 
 Errors:
@@ -238,9 +238,9 @@ Steps:
 6. If finding the inverse fails, raise an "invalid blind" error and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
-9. blinded_message = I2OSP(z, kLen)
+9. blinded_msg = I2OSP(z, kLen)
 10. inv = I2OSP(r_inv, kLen)
-11. output blinded_message, inv
+11. output blinded_msg, inv
 ~~~
 
 ### BlindSign
@@ -250,13 +250,13 @@ blinded message input and returns the output encoded as an octet string.
 RSASP1 is as defined in {{!RFC3447}}.
 
 ~~~
-rsabssa_blind_sign(skS, blinded_message)
+rsabssa_blind_sign(skS, blinded_msg)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
 
 Inputs:
-- blinded_message, encoded and blinded message to be signed, an octet string
+- blinded_msg, encoded and blinded message to be signed, an octet string
 
 Outputs:
 - blind_sig, an octet string of length kLen
@@ -265,8 +265,8 @@ Errors:
 - "unexpected input size": Raised when a byte string input doesn't have the expected length.
 
 Steps:
-1. If len(blinded_message) != kLen, raise "unexpected input size" and stop
-2. m = OS2IP(blinded_message)
+1. If len(blinded_msg) != kLen, raise "unexpected input size" and stop
+2. m = OS2IP(blinded_msg)
 3. s = RSASP1(skS, m)
 4. blind_sig = I2OSP(s, kLen)
 5. output blind_sig
@@ -531,7 +531,7 @@ d7a3c0150428a47948037c322365b7fe6fe57ac88d8f80889e9ff38177bad8c8d8d9
 320c2bb5b3225b17145c72d61d47c8f84d1e19417ebd8ce3638a82d395cc6f7050b6
 209d9283dc7b93fecc04f3f9e7f566829ac41568ef799480c733c09759aa9734e201
 3d7640dc6151018ea902bc
-blinded_message = 10c166c6a711e81c46f45b18e5873cc4f494f003180dd7f115
+blinded_msg = 10c166c6a711e81c46f45b18e5873cc4f494f003180dd7f115
 585d871a28930259654fe28a54dab319cc5011204c8373b50a57b0fdc7a678bd74c5
 23259dfe4fd5ea9f52f170e19dfa332930ad1609fc8a00902d725cfe50685c95e5b2
 968c9a2828a21207fcf393d15f849769e2af34ac4259d91dfd98c3a707c509e1af55
