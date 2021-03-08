@@ -154,9 +154,9 @@ def rsassa_pss_sign_blind(pkS, msg_hash):
     5. x = RSAVP1(pkS, r)
     6. z = m * x mod n
     7. r_inv = inverse_mod(r, n)
-    8. blinded_message = I2OSP(z, k)
+    8. blinded_msg = I2OSP(z, k)
     9. blind_inv = I2OSP(r_inv, k)
-    10. return blinded_message, blind_inv
+    10. return blinded_msg, blind_inv
     """
     k = byte_length(pkS.n)
     encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
@@ -169,10 +169,10 @@ def rsassa_pss_sign_blind(pkS, msg_hash):
     x = RSAVP1(pkS, r)
     z = (m * x) % pkS.n
 
-    blinded_message = I2OSP(z, k)
+    blinded_msg = I2OSP(z, k)
     blind_inv = I2OSP(r_inv, k)
     blind = I2OSP(r, k) # This is output for test vector generation only
-    return blinded_message, blind_inv, blind
+    return blinded_msg, blind_inv, blind
 
 def rsassa_pss_blind_sign(skS, blinded_msg):
     '''
@@ -393,7 +393,7 @@ def rsa_key_gen(p_bits):
     q = number.getPrime(p_bits)
     phi = (p - 1) * (q - 1)
 
-    e = 65537 # TODO(caw): rewrite this following FIPS 186-4, Appendix B.3(.3)
+    e = 65537
     d = inverse_mod(e, phi)
     n = p * q
 
@@ -415,8 +415,8 @@ def run_signature_scheme(skS, pkS, msg):
     encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
 
     # Run the blind variant
-    blinded_message, blind_inv, blind = rsassa_pss_sign_blind(pkS, msg_hash)
-    blind_sig = rsassa_pss_blind_sign(skS, blinded_message)
+    blinded_msg, blind_inv, blind = rsassa_pss_sign_blind(pkS, msg_hash)
+    blind_sig = rsassa_pss_blind_sign(skS, blinded_msg)
     sig = rsassa_pss_sign_finalize(pkS, msg_hash, blind_sig, blind_inv)
     valid = rsassa_pss_sign_verify(pkS, msg_hash, sig)
     assert(valid)
@@ -429,7 +429,7 @@ def run_signature_scheme(skS, pkS, msg):
     vector["d"] = to_hex(I2OSP(skS.d, byte_length(skS.d)))
     vector["msg"] = to_hex(msg)
     vector["encoded_message"] = to_hex(encoded_message)
-    vector["blinded_message"] = to_hex(blinded_message)
+    vector["blinded_msg"] = to_hex(blinded_msg)
     vector["inv"] = to_hex(blind_inv)
     vector["r"] = to_hex(blind)
     vector["blind_sig"] = to_hex(blind_sig)
@@ -463,8 +463,8 @@ def run_partially_blind_signature_scheme(skS, pkS, msg, tweak, C, H):
         encoded_message = rsassa_pss_sign_encode(pkS.n, msg_hash)
 
         # Run the blind variant
-        blinded_message, blind_inv, blind = rsassa_pss_sign_blind(pkS, msg_hash)
-        blind_sig = rsassa_pss_blind_sign(skS, blinded_message)
+        blinded_msg, blind_inv, blind = rsassa_pss_sign_blind(pkS, msg_hash)
+        blind_sig = rsassa_pss_blind_sign(skS, blinded_msg)
         sig = rsassa_pss_sign_finalize(pkS, msg_hash, blind_sig, blind_inv)
         valid = rsassa_pss_sign_verify(pkS, msg_hash, sig)
         assert(valid)
@@ -479,7 +479,7 @@ def run_partially_blind_signature_scheme(skS, pkS, msg, tweak, C, H):
         vector["n"] = to_hex(I2OSP(pkS.n, byte_length(pkS.n)))
         vector["msg"] = to_hex(msg)
         vector["encoded_msg"] = to_hex(encoded_message)
-        vector["blinded_message"] = to_hex(blinded_message)
+        vector["blinded_msg"] = to_hex(blinded_msg)
         vector["blind_inv"] = to_hex(blind_inv)
         vector["blind"] = to_hex(blind)
         vector["blind_sig"] = to_hex(blind_sig)
@@ -526,7 +526,7 @@ def print_vectors(vectors):
     for vector in vectors:
         print("## " + vector["name"])
         print("")
-        keys = ["p", "q", "n", "e", "d", "msg", "c", "tweak", "public_tweak", "private_tweak", "blind", "blind_inv", "blinded_message", "blind_sig", "sig", "salt_length", "mgf", "hash"]
+        keys = ["p", "q", "n", "e", "d", "msg", "c", "tweak", "public_tweak", "private_tweak", "blind", "blind_inv", "blinded_msg", "blind_sig", "sig", "salt_length", "mgf", "hash"]
         for k in keys:
             if k in vector:
                 print_value(k, vector[k])
