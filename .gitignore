@@ -10,6 +10,7 @@
 .targets.mk
 /*-[0-9][0-9].xml
 archive.json
+draft-irtf-cfrg-rsa-blind-signatures.xml
 draft-wood-cfrg-blind-rsa-signatures.xml
 draft-wood-cfrg-blind-signatures.xml
 draft-wood-cfrg-rsa-blind-signatures.xml
