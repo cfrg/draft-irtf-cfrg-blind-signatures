@@ -1,7 +1,7 @@
 ---
 title: RSA Blind Signatures
 abbrev: RSA Blind Signatures
-docname: draft-wood-cfrg-rsa-blind-signatures-latest
+docname: draft-irtf-cfrg-rsa-blind-signatures-latest
 date:
 category: info
 
