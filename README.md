@@ -2,9 +2,9 @@
 
 This is the working area for the individual Internet-Draft, "RSA Blind Signatures".
 
-* [Editor's Copy](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-irtf-cfrg-rsa-blind-signatures.html)
+* [Editor's Copy](https://cfrg.github.io/draft-irtf-cfrg-blind-signatures/#go.draft-irtf-cfrg-rsa-blind-signatures.html)
 * [Individual Draft](https://tools.ietf.org/html/draft-irtf-cfrg-rsa-blind-signatures)
-* [Compare Editor's Copy to Individual Draft](https://chris-wood.github.io/draft-wood-cfrg-blind-signatures/#go.draft-irtf-cfrg-rsa-blind-signatures.diff)
+* [Compare Editor's Copy to Individual Draft](https://cfrg.github.io/draft-irtf-cfrg-blind-signatures/#go.draft-irtf-cfrg-rsa-blind-signatures.diff)
 
 ## Building the Draft
 
@@ -21,4 +21,4 @@ This requires that you have the necessary software installed.  See
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/blob/master/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/cfrg/draft-irtf-cfrg-blind-signatures/blob/master/CONTRIBUTING.md).
