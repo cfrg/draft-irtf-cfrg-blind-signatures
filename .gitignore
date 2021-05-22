@@ -12,8 +12,9 @@
 archive.json
 draft-wood-cfrg-blind-rsa-signatures.xml
 draft-wood-cfrg-blind-signatures.xml
+draft-wood-cfrg-rsa-blind-signatures.xml
 lib
 report.xml
 venv/
 lib
-draft-wood-cfrg-rsa-blind-signatures.xml
+draft-irtf-cfrg-rsa-blind-signatures.xml
