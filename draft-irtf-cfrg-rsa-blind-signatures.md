@@ -200,7 +200,7 @@ As outlined in {{overview}}, signature generation involves three subroutines: Bl
 BlindSign, and Finalize. The output from Finalize is a signature over the input to Blind.
 A specification of these subroutines is below.
 
-### Blind
+### Blind {#blind}
 
 rsabssa_blind encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server and the corresponding
@@ -319,28 +319,38 @@ Steps:
 
 ## Encoding Options {#pss-options}
 
-The RSASSA-PSS parameters are defined as in {{!RFC8230}}. Implementations MUST support
-PS384-encoding, using SHA-384 as hash function for the message and mask generation
-function with a 48-byte salt.
-
-The RSA-PSS encoding functions take the following optional parameters:
+The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as follows:
 
 - Hash: hash function (hLen denotes the length in octets of the hash function output)
 - MGF: mask generation function
 - sLen: intended length in octets of the salt
 
-The blinded functions above are orthogonal to the choice of these options.
+Implementations MUST support PS384-encoding, using SHA-384 as Hash and MGF functions
+and sLen = 48, as described in {{!RFC8230, Section 2}}. It is RECOMMENDED that
+implementations also support encoding using SHA-384 as Hash and MGF functions and
+sLen = 0. Note that setting sLen = 0 has the result of making the signature scheme
+deterministic.
+
+The blinded functions in {{generation}} are orthogonal to the choice of these options.
 
 # Public Key Certification {#cert-oid}
 
 If the server public key is carried in an X.509 certificate, it MUST use the RSASSA-PSS
 OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 
+# API Considerations {#apis}
+
+It is NOT RECOMMENDED that APIs allow clients to specify RSA-PSS parameters directly, e.g.,
+to set the PSS salt length to 0 as a way of producing deterministic signatures. Instead,
+implementations should offer separate abstractions for randommized or deterministic signature
+generation.
+
 # Security Considerations {#sec-considerations}
 
 Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved security of Chaum's original
 blind signature scheme based on RSA-FDH based on "one-more-RSA-inversion." Note that the
 design in this document differs only in message encoding, i.e., using PSS instead of FDH.
+Note, importantly, that an empty salt effectively reduces PSS to FDH.
 
 [[OPEN ISSUE: confirm that results from BNPS03 apply to this construction]]
 
