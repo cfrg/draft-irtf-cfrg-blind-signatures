@@ -343,7 +343,7 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 It is NOT RECOMMENDED that APIs allow clients to specify RSA-PSS parameters directly, e.g.,
 to set the PSS salt length to 0 as a way of producing deterministic signatures. Instead,
 implementations should offer separate abstractions for randommized or deterministic signature
-generation.
+generation. See {{det-sigs}} for more information about deterministic signature considerations.
 
 # Security Considerations {#sec-considerations}
 
@@ -374,13 +374,22 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
-## Salt State
+## Randomized and Deterministic Signatures {#det-sigs}
 
-The PSS salt is a randomly generated string chosen when a message is encoded. If the salt is not
-generated randomly, or is otherwise constructed maliciously, it might be possible for the salt
-to carry client information to the server. For example, the salt might be maliciously
-constructed to encode the local IP address of the client. Implementations MUST ensure that
-the salt is generated correctly to mitigate such issues.
+When sLen > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
+This means the resulting signature is non-deterministic, meaning that two signatures over
+the same message will be different. If the salt is not generated randomly, or is otherwise
+constructed maliciously, it might be possible for the salt to carry client information to
+the server. For example, the salt might be maliciously constructed to encode the local IP
+address of the client. As a result, APIs SHOULD NOT allow clients to provide the salt directly;
+see {{apis}} for API considerations.
+
+When sLen = 0, the PSS salt is empty and the resulting signature is deterministic. Such
+signatures may be useful for applications wherein the only desired source of entropy is
+the input message.
+
+Applications that use deterministic signatures SHOULD carefully analyze the security implications.
+When the required signature scheme is not clear, applications SHOULD default to randomized signatures.
 
 ## Key Substitution Attacks
 
