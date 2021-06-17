@@ -347,12 +347,21 @@ generation. See {{det-sigs}} for more information about deterministic signature 
 
 # Security Considerations {#sec-considerations}
 
-Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved security of Chaum's original
-blind signature scheme based on RSA-FDH based on "one-more-RSA-inversion." Note that the
-design in this document differs only in message encoding, i.e., using PSS instead of FDH.
-Note, importantly, that an empty salt effectively reduces PSS to FDH.
+Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved the following properties of
+Chaum's original blind signature scheme based on RSA-FDH:
 
-[[OPEN ISSUE: confirm that results from BNPS03 apply to this construction]]
+- One-more-forgery polynomial security. This means the adversary, interacting with the server
+  (signer) as a client, cannot output n+1 valid message and signature tuples after only
+  interacting with the server n times, for some n which is polynomial in the scheme's security
+  parameter.
+- Concurrent polynomial security. This means that servers can engage in polynomially many
+  invocations of the protocol without compromising security.
+
+Both results rely upon the RSA Known Target Inversion Problem being hard.
+
+The design in this document differs from the analysis in {{BNPS03}} only in message encoding,
+i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively reduces PSS
+to FDH, so the same results apply.
 
 ## Timing Side Channels
 
