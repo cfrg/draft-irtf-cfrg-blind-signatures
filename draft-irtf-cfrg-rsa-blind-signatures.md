@@ -473,14 +473,13 @@ This section includes test vectors for the blind signature scheme defined in thi
 The following parameters are specified:
 
 - p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
-- msg: Messsage being signed, encoded as a hexadecimal string. Its hash is computed using the
-  hash function identified by the 'hash' test vector parameter.
-- salt: Randomly-generated salt used when computing the signature.
+- msg: Messsage being signed, encoded as a hexadecimal string. The hash is computed using SHA-384.
+- salt: Randomly-generated salt used when computing the signature. The length (sLen) is either 48 or 0 bytes.
 - inv: The message blinding inverse, encoded as a hexadecimal string.
-- encoded\_msg: EMSA-PSS encoded message.
+- encoded\_msg: EMSA-PSS encoded message. The mask generation function is MGF1 with SHA-384.
 - blinded\_msg, blind\_sig: The protocol values exchanged during the computation,
   encoded as hexadecimal strings.
-- sig: The message signature.
+- sig: The output message signature.
 
 Test vector for probabilistic signatures (sLen=48):
 
