@@ -426,9 +426,17 @@ deterministic, whereas PSS is probabilistic.
 
 ## Alternative Blind Signature Schemes
 
-There are a number of blind signature protocols beyond RSA. This section summarizes these
-at a high level, and discusses why an RSA-based variant was chosen for the basis of this
-specification.
+The protocol in this document is not without shortcomings, including:
+
+- RSA key and signature sizes are larger than those of alternative blind signature protocols;
+- No evaluation batching support, which means that the cost of the protocol scales linearly
+  with the number of invocations; and
+- Extensions for features such as threshold signing are more complex to instantiate compared
+  to other protocols based on, for example, Schnorr signatures.
+
+There are a number of blind signature protocols beyond blind RSA. This section summarizes
+these at a high level, and discusses why an RSA-based variant was chosen for the basis of
+this specification, despite the shortcomings above.
 
 - Blind Schnorr {{?Sch01=DOI.10.1007/3-540-45600-7_1}}: This is a three-message protocol based on the classical Schnorr
 signature scheme over elliptic curve groups. Although simple, the hardness problem upon
