@@ -426,12 +426,13 @@ deterministic, whereas PSS is probabilistic.
 
 ## Alternative Blind Signature Schemes
 
-The protocol in this document is not without shortcomings. Although servers do not require
-state to run the protocol, it does not immediately support batching evaluations as a way
-of amortizing the cost of multiple simultaneous protocols invocations. This means the cost
-of the protocol scales linearly with the number of invocations. Moreover, extensions for
-features such as threshold signing are more complex to instantiate compared to other protocols
-based on, for example, Schnorr signatures.
+The protocol in this document is not without shortcomings, including:
+
+- RSA key and signature sizes are larger than those of alternative blind signature protocols;
+- No evaluation batching support, which means that the cost of the protocol scales linearly
+  with the number of invocations; and
+- Extensions for features such as threshold signing are more complex to instantiate compared
+  to other protocols based on, for example, Schnorr signatures.
 
 There are a number of blind signature protocols beyond blind RSA. This section summarizes
 these at a high level, and discusses why an RSA-based variant was chosen for the basis of
