@@ -1,13 +1,15 @@
 #! /usr/bin/env python3
 
-from Crypto.Util.number import size, inverse, ceil_div
+from Crypto.Util.number import inverse, ceil_div
 from Crypto.Hash import SHA384
 from Crypto.Util.strxor import strxor
 from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 from Crypto.Signature import pss
 from Crypto.Signature.pss import MGF1
+
 from os import urandom
+from math import ceil, log2
 
 H = SHA384
 MgfHash = SHA384
@@ -57,24 +59,18 @@ def RSAVP1(public_key: RsaKey, r: int) -> int:
     return pow(r, e, n)
 
 
-def random_integer_uniform(min: int, max: int) -> int:
-    range = max - min
-    rangeBits = size(range - 1)
-    rangeLen = ceil_div(rangeBits, 8)
-    mask = (1 << rangeBits) - 1
-    while True:
-        randomBytes = urandom(rangeLen)
-        r = OS2IP(randomBytes) & mask
-        if r < range:
-            return min + r
+def random_integer_uniform(m: int, n: int) -> int:
+    range = n - m
+    L = ceil_div(ceil(log2(range)) + 128, 8)
+    randomBytes = urandom(L)
+    return m + OS2IP(randomBytes) % range
 
 
 def rsabssa_blind(
     public_key: RsaKey, msg: bytes, sLen: int, r_inv: int = None, salt: bytes = None
 ) -> tuple[bytes, bytes]:
-    e = public_key.e
     n = public_key.n
-    kBits = size(n)
+    kBits = n.bit_length()
     kLen = ceil_div(kBits, 8)
     encoded_msg = EMSA_PSS_ENCODE(kBits, msg, sLen, salt)
     m = OS2IP(encoded_msg)

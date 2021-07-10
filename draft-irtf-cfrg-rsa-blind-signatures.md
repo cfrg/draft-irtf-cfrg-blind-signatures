@@ -245,6 +245,16 @@ Steps:
 11. output blinded_msg, inv
 ~~~
 
+The blinding factor r must be randomly chosen from a uniform distribution.
+
+In order to do so, the random_integer_uniform function can be implemented by obtaining L uniform bytes, where
+
+~~~
+L = ceil((ceil(log2(n - m)) + k) / 8)
+~~~
+
+These uniform bytes are then interpreted as an integer via OS2IP, which is then reduced mod (n - m) and added to n. Choosing k >= 128 is recommended and gives bias at most 2^-k.
+
 ### BlindSign
 
 rsabssa_blind_sign performs the RSA private key operation on the client's
