@@ -59,10 +59,10 @@ def RSAVP1(public_key: RsaKey, r: int) -> int:
 
 
 def random_integer_uniform(m: int, n: int) -> int:
-    # Implement rejection sampling.
+    # Implement rejection sampling to return an integer in [m, n).
     # This is for reference only; most cryptographic libraries include
     # functions to generate random integers from a uniform distribution.
-    range = max - min
+    range = m - n
     rangeBits = size(range - 1)
     rangeLen = ceil_div(rangeBits, 8)
     mask = (1 << rangeBits) - 1
@@ -70,7 +70,7 @@ def random_integer_uniform(m: int, n: int) -> int:
         randomBytes = urandom(rangeLen)
         r = OS2IP(randomBytes) & mask
         if r < range:
-            return min + r
+            return m + r
 
 
 def rsabssa_blind(
