@@ -9,7 +9,6 @@ from Crypto.Signature import pss
 from Crypto.Signature.pss import MGF1
 
 from os import urandom
-from math import ceil, log2
 
 H = SHA384
 MgfHash = SHA384
