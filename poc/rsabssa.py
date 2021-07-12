@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from Crypto.Util.number import inverse, ceil_div
+from Crypto.Util.number import size, inverse, ceil_div
 from Crypto.Hash import SHA384
 from Crypto.Util.strxor import strxor
 from Crypto.PublicKey import RSA
@@ -60,10 +60,18 @@ def RSAVP1(public_key: RsaKey, r: int) -> int:
 
 
 def random_integer_uniform(m: int, n: int) -> int:
-    range = n - m
-    L = ceil_div(ceil(log2(range)) + 128, 8)
-    randomBytes = urandom(L)
-    return m + OS2IP(randomBytes) % range
+    # Implement rejection sampling.
+    # This is for reference only; most cryptographic libraries include
+    # functions to generate random integers from a uniform distribution.
+    range = max - min
+    rangeBits = size(range - 1)
+    rangeLen = ceil_div(rangeBits, 8)
+    mask = (1 << rangeBits) - 1
+    while True:
+        randomBytes = urandom(rangeLen)
+        r = OS2IP(randomBytes) & mask
+        if r < range:
+            return min + r
 
 
 def rsabssa_blind(
