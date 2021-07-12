@@ -7,6 +7,7 @@ from Crypto.PublicKey import RSA
 from Crypto.PublicKey.RSA import RsaKey
 from Crypto.Signature import pss
 from Crypto.Signature.pss import MGF1
+
 from os import urandom
 
 H = SHA384
@@ -57,7 +58,10 @@ def RSAVP1(public_key: RsaKey, r: int) -> int:
     return pow(r, e, n)
 
 
-def random_integer_uniform(min: int, max: int) -> int:
+def random_integer_uniform(m: int, n: int) -> int:
+    # Implement rejection sampling.
+    # This is for reference only; most cryptographic libraries include
+    # functions to generate random integers from a uniform distribution.
     range = max - min
     rangeBits = size(range - 1)
     rangeLen = ceil_div(rangeBits, 8)
@@ -72,9 +76,8 @@ def random_integer_uniform(min: int, max: int) -> int:
 def rsabssa_blind(
     public_key: RsaKey, msg: bytes, sLen: int, r_inv: int = None, salt: bytes = None
 ) -> tuple[bytes, bytes]:
-    e = public_key.e
     n = public_key.n
-    kBits = size(n)
+    kBits = n.bit_length()
     kLen = ceil_div(kBits, 8)
     encoded_msg = EMSA_PSS_ENCODE(kBits, msg, sLen, salt)
     m = OS2IP(encoded_msg)

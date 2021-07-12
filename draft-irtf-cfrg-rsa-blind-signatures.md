@@ -245,6 +245,9 @@ Steps:
 11. output blinded_msg, inv
 ~~~
 
+The blinding factor r must be randomly chosen from a uniform distribution.
+This is typically done via rejection sampling.
+
 ### BlindSign
 
 rsabssa_blind_sign performs the RSA private key operation on the client's
