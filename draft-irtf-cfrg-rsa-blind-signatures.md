@@ -272,7 +272,7 @@ Errors:
 - "unexpected input size": Raised when a byte string input doesn't
   have the expected length.
 - "invalid message length": Raised when the message representative
-  to sign is not an integer between 0 and n - 1
+  to sign is not an integer between 0 and n - 1.
 
 Steps:
 1. If len(blinded_msg) != kLen, raise "unexpected input size"
