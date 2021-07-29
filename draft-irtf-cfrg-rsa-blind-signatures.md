@@ -278,7 +278,7 @@ Steps:
 1. If len(blinded_msg) != kLen, raise "unexpected input size"
    and stop
 2. m = OS2IP(blinded_msg)
-3. If m < n, raise "invalid message length" and stop
+3. If m >= n, raise "invalid message length" and stop
 4. s = RSASP1(skS, m)
 5. blind_sig = I2OSP(s, kLen)
 6. output blind_sig
