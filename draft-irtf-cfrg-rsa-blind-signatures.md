@@ -213,12 +213,12 @@ rsabssa_blind(pkS, msg)
 Parameters:
 - kLen, the length in octets of the RSA modulus n
 - kBits, the length in bits of the RSA modulus n
+- HF, the hash function used to hash the message
+- MGF, the mask generation function
 
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, an octet string
-- HF, the hash function used to hash the message
-- MGF, the mask generation function
 
 Outputs:
 - blinded_msg, an octet string of length kLen
@@ -261,6 +261,7 @@ Parameters:
 - kLen, the length in octets of the RSA modulus n
 
 Inputs:
+- skS, server private key
 - blinded_msg, encoded and blinded message to be signed, an
   octet string
 
@@ -270,14 +271,17 @@ Outputs:
 Errors:
 - "unexpected input size": Raised when a byte string input doesn't
   have the expected length.
+- "invalid message length": Raised when the message representative
+  to sign is not an integer between 0 and n - 1.
 
 Steps:
 1. If len(blinded_msg) != kLen, raise "unexpected input size"
    and stop
 2. m = OS2IP(blinded_msg)
-3. s = RSASP1(skS, m)
-4. blind_sig = I2OSP(s, kLen)
-5. output blind_sig
+3. If m >= n, raise "invalid message length" and stop
+4. s = RSASP1(skS, m)
+5. blind_sig = I2OSP(s, kLen)
+6. output blind_sig
 ~~~
 
 ### Finalize
@@ -294,7 +298,7 @@ Parameters:
 - kLen, the length in octets of the RSA modulus n
 
 Inputs:
-- pkS, server public key
+- pkS, server public key (n, e)
 - msg, message to be signed, an octet string
 - blind_sig, signed and blinded element, an octet string of
   length kLen
