@@ -101,9 +101,13 @@ def rsabssa_blind(
 
 def rsabssa_blind_sign(secret_key: RsaKey, blinded_msg: bytes) -> bytes:
     kLen = secret_key.size_in_bytes()
+    if len(blinded_msg) != kLen:
+        raise "Unexpected input size"
     n = secret_key.n
     d = secret_key.d
     m = OS2IP(blinded_msg)
+    if m >= n:
+        raise "Invalid message length"
     s = pow(m, d, n)
     blind_sig = I2OSP(s, length=kLen)
     return blind_sig
