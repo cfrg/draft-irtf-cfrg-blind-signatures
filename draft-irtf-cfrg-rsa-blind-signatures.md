@@ -450,8 +450,8 @@ signature scheme over elliptic curve groups. Although simple, the hardness probl
 which this is based -- Random inhomogeneities in a Overdetermined Solvable system of linear
 equations, or ROS -- can be broken in polynomial time when a small number of concurrent
 signing sessions are invoked {{PolytimeROS}}. This can lead to signature forgeries in practice.
-Signers can enforce concurrent sessions, though the limit (approximately 256) for reasonably
-secure elliptic curve groups is small enough to make large-scale signature generation
+Signers can enforce a limit on concurrent sessions, though the limit (approximately 256) for
+reasonably secure elliptic curve groups is small enough to make large-scale signature generation
 prohibitive. In contrast, the variant in this specification has no such concurrency limit.
 - Clause Blind Schnorr {{?FPS20=DOI.10.1007/978-3-030-45724-2_3}}: This is a three-message protocol
 based on a variant of the blind Schnorr signature scheme. This variant of the protocol is not
