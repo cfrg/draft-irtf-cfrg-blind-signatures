@@ -150,8 +150,9 @@ standard RSA-PSS library.
 The following terms are used throughout this document to describe the
 protocol operations in this document:
 
-- I2OSP and OS2IP: Convert a byte string to and from a non-negative integer as
-  described in {{!RFC8017}}. Note that these functions operate on byte strings
+- bytes_to_int and int_to_bytes: Convert a byte string to and from a non-negative integer.
+  bytes_to_int and int_to_bytes are implemented as OS2IP and I2OSP as described in
+  {{!RFC8017}}, respectively. Note that these functions operate on byte strings
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   such that M <= R < N.
@@ -233,15 +234,15 @@ Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, kBits - 1)
    with MGF and HF as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
-3. m = OS2IP(encoded_msg)
+3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
 5. r_inv = inverse_mod(r, n)
 6. If finding the inverse fails, raise an "invalid blind" error
    and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
-9. blinded_msg = I2OSP(z, kLen)
-10. inv = I2OSP(r_inv, kLen)
+9. blinded_msg = int_to_bytes(z, kLen)
+10. inv = int_to_bytes(r_inv, kLen)
 11. output blinded_msg, inv
 ~~~
 
@@ -277,10 +278,10 @@ Errors:
 Steps:
 1. If len(blinded_msg) != kLen, raise "unexpected input size"
    and stop
-2. m = OS2IP(blinded_msg)
+2. m = bytes_to_int(blinded_msg)
 3. If m >= n, raise "invalid message length" and stop
 4. s = RSASP1(skS, m)
-5. blind_sig = I2OSP(s, kLen)
+5. blind_sig = int_to_bytes(s, kLen)
 6. output blind_sig
 ~~~
 
@@ -315,10 +316,10 @@ Errors:
 Steps:
 1. If len(blind_sig) != kLen, raise "unexpected input size" and stop
 2. If len(inv) != kLen, raise "unexpected input size" and stop
-3. z = OS2IP(blind_sig)
-4. r_inv = OS2IP(inv)
+3. z = bytes_to_int(blind_sig)
+4. r_inv = bytes_to_int(inv)
 5. s = z * r_inv mod n
-6. sig = I2OSP(s, kLen)
+6. sig = int_to_bytes(s, kLen)
 7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
 8. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
