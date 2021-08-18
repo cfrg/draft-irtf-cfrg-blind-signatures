@@ -29,6 +29,7 @@ informative:
   WM99:
     title: "Unknown key-share attacks on the station-to-station (STS) protocol"
     venue: International Workshop on Public Key Cryptography
+    date: October, 1999
     authors:
       -
         ins: S. Blake-Wilson
@@ -37,6 +38,7 @@ informative:
   KLRX20:
     title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
     target: https://eprint.iacr.org/2020/1071
+    date: September, 2020
     authors:
       -
         ins: J. Kastner
@@ -49,7 +51,7 @@ informative:
   JKK14:
     title:  "Round-Optimal Password-Protected Secret Sharing and T-PAKE in the Password-Only model"
     target: https://eprint.iacr.org/2014/650
-    date: false
+    date: August, 2014
     authors:
       -
         ins: S. Jarecki
@@ -63,12 +65,14 @@ informative:
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
+    date: July, 2020
     authors:
       -
         ins: W. Ladd
   PolytimeROS:
     title: "On the (in)security of ROS"
-    target: https://eprint.iacr.org/2020/945.pdf
+    target: https://eprint.iacr.org/2020/945
+    date: July, 2020
     authors:
       -
         ins: F. Benhamouda
@@ -92,7 +96,7 @@ informative:
   Chaum83:
     title: Blind Signatures for Untraceable Payments
     target: http://sceweb.sce.uhcl.edu/yang/teaching/csci5234WebSecurityFall2011/Chaum-blind-signatures.PDF
-    date: false
+    date: 1983
     authors:
       -
         ins: D. Chaum
@@ -100,7 +104,7 @@ informative:
   RemoteTiming:
     title: "Remote Timing Attacks are Practical"
     target: https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf
-    date: 2003
+    date: May, 2003
     venue: 12th Usenix Security Symposium
     authors:
       -
@@ -128,9 +132,9 @@ Recently, interest in blind signatures has grown to address operational shortcom
 such as {{?I-D.irtf-cfrg-voprf}}. Specifically, VOPRF evaluation requires access to the private key,
 and is therefore required for both issuance and redemption of tokens in anonymous authentication
 protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
-This limitation complicates deployments where it is not desirable to distribute secret keys entities
+This limitation complicates deployments where it is not desirable to distribute secret keys to entities
 performing token verification. Additionally, if the private key is kept in a Hardware Security Module,
-the number of operations on the key are doubled compared to a scheme where the private key is only
+the number of operations on the key is doubled compared to a scheme where the private key is only
 required for issuance of the tokens.
 
 In contrast, cryptographic signatures provide a primitive that is publicly verifiable and does not
@@ -381,7 +385,7 @@ side channels.
 
 ## Message Robustness
 
-An essential property of blind signature schemes is that signer learns nothing of the message
+An essential property of blind signature schemes is that the signer learns nothing of the message
 being signed. In some circumstances, this may raise concerns of arbitrary signing oracles. Applications
 using blind signature schemes should take precautions to ensure that such oracles do not cause
 cross-protocol attacks. This can be done, for example, by keeping blind signature keys distinct
