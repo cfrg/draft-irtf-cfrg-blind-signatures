@@ -395,6 +395,9 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
+Verifiers should check that, in addition to the signature validity, the unblinded message is 
+well-structured.
+
 ## Randomized and Deterministic Signatures {#det-sigs}
 
 When sLen > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
@@ -418,7 +421,7 @@ RSA is well known to permit key substitution attacks, wherein an attacker genera
 (skA, pkA) that verify some known (message, signature) pair produced under a different (skS, pkS)
 key pair {{WM99}}. This means it may be possible for an attacker to use a (message, signature) pair
 from one context in another. Entities that verify signatures must take care to ensure a
-(message, signature) pair verifies with the expected public key.
+(message, signature) pair verifies with a valid public key from the expected issuer.
 
 ## Alternative RSA Encoding Functions
 
