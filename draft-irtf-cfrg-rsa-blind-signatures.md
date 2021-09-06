@@ -116,7 +116,7 @@ informative:
 
 --- abstract
 
-This document specifies the RSA-based blind signature scheme with appendix (RSA-BSSA). RSA blind signatures
+This document specifies the RSA-based blind signature protocol with appendix (RSA-BSSA). RSA blind signatures
 were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
 in {{!RFC8017}} to enable blind signature support.
 
@@ -141,9 +141,9 @@ In contrast, cryptographic signatures provide a primitive that is publicly verif
 require access to the private key for verification. Moreover, {{JKK14}} shows that one can realize
 a VOPRF in the Random Oracle Model by hashing a (deterministic) blind signature-message pair.
 
-This document specifies the RSA Blind Signature Scheme with Appendix (RSABSSA). In order to facilitate
-deployment, we define it in such a way that the resulting (unblinded) signature can be verified with a
-standard RSA-PSS library.
+This document specifies a protocol for the RSA Blind Signature Scheme with Appendix (RSABSSA). In
+order to facilitate deployment, we define it in such a way that the resulting (unblinded) signature
+can be verified with a standard RSA-PSS library.
 
 # Requirements Notation
 
@@ -151,8 +151,8 @@ standard RSA-PSS library.
 
 # Notation
 
-The following terms are used throughout this document to describe the
-protocol operations in this document:
+The following terms are used throughout this document to describe the protocol operations
+in this document:
 
 - bytes_to_int and int_to_bytes: Convert a byte string to and from a non-negative integer.
   bytes_to_int and int_to_bytes are implemented as OS2IP and I2OSP as described in
@@ -350,12 +350,28 @@ The blinded functions in {{generation}} are orthogonal to the choice of these op
 If the server public key is carried in an X.509 certificate, it MUST use the RSASSA-PSS
 OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 
-# API Considerations {#apis}
+# Implementation Considerations
+
+This section documents considerations for interfaces to implementations of the scheme
+in this document. This includes error handling and API considerations.
+
+## Errors
+
+The high-level functions specified in {{generation}} are all fallible. The explicit errors
+generated throughout this specification, along with the conditions that lead to each error,
+are listed in the definitions for rsabssa_blind, rsabssa_blind_sign, and rsabssa_finalize.
+These errors are meant as a guide for implementors. They are not an exhaustive list of all
+the errors an implementation might emit. For example, implementations might run out of memory.
+
+## API Considerations {#apis}
 
 It is NOT RECOMMENDED that APIs allow clients to specify RSA-PSS parameters directly, e.g.,
-to set the PSS salt length to 0 as a way of producing deterministic signatures. Instead,
-implementations should offer separate abstractions for randommized or deterministic signature
-generation. See {{det-sigs}} for more information about deterministic signature considerations.
+to set the PSS salt value or its length. Instead, it is RECOMMENDED that implementations
+generate the PSS salt using the same source of randomness used to produce the blinding factor.
+
+If implementations need support for randommized and deterministic signatures, they should
+offer separate abstractions for each. Allowing callers to control the PSS salt value or
+length may have security consequences. See {{det-sigs}} for more information about details.
 
 # Security Considerations {#sec-considerations}
 
@@ -385,9 +401,9 @@ side channels.
 
 ## Message Robustness
 
-An essential property of blind signature schemes is that the signer learns nothing of the message
+An essential property of blind signature protocols is that the signer learns nothing of the message
 being signed. In some circumstances, this may raise concerns of arbitrary signing oracles. Applications
-using blind signature schemes should take precautions to ensure that such oracles do not cause
+using blind signature protocols should take precautions to ensure that such oracles do not cause
 cross-protocol attacks. This can be done, for example, by keeping blind signature keys distinct
 from signature keys used for other protocols, such as TLS.
 
@@ -395,27 +411,27 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
-Verifiers should check that, in addition to signature validity, the unblinded message is 
+Verifiers should check that, in addition to signature validity, the unblinded message is
 well-structured for the relevant application. For example, if an application of this protocol
-requires messages to be structures of a particular form, then verifiers should check that 
+requires messages to be structures of a particular form, then verifiers should check that
 unblinded messages adhere to this form.
 
 ## Randomized and Deterministic Signatures {#det-sigs}
 
 When sLen > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
-This means the resulting signature is non-deterministic, meaning that two signatures over
+This means the resulting signature is non-deterministic. As a result, two signatures over
 the same message will be different. If the salt is not generated randomly, or is otherwise
-constructed maliciously, it might be possible for the salt to carry client information to
-the server. For example, the salt might be maliciously constructed to encode the local IP
-address of the client. As a result, APIs SHOULD NOT allow clients to provide the salt directly;
-see {{apis}} for API considerations.
+constructed maliciously, it might be possible for the salt to encode information that is
+not present in the signed message. For example, the salt might be maliciously constructed
+to encode the local IP address of the client. As a result, APIs SHOULD NOT allow clients
+to provide the salt directly; see {{apis}} for API considerations.
 
 When sLen = 0, the PSS salt is empty and the resulting signature is deterministic. Such
 signatures may be useful for applications wherein the only desired source of entropy is
 the input message.
 
 Applications that use deterministic signatures SHOULD carefully analyze the security implications.
-When the required signature scheme is not clear, applications SHOULD default to randomized signatures.
+When the required signature protocol is not clear, applications SHOULD default to randomized signatures.
 
 ## Key Substitution Attacks
 
@@ -439,11 +455,12 @@ properties for digital signatures {{?JKM18=DOI.10.1145/3243734.3243798}}
 Full Domain Hash (FDH) {{RSA-FDH}} encoding is also possible, and this variant has
 equivalent security to PSS {{?KK18=DOI.10.1007/s00145-017-9257-9}}. However, FDH is
 less standard and not used widely in related technologies. Moreover, FDH is
-deterministic, whereas PSS is probabilistic.
+deterministic, whereas PSS supports deterministic and probabilistic encodings.
 
-## Alternative Blind Signature Schemes
+## Alternative Blind Signature Protocols
 
-The protocol in this document is not without shortcomings, including:
+RSA has some advantages as a signature protocol, particularly around verification efficiency.
+However, the protocol in this document is not without shortcomings, including:
 
 - RSA key and signature sizes are larger than those of alternative blind signature protocols;
 - No evaluation batching support, which means that the cost of the protocol scales linearly
@@ -456,7 +473,7 @@ these at a high level, and discusses why an RSA-based variant was chosen for the
 this specification, despite the shortcomings above.
 
 - Blind Schnorr {{?Sch01=DOI.10.1007/3-540-45600-7_1}}: This is a three-message protocol based on the classical Schnorr
-signature scheme over elliptic curve groups. Although simple, the hardness problem upon
+signature protocol over elliptic curve groups. Although simple, the hardness problem upon
 which this is based -- Random inhomogeneities in a Overdetermined Solvable system of linear
 equations, or ROS -- can be broken in polynomial time when a small number of concurrent
 signing sessions are invoked {{PolytimeROS}}. This can lead to signature forgeries in practice.
@@ -464,18 +481,18 @@ Signers can enforce a limit on concurrent sessions, though the limit (approximat
 reasonably secure elliptic curve groups is small enough to make large-scale signature generation
 prohibitive. In contrast, the variant in this specification has no such concurrency limit.
 - Clause Blind Schnorr {{?FPS20=DOI.10.1007/978-3-030-45724-2_3}}: This is a three-message protocol
-based on a variant of the blind Schnorr signature scheme. This variant of the protocol is not
+based on a variant of the blind Schnorr signature protocol. This variant of the protocol is not
 known to be vulnerable to the attack in {{PolytimeROS}}, though the protocol is still new and
 under consideration. In the future, this may be a candidate for future blind signatures based
 on blind signatures. However, the three-message flow necessarily requires two round trips
 between the client and server, which may be prohibitive for large-scale signature generation.
-Further analysis and experimentation with this scheme is needed.
+Further analysis and experimentation with this protocol is needed.
 - BSA {{?Abe01=DOI.10.1007/3-540-44987-6_9}}: This is a three-message protocol based on elliptic
 curve groups similar to blind Schnorr. It is also not known to be vulnerable to the ROS attack
 in {{PolytimeROS}}. Kastner et al. {{KLRX20}} proved concurrent security with a polynomial number
-of sessions. For similar reasons to the clause blind Schnorr scheme above, the additional
+of sessions. For similar reasons to the clause blind Schnorr protocol above, the additional
 number of round trips requires further analysis and experimentation.
-- Blind BLS {{BLS-Proposal}}: The Boneh-Lynn-Shacham {{?I-D.irtf-cfrg-bls-signature}} scheme can
+- Blind BLS {{BLS-Proposal}}: The Boneh-Lynn-Shacham {{?I-D.irtf-cfrg-bls-signature}} protocol can
 incorporate message blinding when properly instantiated with Type III pairing group. This is a
 two-message protocol similar to the RSA variant, though it requires pairing support, which is
 not common in widely deployed cryptographic libraries backing protocols such as TLS. In contrast,
@@ -483,7 +500,7 @@ the specification in this document relies upon widely deployed cryptographic pri
 
 ## Post-Quantum Readiness
 
-The blind signature scheme specified in this document is not post-quantum ready since it
+The blind signature protocol specified in this document is not post-quantum ready since it
 is based on RSA. (Shor's polynomial-time factorization algorithm readily applies.)
 
 # IANA Considerations
@@ -494,7 +511,7 @@ This document makes no IANA requests.
 
 # Test Vectors
 
-This section includes test vectors for the blind signature scheme defined in this document.
+This section includes test vectors for the blind signature protocol defined in this document.
 The following parameters are specified:
 
 - p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
