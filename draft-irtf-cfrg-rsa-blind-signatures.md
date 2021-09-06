@@ -340,7 +340,7 @@ The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as fol
 Implementations MUST support PS384-encoding, using SHA-384 as Hash and MGF functions
 and sLen = 48, as described in {{!RFC8230, Section 2}}. It is RECOMMENDED that
 implementations also support encoding using SHA-384 as Hash and MGF functions and
-sLen = 0. Note that setting sLen = 0 has the result of making the signature scheme
+sLen = 0. Note that setting sLen = 0 has the result of making the signature
 deterministic.
 
 The blinded functions in {{generation}} are orthogonal to the choice of these options.
@@ -352,7 +352,7 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 
 # Implementation Considerations
 
-This section documents considerations for interfaces to implementations of the scheme
+This section documents considerations for interfaces to implementations of the protocol
 in this document. This includes error handling and API considerations.
 
 ## Errors
@@ -376,11 +376,11 @@ length may have security consequences. See {{det-sigs}} for more information abo
 # Security Considerations {#sec-considerations}
 
 Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved the following properties of
-Chaum's original blind signature scheme based on RSA-FDH:
+Chaum's original blind signature protocol based on RSA-FDH:
 
 - One-more-forgery polynomial security. This means the adversary, interacting with the server
   (signer) as a client, cannot output n+1 valid message and signature tuples after only
-  interacting with the server n times, for some n which is polynomial in the scheme's security
+  interacting with the server n times, for some n which is polynomial in the protocol's security
   parameter.
 - Concurrent polynomial security. This means that servers can engage in polynomially many
   invocations of the protocol without compromising security.
