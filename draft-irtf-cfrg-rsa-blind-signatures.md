@@ -459,7 +459,7 @@ this specification, despite the shortcomings above.
 signature scheme over elliptic curve groups. Although simple, the hardness problem upon
 which this is based -- Random inhomogeneities in a Overdetermined Solvable system of linear
 equations, or ROS -- can be broken in polynomial time when a small number of concurrent
-signing sessions are invoked {{PolytimeROS}}, leading to signature forgeries. However, even
+signing sessions are invoked {{PolytimeROS}}, leading to signature forgeries. Even
 with small concurrency limits, Wagner's generalized attack {{?Wagner02=DOI.10.1007/3-540-45708-9_19}}
 leads to subexponential forgery speedup. For example, a limit of 15 parallel sessions yields
 an attack runtime of approximately 2^55, which is substantially lower than acceptable security
