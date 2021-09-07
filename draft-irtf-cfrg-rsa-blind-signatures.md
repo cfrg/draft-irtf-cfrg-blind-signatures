@@ -113,6 +113,14 @@ informative:
       -
         ins: D. Brumley
         org: Stanford University
+  UProve:
+    title: U-Prove
+    target: https://www.microsoft.com/en-us/research/project/u-prove/
+    date: Februrary, 2012
+    authors:
+      -
+        ins: Microsoft
+        org: Microsoft
 
 --- abstract
 
@@ -395,9 +403,9 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
-Verifiers should check that, in addition to signature validity, the unblinded message is 
+Verifiers should check that, in addition to signature validity, the unblinded message is
 well-structured for the relevant application. For example, if an application of this protocol
-requires messages to be structures of a particular form, then verifiers should check that 
+requires messages to be structures of a particular form, then verifiers should check that
 unblinded messages adhere to this form.
 
 ## Randomized and Deterministic Signatures {#det-sigs}
@@ -480,6 +488,11 @@ incorporate message blinding when properly instantiated with Type III pairing gr
 two-message protocol similar to the RSA variant, though it requires pairing support, which is
 not common in widely deployed cryptographic libraries backing protocols such as TLS. In contrast,
 the specification in this document relies upon widely deployed cryptographic primitives.
+
+Beyond blind signature protocols, anonymous credential schemes with public verifiability
+such as U-Prove {{UProve}} may be used instead of blind signature protocols. Anonymous credentials
+may even be constructed with blind signature protocols. However, anonymous credentials are
+higher-level constructions that present a richer feature set.
 
 ## Post-Quantum Readiness
 
