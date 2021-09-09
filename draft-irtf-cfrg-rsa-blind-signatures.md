@@ -395,9 +395,9 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
-Verifiers should check that, in addition to signature validity, the unblinded message is 
+Verifiers should check that, in addition to signature validity, the unblinded message is
 well-structured for the relevant application. For example, if an application of this protocol
-requires messages to be structures of a particular form, then verifiers should check that 
+requires messages to be structures of a particular form, then verifiers should check that
 unblinded messages adhere to this form.
 
 ## Randomized and Deterministic Signatures {#det-sigs}
@@ -459,10 +459,11 @@ this specification, despite the shortcomings above.
 signature scheme over elliptic curve groups. Although simple, the hardness problem upon
 which this is based -- Random inhomogeneities in a Overdetermined Solvable system of linear
 equations, or ROS -- can be broken in polynomial time when a small number of concurrent
-signing sessions are invoked {{PolytimeROS}}. This can lead to signature forgeries in practice.
-Signers can enforce a limit on concurrent sessions, though the limit (approximately 256) for
-reasonably secure elliptic curve groups is small enough to make large-scale signature generation
-prohibitive. In contrast, the variant in this specification has no such concurrency limit.
+signing sessions are invoked {{PolytimeROS}}, leading to signature forgeries. Even
+with small concurrency limits, Wagner's generalized attack {{?Wagner02=DOI.10.1007/3-540-45708-9_19}}
+leads to subexponential forgery speedup. For example, a limit of 15 parallel sessions yields
+an attack runtime of approximately 2^55, which is substantially lower than acceptable security
+levels. In contrast, the variant in this specification has no such concurrency limit.
 - Clause Blind Schnorr {{?FPS20=DOI.10.1007/978-3-030-45724-2_3}}: This is a three-message protocol
 based on a variant of the blind Schnorr signature scheme. This variant of the protocol is not
 known to be vulnerable to the attack in {{PolytimeROS}}, though the protocol is still new and
