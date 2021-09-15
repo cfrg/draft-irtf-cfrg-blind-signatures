@@ -101,7 +101,7 @@ informative:
       -
         ins: D. Chaum
         org: University of California, Santa Barbara, USA
-  RemoteTiming:
+  RemoteTimingAttacks:
     title: "Remote Timing Attacks are Practical"
     target: https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf
     date: May, 2003
@@ -387,9 +387,10 @@ to FDH, so the same results apply.
 
 rsabssa_blind_sign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
-from exposure {{RemoteTiming}}. Implementations MUST include side channel attack mitigations,
-such as RSA blinding, to avoid leaking information about the private key through timing
-side channels.
+from exposure {{RemoteTimingAttacks}}. Implementations MUST implement RSA blinding as a
+side channel attack mitigation. One mechanism is described in Section 10 of
+{{?TimingAttacks=DOI.10.1007/3-540-68697-5_9}}. Failure to do so may lead to side channel
+attacks that leak the private signing key.
 
 ## Message Robustness
 
