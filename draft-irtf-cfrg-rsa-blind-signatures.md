@@ -113,6 +113,14 @@ informative:
       -
         ins: D. Brumley
         org: Stanford University
+  UProve:
+    title: U-Prove
+    target: https://www.microsoft.com/en-us/research/project/u-prove/
+    date: Februrary, 2012
+    authors:
+      -
+        ins: Microsoft
+        org: Microsoft
 
 --- abstract
 
@@ -481,6 +489,11 @@ incorporate message blinding when properly instantiated with Type III pairing gr
 two-message protocol similar to the RSA variant, though it requires pairing support, which is
 not common in widely deployed cryptographic libraries backing protocols such as TLS. In contrast,
 the specification in this document relies upon widely deployed cryptographic primitives.
+
+Beyond blind signature protocols, anonymous credential schemes with public verifiability
+such as U-Prove {{UProve}} may be used instead of blind signature protocols. Anonymous credentials
+may even be constructed with blind signature protocols. However, anonymous credentials are
+higher-level constructions that present a richer feature set.
 
 ## Post-Quantum Readiness
 
