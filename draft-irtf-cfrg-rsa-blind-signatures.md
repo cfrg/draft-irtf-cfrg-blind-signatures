@@ -168,7 +168,8 @@ in this document:
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   such that M <= R < N.
-- inverse_mod(x, n): Compute the multiplicative inverse of x mod n.
+- inverse_mod(x, n): Compute the multiplicative inverse of x mod n. This function
+  fails if x and n are not co-prime.
 - len(s): The length of a byte string, in octets.
 
 # Blind Signature Protocol Overview {#overview}
@@ -249,7 +250,7 @@ Steps:
 3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
 5. r_inv = inverse_mod(r, n)
-6. If finding the inverse fails, raise an "invalid blind" error
+6. If inverse_mod fails, raise an "invalid blind" error
    and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
