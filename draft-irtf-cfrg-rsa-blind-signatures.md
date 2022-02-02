@@ -346,13 +346,14 @@ The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as fol
 - MGF: mask generation function
 - sLen: intended length in octets of the salt
 
-Implementations MUST support PS384-encoding, using SHA-384 as Hash and MGF functions
-and sLen = 48, as described in {{!RFC8230, Section 2}}. It is RECOMMENDED that
-implementations also support encoding using SHA-384 as Hash and MGF functions and
-sLen = 0. Note that setting sLen = 0 has the result of making the signature
-deterministic.
+It is RECOMMENDED that implementations support the following encoding options:
 
-The blinded functions in {{generation}} are orthogonal to the choice of these options.
+- SHA-384 as Hash and MGF functions and sLen = 48, as described in {{!RFC8230, Section 2}}; and
+- SHA-384 as Hash and MGF functions and sLen = 0.
+
+Note that setting sLen = 0 has the result of making the signature deterministic.
+
+The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
 
 # Public Key Certification {#cert-oid}
 
