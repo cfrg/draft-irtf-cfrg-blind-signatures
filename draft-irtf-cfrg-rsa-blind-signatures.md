@@ -62,6 +62,10 @@ informative:
       -
         ins: H. Krawczyk
         org: IBM Research, NY, USA
+  XXXX:
+    title:  "To Appear"
+    target: https://eprint.iacr.org/2022/XXXX
+    date: March, 2022
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
@@ -171,6 +175,7 @@ in this document:
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n. This function
   fails if x and n are not co-prime.
 - len(s): The length of a byte string, in octets.
+- random(n): Generate n random octets using a cryptographically-secure pseudorandom number generator.
 
 # Blind Signature Protocol Overview {#overview}
 
@@ -184,7 +189,7 @@ The core issuance protocol runs as follows:
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
   -------------------------------------------------------
-  blinded_msg, inv = Blind(pkS, msg)
+  blinded_msg, inv, salt_msg = Blind(pkS, msg)
 
                         blinded_msg
                         ---------->
@@ -194,12 +199,11 @@ The core issuance protocol runs as follows:
                          blind_sig
                         <----------
 
-  sig = Finalize(pkS, msg, blind_sig, inv)
+  sig = Finalize(pkS, msg, salt_msg, blind_sig, inv)
 ~~~
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
-input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in {{!RFC3447}}. The finalization function performs that check before
+input message `msg`, `msg_salt`, and the server public key `pkS` by invoking `rsabssa_verify`. The finalization function performs that check before
 returning the signature.
 
 # RSABSSA Signature Instantiation
@@ -237,6 +241,7 @@ Inputs:
 Outputs:
 - blinded_msg, an octet string of length kLen
 - inv, an octet string of length kLen
+- salt_msg, a 32 octets random salt used to salt the message
 
 Errors:
 - "message too long": Raised when the input message is too long.
@@ -244,19 +249,21 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_msg = EMSA-PSS-ENCODE(msg, kBits - 1)
+1. salt_msg = random(32)
+2. salted_msg = HF(salt_msg || msg )
+3. encoded_msg = EMSA-PSS-ENCODE(salted_msg, kBits - 1)
    with MGF and HF as defined in the parameters
-2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
-3. m = bytes_to_int(encoded_msg)
-4. r = random_integer_uniform(1, n)
-5. r_inv = inverse_mod(r, n)
-6. If inverse_mod fails, raise an "invalid blind" error
+4. If EMSA-PSS-ENCODE raises an error, raise the error and stop
+5. m = bytes_to_int(encoded_msg)
+6. r = random_integer_uniform(1, n)
+7. r_inv = inverse_mod(r, n)
+8. If inverse_mod fails, raise an "invalid blind" error
    and stop
-7. x = RSAVP1(pkS, r)
-8. z = m * x mod n
-9. blinded_msg = int_to_bytes(z, kLen)
-10. inv = int_to_bytes(r_inv, kLen)
-11. output blinded_msg, inv
+9. x = RSAVP1(pkS, r)
+10. z = m * x mod n
+11. blinded_msg = int_to_bytes(z, kLen)
+12. inv = int_to_bytes(r_inv, kLen)
+13. output blinded_msg, inv, salt_msg
 ~~~
 
 The blinding factor r must be randomly chosen from a uniform distribution.
@@ -314,6 +321,7 @@ Parameters:
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, an octet string
+- salt_msg, the 32 octets random salt used to salt the message
 - blind_sig, signed and blinded element, an octet string of
   length kLen
 - inv, inverse of the blind, an octet string of length kLen
@@ -333,8 +341,37 @@ Steps:
 4. r_inv = bytes_to_int(inv)
 5. s = z * r_inv mod n
 6. sig = int_to_bytes(s, kLen)
-7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
+7. result = rsabssa_verify(pkS, msg, salt_msg, sig)
 8. If result = "valid signature", output sig, else
+   raise "invalid signature" and stop
+~~~
+
+### Verify
+
+rsabssa_verify validates the resulting unblinded signature. If a random message is used (see {{ msg-entropy }}), rsabssa_verify is equivalent to RSASSA-PSS-VERIFY.
+
+~~~
+rsabssa_verify(pkS, msg, salt_msg, sig)
+
+Parameters:
+- kLen, the length in octets of the RSA modulus n
+
+Inputs:
+- pkS, server public key (n, e)
+- msg, message to be signed, an octet string
+- salt_msg, the salted_msg used for the blinding
+- sig, signature of the salted_msg
+
+Outputs:
+- "valid signature" if the signature is valid
+
+Errors:
+- "invalid signature": Raised when the signature is invalid
+
+Steps:
+1. salted_msg = HF(salt_msg || msg )
+2. result = RSASSA-PSS-VERIFY(pkS, salted_msg, sig)
+3. If result = "valid signature", output "valid signature", else
    raise "invalid signature" and stop
 ~~~
 
@@ -346,12 +383,9 @@ The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as fol
 - MGF: mask generation function
 - sLen: intended length in octets of the salt
 
-It is RECOMMENDED that implementations support the following encoding options:
+It is RECOMMENDED that implementations support the following encoding option:
 
-- SHA-384 as Hash and MGF functions and sLen = 48, as described in {{!RFC8230, Section 2}}; and
-- SHA-384 as Hash and MGF functions and sLen = 0.
-
-Note that setting sLen = 0 has the result of making the signature deterministic.
+- SHA-384 as Hash and MGF functions and sLen = 48, as described in {{!RFC8230, Section 2}}
 
 The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
 
@@ -369,7 +403,7 @@ in this document. This includes error handling and API considerations.
 
 The high-level functions specified in {{generation}} are all fallible. The explicit errors
 generated throughout this specification, along with the conditions that lead to each error,
-are listed in the definitions for rsabssa_blind, rsabssa_blind_sign, and rsabssa_finalize.
+are listed in the definitions for rsabssa_blind, rsabssa_blind_sign, rsabssa_finalize and rsabssa_verify.
 These errors are meant as a guide for implementors. They are not an exhaustive list of all
 the errors an implementation might emit. For example, implementations might run out of memory.
 
@@ -378,10 +412,6 @@ the errors an implementation might emit. For example, implementations might run 
 It is NOT RECOMMENDED that APIs allow clients to specify RSA-PSS parameters directly, e.g.,
 to set the PSS salt value or its length. Instead, it is RECOMMENDED that implementations
 generate the PSS salt using the same source of randomness used to produce the blinding factor.
-
-If implementations need support for randommized and deterministic signatures, they should
-offer separate abstractions for each. Allowing callers to control the PSS salt value or
-length may have security consequences. See {{det-sigs}} for more information about details.
 
 # Security Considerations {#sec-considerations}
 
@@ -427,22 +457,21 @@ well-structured for the relevant application. For example, if an application of 
 requires messages to be structures of a particular form, then verifiers should check that
 unblinded messages adhere to this form.
 
-## Randomized and Deterministic Signatures {#det-sigs}
+## Message Entropy {#msg-entropy}
 
-When sLen > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
+In order to provably satisfy the blindness property against a malicious signer {{XXXX}}, it is important that the signed message is randomized prior to being sent to the signer. TODO: Expand on this upon publication of {{ XXXX }}.
+
+Therefore, the message is salted with 32 random octets. However, if the message is a high-entropy random token, the salting of the message can be ignored and `msg` can be blinded instead of `msg_salted` in Step 3 of the `rsabssa_blind` function, skipping step 1 and 2. The rsabssa_verify function can then be replaced by RSASSA-PSS-VERIFY.
+
+## PSS Salt Considerations {#pss-salt}
+
+The PSS salt is a randomly generated string chosen when a message is encoded.
 This means the resulting signature is non-deterministic. As a result, two signatures over
 the same message will be different. If the salt is not generated randomly, or is otherwise
 constructed maliciously, it might be possible for the salt to encode information that is
 not present in the signed message. For example, the salt might be maliciously constructed
 to encode the local IP address of the client. As a result, APIs SHOULD NOT allow clients
 to provide the salt directly; see {{apis}} for API considerations.
-
-When sLen = 0, the PSS salt is empty and the resulting signature is deterministic. Such
-signatures may be useful for applications wherein the only desired source of entropy is
-the input message.
-
-Applications that use deterministic signatures SHOULD carefully analyze the security implications.
-When the required signature protocol is not clear, applications SHOULD default to randomized signatures.
 
 ## Key Substitution Attacks
 
@@ -540,7 +569,7 @@ The following parameters are specified:
   encoded as hexadecimal strings.
 - sig: The output message signature.
 
-Test vector for probabilistic signatures (sLen=48):
+Test vector for probabilistic signatures (sLen=48, random messages, no message salting):
 
 ~~~
 p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
@@ -676,76 +705,4 @@ f29306f25623ad1e8aa08ef71b54b8ee447b5f64e73d09bdd6c3b7ca224058d7c67c
 c7551e9241688ada12d859cb7646fbd3ed8b34312f3b49d69802f0eaa11bc4211c2f
 7a29cd5c01ed01a39001c5856fab36228f5ee2f2e1110811872fe7c865c42ed59029
 c706195d52
-~~~
-
-Test vector for deterministic signatures (sLen=0):
-
-~~~
-p = ca9d82e9059fa3b145da850e0c451ff31093d819644ba29a3409393de2adfa1b
-cd65e8669a5c5140142c1404204edbc380d4e7a5c866c06bb2427c76b9e3d16bbfc1
-b1668dec219b8c59fee90b7baf557fc2feb13f2f4b30d8606d20b9928f4f588a3b34
-baa659b3bd1dd590c83e90e6251b5239fbbb73b12e90534a375e3f71
-q = c075694f69db6a07456e19eeace01b430f2d6cc6cd5495d569e242b6f5e8ded7
-df27e6aeea4db4e307554fb519b68279a58d9e2d25cee4b37668554eec2f2feb7924
-6955a07bd526f02a6afedc7a3aff2b8953287fef2c4a02207ccb9f14e4612e9af344
-7dd3401728a8957871b759b6bbf22aa0e8271b82f32dd5a2d2550197
-n = 98530f850dcc894d84ecfce9dec3a475bf30ec3ce4606f677ac4a6ef63f763ff
-64a162ef1c991d8094b5652d0d78c126b3e97d1d77eba2f833b5be9a124e003065ec
-2a3ea4fbc31bc283de1c7cd8a971eb57aa7284b082562ccde572b73702068a6143e6
-dabf886538ff419874c300a85f3d9d50f0731fc6b9c92a121fefb7911f5ea92d25b1
-7a4f3b2883eff34a221b5c28c488e35067a8460d8fab1c405704ebfa1ca165d69cd4
-e425995a03a447f6cbba5d20d459707ab4a2c537a5dbd02801d7b19a03aaa9aec21d
-1c363996c6b9fee2cab370d501c9b67e7dc4a20eb0cdc3b24be242093b5a66119b96
-da0fb0ec0b1b0da0bd0b92236ece47d5c95bdca7
-e = 010001
-d = 6b15d18e4f8220709fe75f7226ca517ef9b7320d28dc66d54fa89a5727670f24
-c7a0f1857a0c6682338946a4a298e6e90788390e137553afbbe2a4297a7edd8128d6
-1b68c8e1b96b7596f0fa0406e9308e2ba64735e344edc237c97b993411b7796721ae
-54d05bda1574d5af913e59e30479b373e86676cb6566f7ada0480d3ae21d50ac94c0
-b41c476e566d6bcdef88eeab3042ef1016527558e794b6029cff1120596fe2104fac
-928a66ad2fb1094d1ae1231abf95206cae7cd4e7aad388199d7ac1fe17e3f9174362
-32cffe70e12056e02cfb9604e73cc34984bb83f7112ed197bf3a4d9f6d0c0e3c4dd8
-f2d9cbe17185f1e63561b08f7d14bd36112f3ea1
-msg = 5465737420766563746f7220776974682064657465726d696e697374696320
-70616464696e67
-encoded_msg = 4021ac68705782fb7587bf24ac0528853025aa4a998db7b1a503af
-b5b266cbd1876710a2b0aa6e37b70fca538d42285beddd61d965c02b2162c8644587
-3bdaf687a29bf6b2ab10fa22013cae53ff1c78969ef6c3eb069bfef339a5df788044
-d159678e571e50fc3fa40a30fe183348453542f258c663dc9c4b372895120ad12ff8
-b8ec1d37d766b2604fbf50bf9d84432a59593d21d7f379d6bf9198ea2fa90ee5abad
-b27eada5d6f40a2ec45aa4bb8710042beab5c6afb4381fc57012e61b3a815800e53e
-69fe2fdccb3b4ee51968c1ef6281d7e8fe08c4337bad73d99e947df834e5402378a6
-6142bf032dfade7e6e2d43ae90b145055861e06eff189b63bc
-inv = 6e69972553327ee6240ce0de7146aea2243927cf9f7f52c0103367df79e3ba
-febfa61c2ffdc41ea397a38523654a1a806f4eebcd5fe9a2592a463f1faa26c3601f
-83f29141eda488f14f7c0aa82faa025e37adbe77e02e575f72f7b9d095882923476f
-2328dfaeb23b607d2f706c6c8ef6c2aee50ddb14e6d27e043e7dec8e5dede6844aa8
-0b2206b6019350d37925bb8819653aa7a13bfb9cc3c95b53378f278903b5c06a10c0
-b3ce0aa028e9600f7b2733f0278565f9b88e9d92e039db78300170d7bbd32ce2b89a
-d8944167839880e3a2aeba05bf00edc8032a63e6279bf42a131ccc9bb95b8693764b
-27665274fb673bdfb7d69b7957ee8b64a99efbeed9
-blinded_msg = 5a631b41e7759a634cef04359436e358143ee2892fbebd072d1e5c
-c45475ff55b6b492e13c59979f4b968994ddca3cc068084d3b176a6132039c584707
-acbb9862c009fa5b63cfb7b6f6d577825c1e81ad11059cb87a524083230f906ea0a4
-d9db3434d49cf9f0ea52b2425db4d319f51540e5de6cfb30b86d5e5d810a284f3478
-f6259f054407c854303ec23c2e0989dd57aa002e56ab6287594c25154a1646060cb4
-f6479b07f627991f7089ac0491d5841d6461166b324b3d448b2a8071de68505503fe
-adf7d8182d18d8b0d3b91d77b627a5ffae68f913efbbb2fc082437f845880f94f07d
-873bc0c0688f60033235bcc1701dcba83dca944b05227884e3
-blind_sig = 817596a0b568088b60c29482c0178d34e0d54dc34a9375152701e4e6
-d5ef76c92f4281a377d8b2f438f6af4ef9c26dd38ad2cc932f90fe45d4c0a1ba10e6
-95a1c8e797aa5023f84385904e5f378df5677b8eb7312f835f9e3a097b1b7e55fece
-0d00ec3f52ba26b39c91322b6404eef4e567d909195bfc0f72690805ea3f71736d7e
-b51e84556c5241786f5f37bf9d2a0305bf36454d9ab8b5a9f6fe03fd4ab472b5379d
-7e8ab92e803c7c15bf3d0234653e1f6d80d23c7f127bed7fba3d297b62fee51b8e71
-b04d402cf291ac87460011fd222cfd27b5669d79d1e0dcc8d911c2dc6d0edcd205a9
-1278cc97019cfc709ce8a50297409e66f27b1299e386a6cd
-sig = 848fc8a032ea073280a7d9146ae55bb0199cd1941c10a03cce1dc38579c4e7
-7e87f259e250b16a9912ce2c085cb9489846f803fd6ed09bf8605c4aa8b0ebf2c938
-093e53ad025a48b97f7975255805118c33fa0f73ec204b9723acefacd8031ab3d9f7
-ebeaf996eee3678c788cea96932dd723b236355c0e6864fad2fc87b00e4eda476e90
-f000936b0d9fa65bf1112fc296e8aa5bb05ca7cb32dec01407e3d3ed94c1ebb0dc43
-0ea59588ccc0995a6e2f1423dbe06c6f27650b23b12eb343b9e461ba532825e5e265
-72fbe723b69753c178361e7a834a566ce950df55ff97d314b384b3fa8c0098d560d4
-c6ba519a9b6040f908adf34f6b2d5d30c265cd0fb1
 ~~~
