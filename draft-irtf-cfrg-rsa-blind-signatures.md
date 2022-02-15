@@ -62,10 +62,6 @@ informative:
       -
         ins: H. Krawczyk
         org: IBM Research, NY, USA
-  XXXX:
-    title:  "To Appear"
-    target: https://eprint.iacr.org/2022/XXXX
-    date: March, 2022
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
@@ -125,6 +121,19 @@ informative:
       -
         ins: Microsoft
         org: Microsoft
+  GRSB19:
+    title: Efficient Noninteractive Certification of RSA Moduli and Beyond
+    target: https://eprint.iacr.org/2018/057.pdf
+    date: October, 2019
+    authors:
+      -
+        ins: S. Goldberg
+      -
+        ins: L. Reyzin
+      -
+        ins: O. Sagga
+      -
+        ins: F. Baldimtsi
 
 --- abstract
 
@@ -189,7 +198,7 @@ The core issuance protocol runs as follows:
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
   -------------------------------------------------------
-  blinded_msg, inv, salt_msg = Blind(pkS, msg)
+  blinded_msg, inv, msg_salt = Blind(pkS, msg)
 
                         blinded_msg
                         ---------->
@@ -199,7 +208,7 @@ The core issuance protocol runs as follows:
                          blind_sig
                         <----------
 
-  sig = Finalize(pkS, msg, salt_msg, blind_sig, inv)
+  sig = Finalize(pkS, msg, msg_salt, blind_sig, inv)
 ~~~
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
@@ -241,7 +250,7 @@ Inputs:
 Outputs:
 - blinded_msg, an octet string of length kLen
 - inv, an octet string of length kLen
-- salt_msg, a 32 octets random salt used to salt the message
+- msg_salt, a 32 octets random salt used to salt the message
 
 Errors:
 - "message too long": Raised when the input message is too long.
@@ -249,8 +258,8 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. salt_msg = random(32)
-2. salted_msg = HF(salt_msg || msg )
+1. msg_salt = random(32)
+2. salted_msg = HF(msg_salt || msg )
 3. encoded_msg = EMSA-PSS-ENCODE(salted_msg, kBits - 1)
    with MGF and HF as defined in the parameters
 4. If EMSA-PSS-ENCODE raises an error, raise the error and stop
@@ -263,7 +272,7 @@ Steps:
 10. z = m * x mod n
 11. blinded_msg = int_to_bytes(z, kLen)
 12. inv = int_to_bytes(r_inv, kLen)
-13. output blinded_msg, inv, salt_msg
+13. output blinded_msg, inv, msg_salt
 ~~~
 
 The blinding factor r must be randomly chosen from a uniform distribution.
@@ -313,7 +322,7 @@ upon success. Note that this function will internally hash the input message
 as is done in rsabssa_blind.
 
 ~~~
-rsabssa_finalize(pkS, msg, blind_sig, inv)
+rsabssa_finalize(pkS, msg, msg_salt, blind_sig, inv)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -321,7 +330,7 @@ Parameters:
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, an octet string
-- salt_msg, the 32 octets random salt used to salt the message
+- msg_salt, the 32 octets random salt used to salt the message
 - blind_sig, signed and blinded element, an octet string of
   length kLen
 - inv, inverse of the blind, an octet string of length kLen
@@ -341,17 +350,17 @@ Steps:
 4. r_inv = bytes_to_int(inv)
 5. s = z * r_inv mod n
 6. sig = int_to_bytes(s, kLen)
-7. result = rsabssa_verify(pkS, msg, salt_msg, sig)
+7. result = rsabssa_verify(pkS, msg, msg_salt, sig)
 8. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
 
 ### Verify
 
-rsabssa_verify validates the resulting unblinded signature. If a random message is used (see {{ msg-entropy }}), rsabssa_verify is equivalent to RSASSA-PSS-VERIFY.
+rsabssa_verify validates the resulting unblinded signature over the input message and message salt.
 
 ~~~
-rsabssa_verify(pkS, msg, salt_msg, sig)
+rsabssa_verify(pkS, msg, msg_salt, sig)
 
 Parameters:
 - kLen, the length in octets of the RSA modulus n
@@ -359,7 +368,7 @@ Parameters:
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, an octet string
-- salt_msg, the salted_msg used for the blinding
+- msg_salt, the 32 octets random salt used to salt the message
 - sig, signature of the salted_msg
 
 Outputs:
@@ -369,8 +378,8 @@ Errors:
 - "invalid signature": Raised when the signature is invalid
 
 Steps:
-1. salted_msg = HF(salt_msg || msg )
-2. result = RSASSA-PSS-VERIFY(pkS, salted_msg, sig)
+1. msg_salt = HF(salt_msg || msg )
+2. result = RSASSA-PSS-VERIFY(pkS, msg_salt, sig)
 3. If result = "valid signature", output "valid signature", else
    raise "invalid signature" and stop
 ~~~
@@ -457,11 +466,29 @@ well-structured for the relevant application. For example, if an application of 
 requires messages to be structures of a particular form, then verifiers should check that
 unblinded messages adhere to this form.
 
-## Message Entropy {#msg-entropy}
+## Message Entropy {#message-entropy}
 
-In order to provably satisfy the blindness property against a malicious signer {{XXXX}}, it is important that the signed message is randomized prior to being sent to the signer. TODO: Expand on this upon publication of {{ XXXX }}.
+The choice of blinding mechanism has security implications on the blindness properties of the
+blind RSA protocol. In particular, a malicious signer can construct an invalid public and use
+it to learn information about low-entropy with input messages. Note that some invalid public
+keys may not yield valid signatures when run with the protocol, e.g., because the signature
+fails to verify. However, if an attacker can coerce the client to use these invalid public
+keys with low-entropy inputs, they can learn information about the client inputs before
+the protocol completes.
 
-Therefore, the message is salted with 32 random octets. However, if the message is a high-entropy random token, the salting of the message can be ignored and `msg` can be blinded instead of `msg_salted` in Step 3 of the `rsabssa_blind` function, skipping step 1 and 2. The rsabssa_verify function can then be replaced by RSASSA-PSS-VERIFY.
+Based on this fact, using the internal functions in {{generation}} is possibly unsafe,
+unless one of the following conditions are met:
+
+1. The client has proof that the signer's public key is honestly generated. {{GRSB19}} presents
+  some (non-interactive) honest-verifier zero-knoweldge proofs of various statements about the
+  public key.
+2. The client input message has high entropy.
+
+The protocol in {{generation}} is designed to explicitly inject fresh entropy alongside each
+message to satisfy condition (2).
+
+Note that this interface effectively means that the resulting signature is always randomized.
+As such, this interface cannot be used for applications that require deterministic signatures.
 
 ## PSS Salt Considerations {#pss-salt}
 
@@ -496,6 +523,8 @@ Full Domain Hash (FDH) {{RSA-FDH}} encoding is also possible, and this variant h
 equivalent security to PSS {{?KK18=DOI.10.1007/s00145-017-9257-9}}. However, FDH is
 less standard and not used widely in related technologies. Moreover, FDH is
 deterministic, whereas PSS supports deterministic and probabilistic encodings.
+However, as noted in {{message-entropy}}, the protocol in this document only supports
+probabilistic encodings.
 
 ## Alternative Blind Signature Protocols
 
