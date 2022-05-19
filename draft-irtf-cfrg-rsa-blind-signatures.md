@@ -342,7 +342,7 @@ Steps:
 
 The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as follows:
 
-- Hash: hash function (hLen denotes the length in octets of the hash function output)
+- Hash: hash function
 - MGF: mask generation function
 - sLen: intended length in octets of the salt
 
