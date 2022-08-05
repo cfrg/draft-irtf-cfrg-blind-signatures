@@ -222,7 +222,7 @@ input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS
 routine defined in {{!RFC3447}}. The finalization function performs that check before
 returning the signature.
 
-# RSABSSA Signature Instantiation
+# RSABSSA Signature Instantiation {#internal}
 
 Section 8.1 of {{!RFC8017}} defines RSASSA-PSS RSAE, which is a signature algorithm
 using RSASSA-PSS {{RFC8017}} with mask generation function 1. In this section, we
@@ -690,8 +690,9 @@ This document makes no IANA requests.
 
 # Test Vectors
 
-This section includes test vectors for the blind signature protocol defined in this document.
-The following parameters are specified:
+This section includes test vectors for the blind signature protocol defined in {{internal}}.
+It does not include test vectors based on the external interface in {{salted-interface}}.
+The following parameters are specified for each test vector:
 
 - p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
 - msg: Messsage being signed, encoded as a hexadecimal string. The hash is computed using SHA-384.
