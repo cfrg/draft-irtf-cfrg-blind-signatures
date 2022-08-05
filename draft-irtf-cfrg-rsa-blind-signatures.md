@@ -62,6 +62,12 @@ informative:
       -
         ins: H. Krawczyk
         org: IBM Research, NY, USA
+  Lys22:
+    title: "Security Analysis of RSA-BSSA"
+    target: https://eprint.iacr.org/2022/895
+    authors:
+      -
+        ins: A. Lysyanskaya
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
@@ -364,7 +370,8 @@ input to rsabssa_blindsign.
 
 Applications that provide high-entropy input messages can expose the internal
 rsabssa_blind and rsabssa_finalize directly, as the additional message randomization
-does not offer security advantages. See {{apis}} and {{message-entropy}} for more information.
+does not offer security advantages. See {{Lys22}}, {{apis}}, and {{message-entropy}}
+for more information.
 
 ### Salted Blind
 
@@ -556,7 +563,7 @@ unblinded messages adhere to this form.
 
 ## Message Entropy {#message-entropy}
 
-The choice of blinding mechanism has security implications on the blindness properties of the
+As discussed in {{Lys22}}, the choice of blinding mechanism has security implications on the blindness properties of the
 blind RSA protocol. In particular, a malicious signer can construct an invalid public and use
 it to learn information about low-entropy with input messages. Note that some invalid public
 keys may not yield valid signatures when run with the protocol, e.g., because the signature
