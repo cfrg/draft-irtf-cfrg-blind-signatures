@@ -466,7 +466,7 @@ Errors:
 - "invalid signature": Raised when the signature is invalid
 
 Steps:
-1. salted_msg = HF(salt_msg || msg )
+1. salted_msg = salt_msg || msg
 2. result = RSASSA-PSS-VERIFY(pkS, salted_msg, sig)
 3. If result = "valid signature", output "valid signature", else
   raise "invalid signature" and stop
