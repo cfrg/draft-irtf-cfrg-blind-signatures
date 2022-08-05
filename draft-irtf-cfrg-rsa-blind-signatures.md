@@ -362,7 +362,7 @@ the internal functions in {{generation}}. Note that this only changes what is pa
 to rsabssa_blind and rsabssa_finalize, as the application message is not provided as
 input to rsabssa_blindsign.
 
-Applciations that provide high-entropy input messages can expose the internal
+Applications that provide high-entropy input messages can expose the internal
 rsabssa_blind and rsabssa_finalize directly, as the additional message randomization
 does not offer security advantages. See {{apis}} and {{message-entropy}} for more information.
 
