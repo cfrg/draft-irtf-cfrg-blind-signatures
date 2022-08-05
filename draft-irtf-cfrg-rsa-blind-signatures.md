@@ -398,7 +398,7 @@ Errors:
 Steps:
 1. msg_salt = random(32)
 2. salted_msg = msg_salt || msg
-3. blinded_msg, inv = blind(pkS, msg)
+3. blinded_msg, inv = blind(pkS, salted_msg)
 4. output msg_salt, blinded_msg, inv
 ~~~
 
