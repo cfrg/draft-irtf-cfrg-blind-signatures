@@ -85,7 +85,7 @@ def rsabssa_blind(
     if r_inv is not None:  # for test vector verification
         r = inverse(r_inv, n)
     else:
-        r = random_integer_uniform(1, n)
+        r = random_integer_uniform(n, 1)
         try:
             r_inv = inverse(r, n)
         except ValueError:
