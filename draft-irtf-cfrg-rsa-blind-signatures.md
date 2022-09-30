@@ -155,18 +155,19 @@ Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
-Recently, interest in blind signatures has grown to address operational shortcomings from VOPRFs
-such as {{?I-D.irtf-cfrg-voprf}}. Specifically, VOPRF evaluation requires access to the private key,
-and is therefore required for both issuance and redemption of tokens in anonymous authentication
-protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.
-This limitation complicates deployments where it is not desirable to distribute secret keys to entities
-performing token verification. Additionally, if the private key is kept in a Hardware Security Module,
-the number of operations on the key is doubled compared to a scheme where the private key is only
-required for issuance of the tokens.
+Recently, interest in blind signatures has grown to address operational shortcomings from applications
+that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?I-D.irtf-cfrg-voprfs}}, such
+as Privacy Pass {{?I-D.ietf-privacypass-protocol}}. Specifically, VOPRFs are not necessarily
+publicly verifiable, meaning that a verifier needs access to the VOPRF private key to verify
+that the output of a VOPRF protocol is valid for a given input. This limitation complicates
+deployments where it is not desirable to distribute private keys to entities performing verification.
+Additionally, if the private key is kept in a Hardware Security Module, the number of operations
+on the key is doubled compared to a scheme where only the public key is required for verification.
 
-In contrast, cryptographic signatures provide a primitive that is publicly verifiable and does not
+In contrast, digital signatures provide a primitive that is publicly verifiable and does not
 require access to the private key for verification. Moreover, {{JKK14}} shows that one can realize
-a VOPRF in the Random Oracle Model by hashing a (deterministic) blind signature-message pair.
+a VOPRF in the Random Oracle Model by hashing a signature-message pair, where the signature is
+computed using from a deterministic blind signature protocol.
 
 This document specifies a protocol for the RSA Blind Signature Scheme with Appendix (RSABSSA). In
 order to facilitate deployment, we define it in such a way that the resulting (unblinded) signature
@@ -189,8 +190,8 @@ in this document:
   such that M <= R < N.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n. This function
   fails if x and n are not co-prime.
-- len(s): The length of a byte string, in octets.
-- random(n): Generate n random octets using a cryptographically-secure pseudorandom number generator.
+- len(s): The length of a byte string, in bytes.
+- random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
 
 # Blind Signature Protocol Overview {#overview}
 
@@ -219,14 +220,14 @@ The core issuance protocol runs as follows:
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
 input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in {{!RFC3447}}. The finalization function performs that check before
-returning the signature.
+routine defined in Section 8.1.2 of {{!RFC8017}}. The finalization function performs that
+check before returning the signature.
 
 # RSABSSA Signature Instantiation {#internal}
 
-Section 8.1 of {{!RFC8017}} defines RSASSA-PSS RSAE, which is a signature algorithm
-using RSASSA-PSS {{RFC8017}} with mask generation function 1. In this section, we
-define RSABSSA, a blinded variant of this algorithm.
+Section 8.1.1 of {{!RFC8017}} defines RSASSA-PSS-SIGN, which is a signature algorithm
+using RSASSA-PSS {{RFC8017}} with mask generation function 1 (MGF1; see Sections A.2.3
+and B.2.1 of {{RFC8017}}). In this section, we define RSABSSA, a blinded variant of RSASSA-PSS-SIGN.
 
 ## Signature Generation {#generation}
 
@@ -238,25 +239,25 @@ A specification of these subroutines is below.
 
 rsabssa_blind encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server and the corresponding
-inverse, both encoded as octet strings. RSAVP1 and EMSA-PSS-ENCODE are as defined in
-{{!RFC3447}}.
+inverse, both encoded as byte strings. RSAVP1 and EMSA-PSS-ENCODE are as defined in
+Section 5.2.2 and Section 9.1.1 of {{!RFC8017}}, respectively.
 
 ~~~
 rsabssa_blind(pkS, msg)
 
 Parameters:
-- kLen, the length in octets of the RSA modulus n
-- kBits, the length in bits of the RSA modulus n
+- kLenInBytes, the length in bytes of the RSA modulus n
+- kLenInBits, the length in bits of the RSA modulus n
 - HF, the hash function used to hash the message
 - MGF, the mask generation function
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an octet string
+- msg, message to be signed, an byte string
 
 Outputs:
-- blinded_msg, an octet string of length kLen
-- inv, an octet string of length kLen
+- blinded_msg, an byte string of length kLenInBytes
+- inv, an byte string of length kLenInBytes
 
 Errors:
 - "message too long": Raised when the input message is too long.
@@ -264,7 +265,7 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_msg = EMSA-PSS-ENCODE(msg, kBits - 1)
+1. encoded_msg = EMSA-PSS-ENCODE(msg, kLenInBits - 1)
    with MGF and HF as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
@@ -274,8 +275,8 @@ Steps:
    and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
-9. blinded_msg = int_to_bytes(z, kLen)
-10. inv = int_to_bytes(r_inv, kLen)
+9. blinded_msg = int_to_bytes(z, kLenInBytes)
+10. inv = int_to_bytes(r_inv, kLenInBytes)
 11. output blinded_msg, inv
 ~~~
 
@@ -285,22 +286,22 @@ This is typically done via rejection sampling.
 ### BlindSign
 
 rsabssa_blind_sign performs the RSA private key operation on the client's
-blinded message input and returns the output encoded as an octet string.
-RSASP1 is as defined in {{!RFC3447}}.
+blinded message input and returns the output encoded as an byte string.
+RSASP1 is as defined in Section 5.2.1 of {{!RFC8017}}.
 
 ~~~
 rsabssa_blind_sign(skS, blinded_msg)
 
 Parameters:
-- kLen, the length in octets of the RSA modulus n
+- kLenInBytes, the length in bytes of the RSA modulus n
 
 Inputs:
 - skS, server private key
 - blinded_msg, encoded and blinded message to be signed, an
-  octet string
+  byte string
 
 Outputs:
-- blind_sig, an octet string of length kLen
+- blind_sig, an byte string of length kLenInBytes
 
 Errors:
 - "unexpected input size": Raised when a byte string input doesn't
@@ -309,12 +310,12 @@ Errors:
   to sign is not an integer between 0 and n - 1.
 
 Steps:
-1. If len(blinded_msg) != kLen, raise "unexpected input size"
+1. If len(blinded_msg) != kLenInBytes, raise "unexpected input size"
    and stop
 2. m = bytes_to_int(blinded_msg)
 3. If m >= n, raise "invalid message length" and stop
 4. s = RSASP1(skS, m)
-5. blind_sig = int_to_bytes(s, kLen)
+5. blind_sig = int_to_bytes(s, kLenInBytes)
 6. output blind_sig
 ~~~
 
@@ -329,17 +330,17 @@ as is done in rsabssa_blind.
 rsabssa_finalize(pkS, msg, blind_sig, inv)
 
 Parameters:
-- kLen, the length in octets of the RSA modulus n
+- kLenInBytes, the length in bytes of the RSA modulus n
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an octet string
-- blind_sig, signed and blinded element, an octet string of
-  length kLen
-- inv, inverse of the blind, an octet string of length kLen
+- msg, message to be signed, an byte string
+- blind_sig, signed and blinded element, an byte string of
+  length kLenInBytes
+- inv, inverse of the blind, an byte string of length kLenInBytes
 
 Outputs:
-- sig, an octet string of length kLen
+- sig, an byte string of length kLenInBytes
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
@@ -347,12 +348,12 @@ Errors:
   have the expected length.
 
 Steps:
-1. If len(blind_sig) != kLen, raise "unexpected input size" and stop
-2. If len(inv) != kLen, raise "unexpected input size" and stop
+1. If len(blind_sig) != kLenInBytes, raise "unexpected input size" and stop
+2. If len(inv) != kLenInBytes, raise "unexpected input size" and stop
 3. z = bytes_to_int(blind_sig)
 4. r_inv = bytes_to_int(inv)
 5. s = z * r_inv mod n
-6. sig = int_to_bytes(s, kLen)
+6. sig = int_to_bytes(s, kLenInBytes)
 7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
 8. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
@@ -361,7 +362,7 @@ Steps:
 ## External Application Interface {#salted-interface}
 
 This section presents an application interface for blinding, finalizing, and verifying
-messages that is build on the internal functions described in {{generation}}. This
+messages that is built on the internal functions described in {{generation}}. This
 interface injects additional entropy into application messages by choosing a random
 salt of length 32 bytes, prepending the salt to the input message, and then invoking
 the internal functions in {{generation}}. Note that this only changes what is passed
@@ -377,25 +378,25 @@ for more information.
 
 rsabssa_salted_blind invokes rsabssa_blind with a salted input message and outputs the
 blinded message to be sent to the server and the corresponding inverse, both encoded
-as octet strings, as well as the fresh message salt, which is 32 random bytes.
+as byte strings, as well as the fresh message salt, which is 32 random bytes.
 
 ~~~
 rsabssa_salted_blind(pkS, msg)
 
 Parameters:
-- kLen, the length in octets of the RSA modulus n
-- kBits, the length in bits of the RSA modulus n
+- kLenInBytes, the length in bytes of the RSA modulus n
+- kLenInBits, the length in bits of the RSA modulus n
 - HF, the hash function used to hash the message
 - MGF, the mask generation function
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an octet string
+- msg, message to be signed, an byte string
 
 Outputs:
-- blinded_msg, an octet string of length kLen
-- inv, an octet string of length kLen
-- msg_salt, an octet string of length 32 bytes
+- blinded_msg, an byte string of length kLenInBytes
+- inv, an byte string of length kLenInBytes
+- msg_salt, an byte string of length 32 bytes
 
 Errors:
 - "message too long": Raised when the input message is too long.
@@ -418,18 +419,18 @@ message and outputs the result.
 rsabssa_salted_finalize(pkS, msg, blind_sig, inv)
 
 Parameters:
-- kLen, the length in octets of the RSA modulus n
+- kLenInBytes, the length in bytes of the RSA modulus n
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an octet string
-- msg_salt, the 32 octets random salt used to salt the message
-- blind_sig, signed and blinded element, an octet string of
-  length kLen
-- inv, inverse of the blind, an octet string of length kLen
+- msg, message to be signed, an byte string
+- msg_salt, the 32 bytes random salt used to salt the message
+- blind_sig, signed and blinded element, an byte string of
+  length kLenInBytes
+- inv, inverse of the blind, an byte string of length kLenInBytes
 
 Outputs:
-- sig, an octet string of length kLen
+- sig, an byte string of length kLenInBytes
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
@@ -451,12 +452,12 @@ message with the message salt.
 rsabssa_salted_verify(pkS, msg, msg_salt, sig)
 
 Parameters:
-- kLen, the length in octets of the RSA modulus n
+- kLenInBytes, the length in bytes of the RSA modulus n
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an octet string
-- msg_salt, the 32 octets random salt used to salt the message
+- msg, message to be signed, an byte string
+- msg_salt, the 32 bytes random salt used to salt the message
 - sig, signature of the salted_msg
 
 Outputs:
@@ -478,13 +479,13 @@ The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as fol
 
 - Hash: hash function
 - MGF: mask generation function
-- sLen: intended length in octets of the salt
+- sLenInBytes: intended length in bytes of the salt
 
 Implementations that expose the interface in {{salted-interface}} are RECOMMENDED to
-support SHA-384 as Hash and MGF functions and sLen = 48, as described in {{!RFC8230, Section 2}}.
+support SHA-384 as Hash and MGF functions and sLenInBytes = 48, as described in {{!RFC8230, Section 2}}.
 
 Implementations that expose the internal interface in {{generation}} are also RECOMMENDED
-to support SHA-384 as Hash and MGF functions and sLen = 0. Note that setting sLen = 0 has
+to support SHA-384 as Hash and MGF functions and sLenInBytes = 0. Note that setting sLenInBytes = 0 has
 the result of making the signature deterministic.
 
 The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
@@ -513,7 +514,7 @@ It is NOT RECOMMENDED that APIs allow clients to specify RSA-PSS parameters dire
 to set the PSS salt value or its length. Instead, it is RECOMMENDED that implementations
 generate the PSS salt using the same source of randomness used to produce the blinding factor.
 
-If implementations need support for randommized and deterministic signatures, they should
+If implementations need support for randomized and deterministic signatures, they should
 offer separate abstractions for each. Allowing callers to control the PSS salt value or
 length may have security consequences. See {{det-sigs}} for more information about details.
 
@@ -529,11 +530,14 @@ Chaum's original blind signature protocol based on RSA-FDH:
 - Concurrent polynomial security. This means that servers can engage in polynomially many
   invocations of the protocol without compromising security.
 
-Both results rely upon the RSA Known Target Inversion Problem being hard.
+Both results rely upon the RSA Known Target Inversion Problem being hard. However, this analysis
+is incomplete as it does not account for adversarially-generated keys. This threat model has
+important implications for appliations using the blind signature protocol described in this
+document; see {{message-entropy}} for more details.
 
-The design in this document differs from the analysis in {{BNPS03}} only in message encoding,
-i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively reduces PSS
-to FDH, so the same results apply.
+Lastly, the design in this document differs from the analysis in {{BNPS03}} only in message
+encoding, i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively
+reduces PSS to FDH, so the same results apply.
 
 ## Timing Side Channels
 
@@ -563,8 +567,7 @@ unblinded messages adhere to this form.
 
 ## Message Entropy {#message-entropy}
 
-As discussed in {{Lys22}}, the choice of blinding mechanism has security implications on the blindness properties of the
-blind RSA protocol. In particular, a malicious signer can construct an invalid public and use
+As discussed in {{Lys22}}, a malicious signer can construct an invalid public key and use
 it to learn information about low-entropy with input messages. Note that some invalid public
 keys may not yield valid signatures when run with the protocol, e.g., because the signature
 fails to verify. However, if an attacker can coerce the client to use these invalid public
@@ -589,7 +592,7 @@ See {{det-sigs}} for more details.
 
 ## Randomized and Deterministic Signatures {#det-sigs}
 
-When sLen > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
+When sLenInBytes > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
 This means the resulting signature is non-deterministic. As a result, two signatures over
 the same message will be different. If the salt is not generated randomly, or is otherwise
 constructed maliciously, it might be possible for the salt to encode information that is
@@ -597,14 +600,16 @@ not present in the signed message. For example, the salt might be maliciously co
 to encode the local IP address of the client. As a result, APIs SHOULD NOT allow clients
 to provide the salt directly; see {{apis}} for API considerations.
 
-When sLen = 0, the PSS salt is empty and the resulting signature is deterministic. Such
+When sLenInBytes = 0, the PSS salt is empty and the resulting signature is deterministic. Such
 signatures may be useful for applications wherein the only desired source of entropy is
-the input message.
+the input message. Note, however, that this can be unsafe if the input message does not have
+sufficient entropy; see {{message-entropy}} for more details.
 
 Applications that use deterministic signatures SHOULD carefully analyze the security
-implications. When the required signature protocol is not clear, applications SHOULD
-default to randomized signatures, and the salted interface described in {{salted-interface}}
-SHOULD be used.
+implications, taking into account the possibility of adversarially generated signer
+keys as described in {{message-entropy}}. When it is not clear whether an application
+requires deterministic or randomized signatures, applications SHOULD use randomized
+signatures, and the salted interface described in {{salted-interface}} SHOULD be used.
 
 ## Key Substitution Attacks
 
@@ -616,9 +621,9 @@ from one context in another. Entities that verify signatures must take care to e
 
 ## Alternative RSA Encoding Functions
 
-This document document uses PSS encoding as specified in {{!RFC3447}} for a number of
+This document document uses PSS encoding as specified in {{!RFC8017}} for a number of
 reasons. First, it is recommended in recent standards, including TLS 1.3 {{?RFC8446}},
-X.509v3 {{?RFC4055}}, and even PKCS#1 itself. According to {{?RFC3447}}, "Although no
+X.509v3 {{?RFC4055}}, and even PKCS#1 itself. According to {{?RFC8017}}, "Although no
 attacks are known against RSASSA-PKCS#1 v1.5, in the interest of increased robustness,
 RSA-PSS is recommended for eventual adoption in new applications." While RSA-PSS is
 more complex than RSASSA-PKCS#1 v1.5 encoding, ubiquity of RSA-PSS support influenced
@@ -696,14 +701,14 @@ The following parameters are specified for each test vector:
 
 - p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
 - msg: Messsage being signed, encoded as a hexadecimal string. The hash is computed using SHA-384.
-- salt: Randomly-generated salt used when computing the signature. The length (sLen) is either 48 or 0 bytes.
+- salt: Randomly-generated salt used when computing the signature. The length (sLenInBytes) is either 48 or 0 bytes.
 - inv: The message blinding inverse, encoded as a hexadecimal string.
 - encoded\_msg: EMSA-PSS encoded message. The mask generation function is MGF1 with SHA-384.
 - blinded\_msg, blind\_sig: The protocol values exchanged during the computation,
   encoded as hexadecimal strings.
 - sig: The output message signature.
 
-Test vector for probabilistic signatures (sLen=48):
+Test vector for probabilistic signatures (sLenInBytes=48):
 
 ~~~
 p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
@@ -841,7 +846,7 @@ c7551e9241688ada12d859cb7646fbd3ed8b34312f3b49d69802f0eaa11bc4211c2f
 c706195d52
 ~~~
 
-Test vector for deterministic signatures (sLen=0):
+Test vector for deterministic signatures (sLenInBytes=0):
 
 ~~~
 p = ca9d82e9059fa3b145da850e0c451ff31093d819644ba29a3409393de2adfa1b
