@@ -119,6 +119,17 @@ informative:
       -
         ins: D. Brumley
         org: Stanford University
+  TZ22:
+    title: "Short Pairing-Free Blind Signatures with Exponential Security"
+    target: https://eprint.iacr.org/2022/047
+    date: January, 2022
+    authors:
+      -
+        ins: S. Tessaro
+        org: University of Washington
+      -
+        ins: C. Zhu
+        org: University of Washington
   UProve:
     title: U-Prove
     target: https://www.microsoft.com/en-us/research/project/u-prove/
@@ -662,8 +673,7 @@ levels. In contrast, the variant in this specification has no such concurrency l
 - Clause Blind Schnorr {{?FPS20=DOI.10.1007/978-3-030-45724-2_3}}: This is a three-message protocol
 based on a variant of the blind Schnorr signature protocol. This variant of the protocol is not
 known to be vulnerable to the attack in {{PolytimeROS}}, though the protocol is still new and
-under consideration. In the future, this may be a candidate for future blind signatures based
-on blind signatures. However, the three-message flow necessarily requires two round trips
+under consideration. The three-message flow necessarily requires two round trips
 between the client and server, which may be prohibitive for large-scale signature generation.
 Further analysis and experimentation with this protocol is needed.
 - BSA {{?Abe01=DOI.10.1007/3-540-44987-6_9}}: This is a three-message protocol based on elliptic
@@ -671,6 +681,12 @@ curve groups similar to blind Schnorr. It is also not known to be vulnerable to 
 in {{PolytimeROS}}. Kastner et al. {{KLRX20}} proved concurrent security with a polynomial number
 of sessions. For similar reasons to the clause blind Schnorr protocol above, the additional
 number of round trips requires further analysis and experimentation.
+- WFROS-based Schemes {{TZ22}}: This work contains four proposed schemes, each of which are
+three-message protocols based on a variant of the blind Schnorr signature protocol. Security of these
+schemes depend on the Weighted Fractional ROS problem, for which the authors prove an exponential
+and unconditional lower bound, and therefore have tighter security bounds than the Clause Blind Schnorr
+schemes. The performance of the scheme is similar to Clause Blind Schnorr, yet signing is more efficient.
+Similarly to Clause Blind Schnorr schemes, the two round trips required by three-message flows need further analysis and experimentation.
 - Blind BLS {{BLS-Proposal}}: The Boneh-Lynn-Shacham {{?I-D.irtf-cfrg-bls-signature}} protocol can
 incorporate message blinding when properly instantiated with Type III pairing group. This is a
 two-message protocol similar to the RSA variant, though it requires pairing support, which is
