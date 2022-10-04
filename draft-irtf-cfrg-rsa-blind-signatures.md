@@ -681,7 +681,7 @@ curve groups similar to blind Schnorr. It is also not known to be vulnerable to 
 in {{PolytimeROS}}. Kastner et al. {{KLRX20}} proved concurrent security with a polynomial number
 of sessions. For similar reasons to the clause blind Schnorr protocol above, the additional
 number of round trips requires further analysis and experimentation.
-- WFROS-based Schemes {{TZ22}}: This work contains four proposed schemes, each of which are 
+- WFROS-based Schemes {{TZ22}}: This work contains four proposed schemes, each of which are
 three-message protocols based on a variant of the blind Schnorr signature protocol. Security of these
 schemes depend on the Weighted Fractional ROS problem, for which the authors prove an exponential
 and unconditional lower bound, and therefore have tighter security bounds than the Clause Blind Schnorr
