@@ -681,13 +681,12 @@ curve groups similar to blind Schnorr. It is also not known to be vulnerable to 
 in {{PolytimeROS}}. Kastner et al. {{KLRX20}} proved concurrent security with a polynomial number
 of sessions. For similar reasons to the clause blind Schnorr protocol above, the additional
 number of round trips requires further analysis and experimentation.
-- WFROS-based Schemes{{TZ22}}: The four proposed schemes are a three-message protocol based on a variant of the blind Schnorr signature protocol.
-The paper introduces the Weighted Fractional ROS problem,
-for which the authors are proving an exponential and unconditional lower bound. Hence providing tighter security bounds
-than the Clause Blind Schnorr schemes. One of the schemes offers partially-blind signatures which can be useful for various applications.
-The performance of the scheme is similar to Clause Blind Schnorr and the signing is more efficient.
-This construction is still new and we would welcome further security analysis of it. Similarly to Clause Blind Schnorr schemes,
-the two round trips required by three-message flows need further system wide analysis.
+- WFROS-based Schemes {{TZ22}}: This work contains four proposed schemes, each of which are 
+three-message protocols based on a variant of the blind Schnorr signature protocol. Security of these
+schemes depend on the Weighted Fractional ROS problem, for which the authors prove an exponential
+and unconditional lower bound, and therefore have tighter security bounds than the Clause Blind Schnorr
+schemes. The performance of the scheme is similar to Clause Blind Schnorr, yet signing is more efficient.
+Similarly to Clause Blind Schnorr schemes, the two round trips required by three-message flows need further analysis and experimentation.
 - Blind BLS {{BLS-Proposal}}: The Boneh-Lynn-Shacham {{?I-D.irtf-cfrg-bls-signature}} protocol can
 incorporate message blinding when properly instantiated with Type III pairing group. This is a
 two-message protocol similar to the RSA variant, though it requires pairing support, which is
