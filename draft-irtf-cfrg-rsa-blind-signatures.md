@@ -249,8 +249,8 @@ A specification of these subroutines is below.
 ### Blind {#blind}
 
 rsabssa_blind encodes an input message and blinds it with the server's public
-key. It outputs the blinded message to be sent to the server and the corresponding
-inverse, both encoded as byte strings. RSAVP1 and EMSA-PSS-ENCODE are as defined in
+key. It outputs the blinded message to be sent to the server, encoded as a byte string,
+and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
 Section 5.2.2 and Section 9.1.1 of {{!RFC8017}}, respectively.
 
 ~~~
@@ -268,7 +268,7 @@ Inputs:
 
 Outputs:
 - blinded_msg, an byte string of length kLenInBytes
-- inv, an byte string of length kLenInBytes
+- inv, an integer
 
 Errors:
 - "message too long": Raised when the input message is too long.
@@ -281,14 +281,13 @@ Steps:
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
-5. r_inv = inverse_mod(r, n)
+5. inv = inverse_mod(r, n)
 6. If inverse_mod fails, raise an "invalid blind" error
    and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
 9. blinded_msg = int_to_bytes(z, kLenInBytes)
-10. inv = int_to_bytes(r_inv, kLenInBytes)
-11. output blinded_msg, inv
+10. output blinded_msg, inv
 ~~~
 
 The blinding factor r must be randomly chosen from a uniform distribution.
@@ -348,7 +347,7 @@ Inputs:
 - msg, message to be signed, an byte string
 - blind_sig, signed and blinded element, an byte string of
   length kLenInBytes
-- inv, inverse of the blind, an byte string of length kLenInBytes
+- inv, inverse of the blind, an integer
 
 Outputs:
 - sig, an byte string of length kLenInBytes
@@ -360,13 +359,11 @@ Errors:
 
 Steps:
 1. If len(blind_sig) != kLenInBytes, raise "unexpected input size" and stop
-2. If len(inv) != kLenInBytes, raise "unexpected input size" and stop
-3. z = bytes_to_int(blind_sig)
-4. r_inv = bytes_to_int(inv)
-5. s = z * r_inv mod n
-6. sig = int_to_bytes(s, kLenInBytes)
-7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
-8. If result = "valid signature", output sig, else
+2. z = bytes_to_int(blind_sig)
+3. s = z * inv mod n
+4. sig = int_to_bytes(s, kLenInBytes)
+5. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
+6. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
 
@@ -388,8 +385,8 @@ for more information.
 ### Salted Blind
 
 rsabssa_salted_blind invokes rsabssa_blind with a salted input message and outputs the
-blinded message to be sent to the server and the corresponding inverse, both encoded
-as byte strings, as well as the fresh message salt, which is 32 random bytes.
+blinded message to be sent to the server, encoded as a byte string, the corresponding
+inverse, an integer, and the fresh message salt, which is 32 random bytes.
 
 ~~~
 rsabssa_salted_blind(pkS, msg)
@@ -406,7 +403,7 @@ Inputs:
 
 Outputs:
 - blinded_msg, an byte string of length kLenInBytes
-- inv, an byte string of length kLenInBytes
+- inv, an integer
 - msg_salt, an byte string of length 32 bytes
 
 Errors:
@@ -438,7 +435,7 @@ Inputs:
 - msg_salt, the 32 bytes random salt used to salt the message
 - blind_sig, signed and blinded element, an byte string of
   length kLenInBytes
-- inv, inverse of the blind, an byte string of length kLenInBytes
+- inv, inverse of the blind, an integer
 
 Outputs:
 - sig, an byte string of length kLenInBytes
