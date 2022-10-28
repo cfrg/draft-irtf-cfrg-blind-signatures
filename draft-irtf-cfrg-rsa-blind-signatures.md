@@ -154,8 +154,8 @@ informative:
 
 --- abstract
 
-This document specifies the RSA-based blind signature protocol with appendix (RSA-BSSA). RSA blind signatures
-were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
+This document specifies an RSA-based blind signature protocol. RSA blind signatures were first
+introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
 in {{!RFC8017}} to enable blind signature support.
 
 --- middle
@@ -180,9 +180,9 @@ require access to the private key for verification. Moreover, {{JKK14}} shows th
 a VOPRF in the Random Oracle Model by hashing a signature-message pair, where the signature is
 computed using from a deterministic blind signature protocol.
 
-This document specifies a protocol for the RSA Blind Signature Scheme with Appendix (RSABSSA). In
-order to facilitate deployment, we define it in such a way that the resulting (unblinded) signature
-can be verified with a standard RSA-PSS library.
+This document specifies a protocol for computing the RSA blind signatures using RSA-PSS encoding,
+denoted RSABSSA. In order to facilitate deployment, it is defined in such a way that the resulting
+(unblinded) signature can be verified with a standard RSA-PSS library.
 
 # Requirements Notation
 
@@ -204,9 +204,9 @@ in this document:
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
 
-# Blind Signature Protocol Overview {#overview}
+# Overview {#overview}
 
-In this section, we sketch the blind signature protocol wherein a client and server
+This section sketches the blind signature protocol wherein a client and server
 interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
 to be signed, and `skS` is the server's private key. In this protocol, the server
 learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
@@ -234,7 +234,7 @@ input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS
 routine defined in Section 8.1.2 of {{!RFC8017}}. The finalization function performs that
 check before returning the signature.
 
-# RSABSSA Signature Instantiation {#internal}
+# Blind Signature Protocol {#internal}
 
 Section 8.1.1 of {{!RFC8017}} defines RSASSA-PSS-SIGN, which is a signature algorithm
 using RSASSA-PSS {{RFC8017}} with mask generation function 1 (MGF1; see Sections A.2.3
