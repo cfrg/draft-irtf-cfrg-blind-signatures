@@ -502,7 +502,12 @@ the length of the Hash function digest; see {{RFC8017, Section 9.1}} for discuss
 
 The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
 
-# Public Key Certification {#cert-oid}
+# Signing Key Usage and Certification {#cert-oid}
+
+A server signing key MUST NOT be reused for any other protocol beyond RSABSSA. Moreover, a
+server signing key MUST NOT be reused for different RSABSSA encoding options. That is,
+if a server supports two different encoding options, then it MUST have a distinct key
+pair for each option.
 
 If the server public key is carried in an X.509 certificate, it MUST use the RSASSA-PSS
 OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
