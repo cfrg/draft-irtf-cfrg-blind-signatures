@@ -490,11 +490,15 @@ The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as fol
 - sLenInBytes: intended length in bytes of the salt
 
 Implementations that expose the interface in {{salted-interface}} are RECOMMENDED to
-support SHA-384 as Hash and MGF functions and sLenInBytes = 48, as described in {{!RFC8230, Section 2}}.
+support SHA-384 as Hash and MGF functions and sLenInBytes = 48 (the length of the SHA-384 digest),
+as described in {{!RFC8230, Section 2}}.
 
 Implementations that expose the internal interface in {{generation}} are also RECOMMENDED
-to support SHA-384 as Hash and MGF functions and sLenInBytes = 0. Note that setting sLenInBytes = 0 has
-the result of making the signature deterministic.
+to support SHA-384 as Hash and MGF functions and sLenInBytes = 0. Note that setting
+sLenInBytes = 0 has the result of making the signature deterministic.
+
+It is NOT RECOMMENDED to support sLenInBytes values that are neither equal to zero nor
+the length of the Hash function digest; see {{RFC8017, Section 9.1}} for discussion.
 
 The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
 
