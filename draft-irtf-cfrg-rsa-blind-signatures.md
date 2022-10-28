@@ -154,8 +154,8 @@ informative:
 
 --- abstract
 
-This document specifies the RSA-based blind signature protocol with appendix (RSA-BSSA). RSA blind signatures
-were first introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
+This document specifies an RSA-based blind signature protocol. RSA blind signatures were first
+introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
 in {{!RFC8017}} to enable blind signature support.
 
 --- middle
@@ -180,9 +180,9 @@ require access to the private key for verification. Moreover, {{JKK14}} shows th
 a VOPRF in the Random Oracle Model by hashing a signature-message pair, where the signature is
 computed using from a deterministic blind signature protocol.
 
-This document specifies a protocol for the RSA Blind Signature Scheme with Appendix (RSABSSA). In
-order to facilitate deployment, we define it in such a way that the resulting (unblinded) signature
-can be verified with a standard RSA-PSS library.
+This document specifies a protocol for computing the RSA blind signatures using RSA-PSS encoding,
+denoted RSABSSA. In order to facilitate deployment, it is defined in such a way that the resulting
+(unblinded) signature can be verified with a standard RSA-PSS library.
 
 # Requirements Notation
 
@@ -204,9 +204,9 @@ in this document:
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
 
-# Blind Signature Protocol Overview {#overview}
+# Overview {#overview}
 
-In this section, we sketch the blind signature protocol wherein a client and server
+This section sketches the blind signature protocol wherein a client and server
 interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
 to be signed, and `skS` is the server's private key. In this protocol, the server
 learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
@@ -245,7 +245,7 @@ input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS
 routine defined in Section 8.1.2 of {{!RFC8017}}. The finalization function performs that
 check before returning the signature.
 
-# RSABSSA Signature Instantiation {#internal}
+# Blind Signature Protocol {#internal}
 
 Section 8.1.1 of {{!RFC8017}} defines RSASSA-PSS-SIGN, which is a signature algorithm
 using RSASSA-PSS {{RFC8017}} with mask generation function 1 (MGF1; see Sections A.2.3
@@ -261,7 +261,7 @@ A specification of these subroutines is below.
 
 The Blind function encodes an input message and blinds it with a randomly generated
 blinding factor using the server's public key. It outputs the blinded message to be
-sent to the server and the corresponding inverse, both encoded as byte strings
+sent to the server, encoded as a byte string, and the corresponding inverse, an integer.
 RSAVP1 and EMSA-PSS-ENCODE are as defined in Section 5.2.2 and Section 9.1.1 of
 {{!RFC8017}}, respectively.
 
@@ -280,7 +280,7 @@ Inputs:
 
 Outputs:
 - blinded_msg, an byte string of length kLenInBytes
-- inv, an byte string of length kLenInBytes
+- inv, an integer
 
 Errors:
 - "message too long": Raised when the input message is too long.
@@ -293,14 +293,13 @@ Steps:
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
-5. r_inv = inverse_mod(r, n)
+5. inv = inverse_mod(r, n)
 6. If inverse_mod fails, raise an "invalid blind" error
    and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
 9. blinded_msg = int_to_bytes(z, kLenInBytes)
-10. inv = int_to_bytes(r_inv, kLenInBytes)
-11. output blinded_msg, inv
+10. output blinded_msg, inv
 ~~~
 
 The blinding factor r must be randomly chosen from a uniform distribution.
@@ -360,7 +359,7 @@ Inputs:
 - msg, message to be signed, an byte string
 - blind_sig, signed and blinded element, an byte string of
   length kLenInBytes
-- inv, inverse of the blind, an byte string of length kLenInBytes
+- inv, inverse of the blind, an integer
 
 Outputs:
 - sig, an byte string of length kLenInBytes
@@ -372,13 +371,11 @@ Errors:
 
 Steps:
 1. If len(blind_sig) != kLenInBytes, raise "unexpected input size" and stop
-2. If len(inv) != kLenInBytes, raise "unexpected input size" and stop
-3. z = bytes_to_int(blind_sig)
-4. r_inv = bytes_to_int(inv)
-5. s = z * r_inv mod n
-6. sig = int_to_bytes(s, kLenInBytes)
-7. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
-8. If result = "valid signature", output sig, else
+2. z = bytes_to_int(blind_sig)
+3. s = z * inv mod n
+4. sig = int_to_bytes(s, kLenInBytes)
+5. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
+6. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
 
@@ -400,8 +397,9 @@ for more information.
 ### SaltedBlind
 
 SaltedBlind invokes Blind with a salted input message and outputs the
-blinded message to be sent to the server and the corresponding inverse, both encoded
-as byte strings, as well as the fresh message salt, which is 32 random bytes.
+blinded message to be sent to the server, encoded as a byte string, the
+corresponding inverse, an integer, and the fresh message salt, which
+is 32 random bytes.
 
 ~~~
 SaltedBlind(pkS, msg)
@@ -418,7 +416,7 @@ Inputs:
 
 Outputs:
 - blinded_msg, an byte string of length kLenInBytes
-- inv, an byte string of length kLenInBytes
+- inv, an integer
 - msg_salt, an byte string of length 32 bytes
 
 Errors:
@@ -450,7 +448,7 @@ Inputs:
 - msg_salt, the 32 bytes random salt used to salt the message
 - blind_sig, signed and blinded element, an byte string of
   length kLenInBytes
-- inv, inverse of the blind, an byte string of length kLenInBytes
+- inv, inverse of the blind, an integer
 
 Outputs:
 - sig, an byte string of length kLenInBytes
@@ -505,15 +503,24 @@ The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as fol
 - sLenInBytes: intended length in bytes of the salt
 
 Implementations that expose the interface in {{salted-interface}} are RECOMMENDED to
-support SHA-384 as Hash and MGF functions and sLenInBytes = 48, as described in {{!RFC8230, Section 2}}.
+support SHA-384 as Hash and MGF functions and sLenInBytes = 48 (the length of the SHA-384 digest),
+as described in {{!RFC8230, Section 2}}.
 
 Implementations that expose the internal interface in {{generation}} are also RECOMMENDED
-to support SHA-384 as Hash and MGF functions and sLenInBytes = 0. Note that setting sLenInBytes = 0 has
-the result of making the signature deterministic.
+to support SHA-384 as Hash and MGF functions and sLenInBytes = 0. Note that setting
+sLenInBytes = 0 has the result of making the signature deterministic.
+
+It is NOT RECOMMENDED to support sLenInBytes values that are neither equal to zero nor
+the length of the Hash function digest; see {{RFC8017, Section 9.1}} for discussion.
 
 The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
 
-# Public Key Certification {#cert-oid}
+# Signing Key Usage and Certification {#cert-oid}
+
+A server signing key MUST NOT be reused for any other protocol beyond RSABSSA. Moreover, a
+server signing key MUST NOT be reused for different RSABSSA encoding options. That is,
+if a server supports two different encoding options, then it MUST have a distinct key
+pair for each option.
 
 If the server public key is carried in an X.509 certificate, it MUST use the RSASSA-PSS
 OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
@@ -562,7 +569,7 @@ Lastly, the design in this document differs from the analysis in {{BNPS03}} only
 encoding, i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively
 reduces PSS to FDH, so the same results apply.
 
-## Timing Side Channels
+## Timing Side Channels and Fault Attacks
 
 BlindSign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
@@ -570,6 +577,14 @@ from exposure {{RemoteTimingAttacks}}. Implementations MUST implement RSA blindi
 side channel attack mitigation. One mechanism is described in Section 10 of
 {{?TimingAttacks=DOI.10.1007/3-540-68697-5_9}}. Failure to do so may lead to side channel
 attacks that leak the private signing key.
+
+Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes the importance
+of implementation safeguards that protect against fault attacks that can also leak the
+private signing key. These safeguards require that implementations check that the result
+of the private key operation when signing is correct, i.e., given s = RSASP1(skS, m),
+verify that m = RSAVP1(pkS, s). Implementations MUST apply this (or equivalent) safeguard
+to mitigate fault attacks, even if they are not implementations based on the Chinese
+remainder theorem.
 
 ## Message Robustness
 
@@ -583,10 +598,10 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
-Verifiers should check that, in addition to signature validity, the unblinded message is
+Verifiers should check that, in addition to signature validity, the signed message is
 well-structured for the relevant application. For example, if an application of this protocol
 requires messages to be structures of a particular form, then verifiers should check that
-unblinded messages adhere to this form.
+messages adhere to this form.
 
 ## Message Entropy {#message-entropy}
 
