@@ -427,7 +427,7 @@ rsabssa_salted_finalize invokes rsabssa_finalize directly with the salted
 message and outputs the result.
 
 ~~~
-rsabssa_salted_finalize(pkS, msg, blind_sig, inv)
+rsabssa_salted_finalize(pkS, msg, msg_salt, blind_sig, inv)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
