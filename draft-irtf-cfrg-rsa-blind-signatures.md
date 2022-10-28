@@ -568,10 +568,10 @@ An alternative solution to this problem of message blindness is to give signers 
 message being signed is well-structured. Depending on the application, zero knowledge proofs
 could be useful for this purpose. Defining such a proof is out of scope for this document.
 
-Verifiers should check that, in addition to signature validity, the unblinded message is
+Verifiers should check that, in addition to signature validity, the signed message is
 well-structured for the relevant application. For example, if an application of this protocol
 requires messages to be structures of a particular form, then verifiers should check that
-unblinded messages adhere to this form.
+messages adhere to this form.
 
 ## Message Entropy {#message-entropy}
 
