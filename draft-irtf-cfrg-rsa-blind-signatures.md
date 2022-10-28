@@ -550,7 +550,7 @@ Lastly, the design in this document differs from the analysis in {{BNPS03}} only
 encoding, i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively
 reduces PSS to FDH, so the same results apply.
 
-## Timing Side Channels
+## Timing Side Channels and Fault Attacks
 
 rsabssa_blind_sign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
@@ -558,6 +558,14 @@ from exposure {{RemoteTimingAttacks}}. Implementations MUST implement RSA blindi
 side channel attack mitigation. One mechanism is described in Section 10 of
 {{?TimingAttacks=DOI.10.1007/3-540-68697-5_9}}. Failure to do so may lead to side channel
 attacks that leak the private signing key.
+
+Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes the importance
+of implementation safeguards that protect against fault attacks that can also leak the
+private signing key. These safeguards require that implementations check that the result
+of the private key operation when signing is correct, i.e., given s = RSASP1(skS, m),
+verify that m = RSAVP1(pkS, s). Implementations MUST apply this (or equivalent) safeguard
+to mitigate fault attacks, even if they are not implementations based on the Chinese
+remainder theorem.
 
 ## Message Robustness
 
