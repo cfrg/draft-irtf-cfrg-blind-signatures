@@ -246,7 +246,7 @@ input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS
 routine defined in Section 8.1.2 of {{!RFC8017}}. The Finalize function performs that
 check before returning the signature.
 
-In the remainder of this section, we specfy Blind, BlindSign, and Finalize.
+In the remainder of this section, we specify Blind, BlindSign, and Finalize.
 
 ## Blind {#blind}
 
