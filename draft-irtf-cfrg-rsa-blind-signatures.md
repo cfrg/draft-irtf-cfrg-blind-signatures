@@ -181,8 +181,9 @@ a VOPRF in the Random Oracle Model by hashing a signature-message pair, where th
 computed using from a deterministic blind signature protocol.
 
 This document specifies a protocol for computing the RSA blind signatures using RSA-PSS encoding,
-denoted RSABSSA. In order to facilitate deployment, it is defined in such a way that the resulting
-(unblinded) signature can be verified with a standard RSA-PSS library.
+and a family of variants for this protocol, denoted RSABSSA. In order to facilitate deployment,
+it is defined in such a way that the resulting (unblinded) signature can be verified with a standard
+RSA-PSS library.
 
 # Requirements Notation
 
@@ -196,7 +197,7 @@ in this document:
 - bytes_to_int and int_to_bytes: Convert a byte string to and from a non-negative integer.
   bytes_to_int and int_to_bytes are implemented as OS2IP and I2OSP as described in
   {{!RFC8017}}, respectively. Note that these functions operate on byte strings
-  in big-endian byte order.
+  in big-endia byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   such that M <= R < N.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n. This function
@@ -204,10 +205,10 @@ in this document:
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
 
-# Overview {#overview}
+# Blind Signature Protocol {#core-protocol}
 
-This section sketches the blind signature protocol wherein a client and server
-interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
+The core RSA Blind Signature Protocol is a two-party protocol between a client and server
+where they interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
 to be signed, and `skS` is the server's private key. In this protocol, the server
 learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
 
@@ -242,22 +243,12 @@ Using these three functions, the core protocol runs as follows:
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
 input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in Section 8.1.2 of {{!RFC8017}}. The finalization function performs that
+routine defined in Section 8.1.2 of {{!RFC8017}}. The Finalize function performs that
 check before returning the signature.
 
-# Blind Signature Protocol {#internal}
+In the remainder of this section, we specfy Blind, BlindSign, and Finalize.
 
-Section 8.1.1 of {{!RFC8017}} defines RSASSA-PSS-SIGN, which is a signature algorithm
-using RSASSA-PSS {{RFC8017}} with mask generation function 1 (MGF1; see Sections A.2.3
-and B.2.1 of {{RFC8017}}). In this section, we define RSABSSA, a blinded variant of RSASSA-PSS-SIGN.
-
-## Signature Generation {#generation}
-
-As outlined in {{overview}}, signature generation involves three subroutines: Blind,
-BlindSign, and Finalize. The output from Finalize is a signature over the input to Blind.
-A specification of these subroutines is below.
-
-### Blind {#blind}
+## Blind {#blind}
 
 The Blind function encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server, encoded as a byte string,
@@ -277,10 +268,10 @@ Parameters:
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an byte string
+- msg, message to be signed, a byte string
 
 Outputs:
-- blinded_msg, an byte string of length kLenInBytes
+- blinded_msg, a byte string of length kLenInBytes
 - inv, an integer
 
 Errors:
@@ -306,10 +297,10 @@ Steps:
 The blinding factor r must be randomly chosen from a uniform distribution.
 This is typically done via rejection sampling.
 
-### BlindSign
+## BlindSign
 
 BlindSign performs the RSA private key operation on the client's
-blinded message input and returns the output encoded as an byte string.
+blinded message input and returns the output encoded as a byte string.
 RSASP1 is as defined in Section 5.2.1 of {{!RFC8017}}.
 
 ~~~
@@ -324,7 +315,7 @@ Inputs:
   byte string
 
 Outputs:
-- blind_sig, an byte string of length kLenInBytes
+- blind_sig, a byte string of length kLenInBytes
 
 Errors:
 - "unexpected input size": Raised when a byte string input doesn't
@@ -342,7 +333,7 @@ Steps:
 6. output blind_sig
 ~~~
 
-### Finalize
+## Finalize
 
 Finalize validates the server's response, unblinds the message
 to produce a signature, verifies it for correctness, and outputs the signature
@@ -357,13 +348,13 @@ Parameters:
 
 Inputs:
 - pkS, server public key (n, e)
-- msg, message to be signed, an byte string
-- blind_sig, signed and blinded element, an byte string of
+- msg, message to be signed, a byte string
+- blind_sig, signed and blinded element, a byte string of
   length kLenInBytes
 - inv, inverse of the blind, an integer
 
 Outputs:
-- sig, an byte string of length kLenInBytes
+- sig, a byte string of length kLenInBytes
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
@@ -380,144 +371,82 @@ Steps:
    raise "invalid signature" and stop
 ~~~
 
-## Application Interface {#salted-interface}
+# Message Randomization {#randomization}
 
-This section presents an application interface for blinding, finalizing, and verifying
-messages that is built on the internal functions described in {{generation}}. This
-interface injects additional entropy into application messages by choosing a random
-salt of length 32 bytes, prepending the salt to the input message, and then invoking
-the internal functions in {{generation}}. Note that this only changes what is passed
-to Blind and Finalize, as the application message is not provided as
-input to BlindSign.
-
-Applications that provide high-entropy input messages can expose the internal
-Blind and Finalize functions directly, as the additional message randomization
-does not offer security advantages. See {{Lys22}}, {{apis}}, and {{message-entropy}}
-for more information.
-
-### SaltedBlind
-
-SaltedBlind invokes Blind with a salted input message and outputs the blinded message to
-be sent to the server, encoded as a byte string, the corresponding inverse, an integer,
-and the fresh message salt, which is 32 random bytes. If this function fails with an
-"invalid blind" error, implementations SHOULD retry the function again. The probability
-of multiple such errors in sequence is negligible.
+Message randomization is the process by which the message to be signed and verified
+is augmented with fresh randomness. We denote this process by the function Randomize(msg),
+which takes as input a message `msg` and produces a randomized message `randomMsg`.
+Its implementation is shown below.
 
 ~~~
-SaltedBlind(pkS, msg)
-
-Parameters:
-- kLenInBytes, the length in bytes of the RSA modulus n
-- kLenInBits, the length in bits of the RSA modulus n
-- HF, the hash function used to hash the message
-- MGF, the mask generation function
+Randomize(msg)
 
 Inputs:
-- pkS, server public key (n, e)
-- msg, message to be signed, an byte string
+- msg, message to be signed, a byte string
 
 Outputs:
-- blinded_msg, an byte string of length kLenInBytes
-- inv, an integer
-- msg_salt, an byte string of length 32 bytes
-
-Errors:
-- "message too long": Raised when the input message is too long.
-- "encoding error": Raised when the input message fails encoding.
-- "invalid blind": Raised when the inverse of r cannot be found.
+- randomMsg, a byte string that is 32 bytes longer than input msg
 
 Steps:
-1. msg_salt = random(32)
-2. salted_msg = msg_salt || msg
-3. blinded_msg, inv = blind(pkS, salted_msg)
-4. output msg_salt, blinded_msg, inv
+1. msgSalt = random(32)
+2. randomMsg = msgSalt || msg
+3. output randomMsg
 ~~~
 
-### SaltedFinalize
+# RSABSSA Variants {#rsabssa}
 
-SaltedFinalize invokes Finalize directly with the salted
-message and outputs the result.
+In this section we define different named variants of RSABSSA. Each variant specifies
+a hash function, RSASSA-PSS parameters as defined in {{!RFC8017, Section 9.1.1}}, and
+whether or not message randomization (as described in {{randomization}}) is performed
+on the input message. Future specifications can introduce other variants as desired.
+The named variants are as follows:
 
-~~~
-SaltedFinalize(pkS, msg, msg_salt, blind_sig, inv)
+1. RSABSSA-SHA384-PSS-Randomized: This named variant uses SHA-384 as the hash function,
+MGF1 with SHA-384 as the PSS mask generation function, a 48-byte salt length, and uses
+message randomization.
 
-Parameters:
-- kLenInBytes, the length in bytes of the RSA modulus n
+1. RSABSSA-SHA384-PSSZERO-Randomized: This named variant uses SHA-384 as the hash function,
+MGF1 with SHA-384 as the PSS mask generation function, an empty PSS salt, and uses
+message randomization.
 
-Inputs:
-- pkS, server public key (n, e)
-- msg, message to be signed, an byte string
-- msg_salt, the 32 bytes random salt used to salt the message
-- blind_sig, signed and blinded element, an byte string of
-  length kLenInBytes
-- inv, inverse of the blind, an integer
+1. RSABSSA-SHA384-PSS-Deterministic: This named variant uses SHA-384 as the hash function,
+MGF1 with SHA-384 as the PSS mask generation function, 48-byte salt length, and does not use
+message randomization.
 
-Outputs:
-- sig, an byte string of length kLenInBytes
+1. RSABSSA-SHA384-PSSZERO-Deterministic: This named variant uses SHA-384 as the hash function,
+MGF1 with SHA-384 as the PSS mask generation function, an empty PSS salt, and does not use
+message randomization. This is the only variant that produces deterministic signatures over
+the input message.
 
-Errors:
-- "invalid signature": Raised when the signature is invalid
-- "unexpected input size": Raised when a byte string input doesn't
-  have the expected length.
+The RECOMMENDED variants are RSABSSA-SHA384-PSS-Randomized or RSABSSA-SHA384-PSSZERO-Randomized.
 
-Steps:
-1. salted_msg = msg_salt || msg
-2. output Finalize(pkS, salted_msg, blind_sig, inv)
-~~~
+Not all named variants can be used interchangeably. In particular, applications that provide
+high-entropy input messages can safely use named variants without message randomization, as
+the additional message randomization does not offer security advantages. See {{Lys22}} and
+{{message-entropy}} for more information.
 
-### SaltedVerify
+As a result, applications that require deterministic signatures can use the
+RSABSSA-SHA384-PSSZERO-Deterministic variant, but only if their input messages have high entropy.
+Applications that use RSABSSA-SHA384-PSSZERO-Deterministic SHOULD carefully analyze the security
+implications, taking into account the possibility of adversarially generated signer
+keys as described in {{message-entropy}}. When it is not clear whether an application
+requires deterministic or randomized signatures, applications SHOULD use one of the
+recommended variants with message randomization.
 
-SaltedVerify validates the resulting unblinded signature computed over a
-salted message. It invokes RSASSA-PSS-VERIFY directly by augmenting the input
-message with the message salt.
+# Implementation and Usage Considerations
 
-~~~
-SaltedVerify(pkS, msg, msg_salt, sig)
+This section documents considerations for interfaces to implementations of the protocol
+in this document. This includes error handling and API considerations.
 
-Parameters:
-- kLenInBytes, the length in bytes of the RSA modulus n
+## Errors
 
-Inputs:
-- pkS, server public key (n, e)
-- msg, message to be signed, an byte string
-- msg_salt, the 32 bytes random salt used to salt the message
-- sig, signature of the salted_msg
+The high-level functions specified in {{core-protocol}} are all fallible. The explicit errors
+generated throughout this specification, along with the conditions that lead to each error,
+are listed in the definitions for Blind, BlindSign, and Finalize.
+These errors are meant as a guide for implementors. They are not an exhaustive list of all
+the errors an implementation might emit. For example, implementations might run out of memory.
 
-Outputs:
-- "valid signature" if the signature is valid
-
-Errors:
-- "invalid signature": Raised when the signature is invalid
-
-Steps:
-1. salted_msg = msg_salt || msg
-2. result = RSASSA-PSS-VERIFY(pkS, salted_msg, sig)
-3. If result = "valid signature", output "valid signature", else
-  raise "invalid signature" and stop
-~~~
-
-## Encoding Options {#pss-options}
-
-The RSASSA-PSS parameters, defined as in {{!RFC8017, Section 9.1.1}}, are as follows:
-
-- Hash: hash function
-- MGF: mask generation function
-- sLenInBytes: intended length in bytes of the salt
-
-Implementations that expose the interface in {{salted-interface}} are RECOMMENDED to
-support SHA-384 as Hash and MGF functions and sLenInBytes = 48 (the length of the SHA-384 digest),
-as described in {{!RFC8230, Section 2}}.
-
-Implementations that expose the internal interface in {{generation}} are also RECOMMENDED
-to support SHA-384 as Hash and MGF functions and sLenInBytes = 0. Note that setting
-sLenInBytes = 0 has the result of making the signature deterministic.
-
-It is NOT RECOMMENDED to support sLenInBytes values that are neither equal to zero nor
-the length of the Hash function digest; see {{RFC8017, Section 9.1}} for discussion.
-
-The blinded functions in {{generation}} are orthogonal to the choice of these encoding options.
-
-# Signing Key Usage and Certification {#cert-oid}
+## Signing Key Usage and Certification {#cert-oid}
 
 A server signing key MUST NOT be reused for any other protocol beyond RSABSSA. Moreover, a
 server signing key MUST NOT be reused for different RSABSSA encoding options. That is,
@@ -526,29 +455,6 @@ pair for each option.
 
 If the server public key is carried in an X.509 certificate, it MUST use the RSASSA-PSS
 OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
-
-# Implementation Considerations
-
-This section documents considerations for interfaces to implementations of the protocol
-in this document. This includes error handling and API considerations.
-
-## Errors
-
-The high-level functions specified in {{generation}} are all fallible. The explicit errors
-generated throughout this specification, along with the conditions that lead to each error,
-are listed in the definitions for Blind, BlindSign, and Finalize.
-These errors are meant as a guide for implementors. They are not an exhaustive list of all
-the errors an implementation might emit. For example, implementations might run out of memory.
-
-## API Considerations {#apis}
-
-It is NOT RECOMMENDED that APIs allow clients to specify RSA-PSS parameters directly, e.g.,
-to set the PSS salt value or its length. Instead, it is RECOMMENDED that implementations
-generate the PSS salt using the same source of randomness used to produce the blinding factor.
-
-If implementations need support for randomized and deterministic signatures, they should
-offer separate abstractions for each. Allowing callers to control the PSS salt value or
-length may have security consequences. See {{det-sigs}} for more information about details.
 
 # Security Considerations {#sec-considerations}
 
@@ -614,7 +520,7 @@ fails to verify. However, if an attacker can coerce the client to use these inva
 keys with low-entropy inputs, they can learn information about the client inputs before
 the protocol completes.
 
-Based on this fact, using the internal functions in {{generation}} is possibly unsafe,
+Based on this fact, using the core protocol functions in {{core-protocol}} is possibly unsafe,
 unless one of the following conditions are met:
 
 1. The client has proof that the signer's public key is honestly generated. {{GRSB19}} presents
@@ -622,34 +528,20 @@ unless one of the following conditions are met:
   public key.
 2. The client input message has high entropy.
 
-The interface in {{salted-interface}} is designed to explicitly inject fresh entropy alongside
-each message to satisfy condition (2). As such, this interface is safe for all application use
-cases.
+The named variants that use message randomization -- RSABSSA-SHA384-PSS-Randomized and
+RSABSSA-SHA384-PSSZERO-Randomized -- explicitly inject fresh entropy alongside each message
+to satisfy condition (2). As such, these variants are safe for all application use cases.
 
-Note that this interface effectively means that the resulting signature is always randomized.
+Note that these variants effectively mean that the resulting signature is always randomized.
 As such, this interface is not suitable for applications that require deterministic signatures.
-See {{det-sigs}} for more details.
 
-## Randomized and Deterministic Signatures {#det-sigs}
+## PSS Salt Choice
 
-When sLenInBytes > 0, the PSS salt is a randomly generated string chosen when a message is encoded.
-This means the resulting signature is non-deterministic. As a result, two signatures over
-the same message will be different. If the salt is not generated randomly, or is otherwise
-constructed maliciously, it might be possible for the salt to encode information that is
-not present in the signed message. For example, the salt might be maliciously constructed
-to encode the local IP address of the client. As a result, APIs SHOULD NOT allow clients
-to provide the salt directly; see {{apis}} for API considerations.
-
-When sLenInBytes = 0, the PSS salt is empty and the resulting signature is deterministic. Such
-signatures may be useful for applications wherein the only desired source of entropy is
-the input message. Note, however, that this can be unsafe if the input message does not have
-sufficient entropy; see {{message-entropy}} for more details.
-
-Applications that use deterministic signatures SHOULD carefully analyze the security
-implications, taking into account the possibility of adversarially generated signer
-keys as described in {{message-entropy}}. When it is not clear whether an application
-requires deterministic or randomized signatures, applications SHOULD use randomized
-signatures, and the salted interface described in {{salted-interface}} SHOULD be used.
+For variants that have a non-zero PSS salt, it is important that this salt is generated randomly.
+If the PSS salt is not generated randomly, or is otherwise constructed maliciously, it might be
+possible for the salt to encode information that is not present in the signed message. For example,
+the salt might be maliciously constructed to encode the local IP address of the client. As a result,
+implementations SHOULD NOT allow clients to provide the salt directly.
 
 ## Key Substitution Attacks
 
@@ -740,8 +632,7 @@ This document makes no IANA requests.
 
 # Test Vectors
 
-This section includes test vectors for the blind signature protocol defined in {{internal}}.
-It does not include test vectors based on the external interface in {{salted-interface}}.
+This section includes test vectors for the blind signature protocol defined in {{core-protocol}}.
 The following parameters are specified for each test vector:
 
 - p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
