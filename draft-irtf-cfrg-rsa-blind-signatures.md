@@ -211,7 +211,18 @@ interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
 to be signed, and `skS` is the server's private key. In this protocol, the server
 learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
 
-The core issuance protocol runs as follows:
+The protocol consists of three functions, Blind, BlindSign, and Finalize, described below.
+
+* Blind(pkS, msg): encodes an input message `msg` and blinds it with a randomly generated
+blinding factor using the server's public key `pkS`, producing a blinded messsage for
+the server and the inverse of the blind.
+* BlindSign(skS, blinded_msg): performs the raw RSA private key operation using private key
+`skS` on the client's blinded message `blinded_msg`, and returns the output.
+* Finalize(pkS, msg, blinded_sig, inv): unblinds the server's response `blinded_sig` using the
+inverse `inv` to produce a signature, verifies it for correctness using message `msg` and public
+key `pkS`, and outputs the signature upon success.
+
+Using these three functions, the core protocol runs as follows:
 
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
@@ -248,7 +259,7 @@ A specification of these subroutines is below.
 
 ### Blind {#blind}
 
-rsabssa_blind encodes an input message and blinds it with the server's public
+The Blind function encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server, encoded as a byte string,
 and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
 Section 5.2.2 and Section 9.1.1 of {{!RFC8017}}, respectively. If this function fails
@@ -256,7 +267,7 @@ with an "invalid blind" error, implementations SHOULD retry the function again. 
 probability of multiple such errors in sequence is negligible.
 
 ~~~
-rsabssa_blind(pkS, msg)
+Blind(pkS, msg)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
@@ -297,12 +308,12 @@ This is typically done via rejection sampling.
 
 ### BlindSign
 
-rsabssa_blind_sign performs the RSA private key operation on the client's
+BlindSign performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as an byte string.
 RSASP1 is as defined in Section 5.2.1 of {{!RFC8017}}.
 
 ~~~
-rsabssa_blind_sign(skS, blinded_msg)
+BlindSign(skS, blinded_msg)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
@@ -333,13 +344,13 @@ Steps:
 
 ### Finalize
 
-rsabssa_finalize validates the server's response, unblinds the message
+Finalize validates the server's response, unblinds the message
 to produce a signature, verifies it for correctness, and outputs the signature
 upon success. Note that this function will internally hash the input message
-as is done in rsabssa_blind.
+as is done in Blind.
 
 ~~~
-rsabssa_finalize(pkS, msg, blind_sig, inv)
+Finalize(pkS, msg, blind_sig, inv)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
@@ -369,31 +380,31 @@ Steps:
    raise "invalid signature" and stop
 ~~~
 
-## External Application Interface {#salted-interface}
+## Application Interface {#salted-interface}
 
 This section presents an application interface for blinding, finalizing, and verifying
 messages that is built on the internal functions described in {{generation}}. This
 interface injects additional entropy into application messages by choosing a random
 salt of length 32 bytes, prepending the salt to the input message, and then invoking
 the internal functions in {{generation}}. Note that this only changes what is passed
-to rsabssa_blind and rsabssa_finalize, as the application message is not provided as
-input to rsabssa_blindsign.
+to Blind and Finalize, as the application message is not provided as
+input to BlindSign.
 
 Applications that provide high-entropy input messages can expose the internal
-rsabssa_blind and rsabssa_finalize directly, as the additional message randomization
+Blind and Finalize functions directly, as the additional message randomization
 does not offer security advantages. See {{Lys22}}, {{apis}}, and {{message-entropy}}
 for more information.
 
-### Salted Blind
+### SaltedBlind
 
-rsabssa_salted_blind invokes rsabssa_blind with a salted input message and outputs the
-blinded message to be sent to the server, encoded as a byte string, the corresponding
-inverse, an integer, and the fresh message salt, which is 32 random bytes. If this function fails
-with an "invalid blind" error, implementations SHOULD retry the function again. The
-probability of multiple such errors in sequence is negligible.
+SaltedBlind invokes Blind with a salted input message and outputs the blinded message to
+be sent to the server, encoded as a byte string, the corresponding inverse, an integer,
+and the fresh message salt, which is 32 random bytes. If this function fails with an
+"invalid blind" error, implementations SHOULD retry the function again. The probability
+of multiple such errors in sequence is negligible.
 
 ~~~
-rsabssa_salted_blind(pkS, msg)
+SaltedBlind(pkS, msg)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
@@ -422,13 +433,13 @@ Steps:
 4. output msg_salt, blinded_msg, inv
 ~~~
 
-### Salted Finalize
+### SaltedFinalize
 
-rsabssa_salted_finalize invokes rsabssa_finalize directly with the salted
+SaltedFinalize invokes Finalize directly with the salted
 message and outputs the result.
 
 ~~~
-rsabssa_salted_finalize(pkS, msg, msg_salt, blind_sig, inv)
+SaltedFinalize(pkS, msg, msg_salt, blind_sig, inv)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
@@ -451,17 +462,17 @@ Errors:
 
 Steps:
 1. salted_msg = msg_salt || msg
-2. output rsabssa_finalize(pkS, salted_msg, blind_sig, inv)
+2. output Finalize(pkS, salted_msg, blind_sig, inv)
 ~~~
 
-### Salted Verify
+### SaltedVerify
 
-rsabssa_salted_verify validates the resulting unblinded signature computed over a
+SaltedVerify validates the resulting unblinded signature computed over a
 salted message. It invokes RSASSA-PSS-VERIFY directly by augmenting the input
 message with the message salt.
 
 ~~~
-rsabssa_salted_verify(pkS, msg, msg_salt, sig)
+SaltedVerify(pkS, msg, msg_salt, sig)
 
 Parameters:
 - kLenInBytes, the length in bytes of the RSA modulus n
@@ -525,7 +536,7 @@ in this document. This includes error handling and API considerations.
 
 The high-level functions specified in {{generation}} are all fallible. The explicit errors
 generated throughout this specification, along with the conditions that lead to each error,
-are listed in the definitions for rsabssa_blind, rsabssa_blind_sign, and rsabssa_finalize.
+are listed in the definitions for Blind, BlindSign, and Finalize.
 These errors are meant as a guide for implementors. They are not an exhaustive list of all
 the errors an implementation might emit. For example, implementations might run out of memory.
 
@@ -562,7 +573,7 @@ reduces PSS to FDH, so the same results apply.
 
 ## Timing Side Channels and Fault Attacks
 
-rsabssa_blind_sign is functionally a remote procedure call for applying the RSA private
+BlindSign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
 from exposure {{RemoteTimingAttacks}}. Implementations MUST implement RSA blinding as a
 side channel attack mitigation. One mechanism is described in Section 10 of
