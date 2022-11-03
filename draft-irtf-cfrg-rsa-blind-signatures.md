@@ -259,11 +259,12 @@ A specification of these subroutines is below.
 
 ### Blind {#blind}
 
-The Blind function encodes an input message and blinds it with a randomly generated
-blinding factor using the server's public key. It outputs the blinded message to be
-sent to the server, encoded as a byte string, and the corresponding inverse, an integer.
-RSAVP1 and EMSA-PSS-ENCODE are as defined in Section 5.2.2 and Section 9.1.1 of
-{{!RFC8017}}, respectively.
+The Blind function encodes an input message and blinds it with the server's public
+key. It outputs the blinded message to be sent to the server, encoded as a byte string,
+and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
+Section 5.2.2 and Section 9.1.1 of {{!RFC8017}}, respectively. If this function fails
+with an "invalid blind" error, implementations SHOULD retry the function again. The
+probability of multiple such errors in sequence is negligible.
 
 ~~~
 Blind(pkS, msg)
@@ -396,10 +397,11 @@ for more information.
 
 ### SaltedBlind
 
-SaltedBlind invokes Blind with a salted input message and outputs the
-blinded message to be sent to the server, encoded as a byte string, the
-corresponding inverse, an integer, and the fresh message salt, which
-is 32 random bytes.
+SaltedBlind invokes Blind with a salted input message and outputs the blinded message to
+be sent to the server, encoded as a byte string, the corresponding inverse, an integer,
+and the fresh message salt, which is 32 random bytes. If this function fails with an
+"invalid blind" error, implementations SHOULD retry the function again. The probability
+of multiple such errors in sequence is negligible.
 
 ~~~
 SaltedBlind(pkS, msg)
