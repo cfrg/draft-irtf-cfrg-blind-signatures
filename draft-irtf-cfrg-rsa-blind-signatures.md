@@ -197,7 +197,7 @@ in this document:
 - bytes_to_int and int_to_bytes: Convert a byte string to and from a non-negative integer.
   bytes_to_int and int_to_bytes are implemented as OS2IP and I2OSP as described in
   {{!RFC8017}}, respectively. Note that these functions operate on byte strings
-  in big-endia byte order.
+  in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   such that M <= R < N.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n. This function
