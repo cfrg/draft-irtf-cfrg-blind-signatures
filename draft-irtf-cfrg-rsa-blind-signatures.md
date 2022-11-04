@@ -427,13 +427,13 @@ high-entropy input messages can safely use named variants without message random
 the additional message randomization does not offer security advantages. See {{Lys22}} and
 {{message-entropy}} for more information.
 
-As a result, applications that require deterministic signatures can use the
-RSABSSA-SHA384-PSSZERO-Deterministic variant, but only if their input messages have high entropy.
-Applications that use RSABSSA-SHA384-PSSZERO-Deterministic SHOULD carefully analyze the security
-implications, taking into account the possibility of adversarially generated signer
-keys as described in {{message-entropy}}. When it is not clear whether an application
-requires deterministic or randomized signatures, applications SHOULD use one of the
-recommended variants with message randomization.
+Applications that require deterministic signatures can use the RSABSSA-SHA384-PSSZERO-Deterministic
+variant, but only if their input messages have high entropy. Applications that use
+RSABSSA-SHA384-PSSZERO-Deterministic SHOULD carefully analyze the security implications,
+taking into account the possibility of adversarially generated signer keys as described in
+{{message-entropy}}. When it is not clear whether an application requires deterministic or
+randomized signatures, applications SHOULD use one of the recommended variants with message
+randomization.
 
 # Implementation and Usage Considerations
 
