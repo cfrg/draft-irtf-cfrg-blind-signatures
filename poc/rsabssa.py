@@ -83,11 +83,11 @@ def random_integer_uniform(min: int, max: int) -> int:
 
 
 def rsabssa_randomize(msg: bytes) -> bytes:
-    msg_salt = urandom(32)
+    msg_prefix = urandom(32)
 
-    wrap_print("msg_salt = {}".format(msg_salt.hex()))
+    wrap_print("msg_prefix = {}".format(msg_prefix.hex()))
 
-    return msg_salt + msg
+    return msg_prefix + msg
 
 
 def rsabssa_blind(
@@ -161,22 +161,24 @@ def test(
     print("\n## {} Test Vector".format(description))
 
     print("~~~")
-    signed_msg = msg
-    if randomize:
-        signed_msg = rsabssa_randomize(msg)
-
-    public_key = secret_key.public_key()
-    blinded_msg, inv = rsabssa_blind(public_key, msg, sLen, r_inv, salt)
-    blind_sig = rsabssa_blind_sign(secret_key, blinded_msg)
-    sig = rsabssa_finalize(public_key, blind_sig, inv, msg, sLen)
 
     wrap_print("p = {}".format(hex(secret_key.p)))
     wrap_print("q = {}".format(hex(secret_key.q)))
     wrap_print("n = {}".format(hex(secret_key.n)))
     wrap_print("e = {}".format(hex(secret_key.e)))
     wrap_print("d = {}".format(hex(secret_key.d)))
+
     wrap_print("msg = {}".format(msg.hex()))
-    wrap_print("signed_msg = {}".format(signed_msg.hex()))
+    random_msg = msg
+    if randomize:
+        random_msg = rsabssa_randomize(msg)
+    wrap_print("random_msg = {}".format(random_msg.hex()))
+
+    public_key = secret_key.public_key()
+    blinded_msg, inv = rsabssa_blind(public_key, msg, sLen, r_inv, salt)
+    blind_sig = rsabssa_blind_sign(secret_key, blinded_msg)
+    sig = rsabssa_finalize(public_key, blind_sig, inv, msg, sLen)
+
     wrap_print("inv = {}".format(inv.hex()))
     wrap_print("blinded_msg = {}".format(blinded_msg.hex()))
     wrap_print("blind_sig = {}".format(blind_sig.hex()))
