@@ -261,17 +261,17 @@ probability of multiple such errors in sequence is negligible.
 Blind(pkS, msg)
 
 Parameters:
-- kLenInBytes, the length in bytes of the RSA modulus n
-- kLenInBits, the length in bits of the RSA modulus n
-- HF, the hash function used to hash the message
+- kLen, the length in bytes of the RSA modulus n
+- Hash, the hash function used to hash the message
 - MGF, the mask generation function
+- sLen, the length in bytes of the salt
 
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, a byte string
 
 Outputs:
-- blinded_msg, a byte string of length kLenInBytes
+- blinded_msg, a byte string of length kLen
 - inv, an integer
 
 Errors:
@@ -280,8 +280,8 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_msg = EMSA-PSS-ENCODE(msg, kLenInBits - 1)
-   with MGF and HF as defined in the parameters
+1. encoded_msg = EMSA-PSS-ENCODE(msg, (kLen * 8) - 1)
+   with Hash, MGF, and sLenInBytes as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
@@ -290,7 +290,7 @@ Steps:
    and stop
 7. x = RSAVP1(pkS, r)
 8. z = m * x mod n
-9. blinded_msg = int_to_bytes(z, kLenInBytes)
+9. blinded_msg = int_to_bytes(z, kLen)
 10. output blinded_msg, inv
 ~~~
 
@@ -307,7 +307,7 @@ RSASP1 is as defined in Section 5.2.1 of {{!RFC8017}}.
 BlindSign(skS, blinded_msg)
 
 Parameters:
-- kLenInBytes, the length in bytes of the RSA modulus n
+- kLen, the length in bytes of the RSA modulus n
 
 Inputs:
 - skS, server private key
@@ -315,21 +315,21 @@ Inputs:
   byte string
 
 Outputs:
-- blind_sig, a byte string of length kLenInBytes
+- blind_sig, a byte string of length kLen
 
 Errors:
 - "unexpected input size": Raised when a byte string input doesn't
   have the expected length.
-- "invalid message length": Raised when the message representative
+- "invalid message": Raised when the message representative
   to sign is not an integer between 0 and n - 1.
 
 Steps:
-1. If len(blinded_msg) != kLenInBytes, raise "unexpected input size"
+1. If len(blinded_msg) != kLen, raise "unexpected input size"
    and stop
 2. m = bytes_to_int(blinded_msg)
-3. If m >= n, raise "invalid message length" and stop
+3. If m >= n, raise "invalid message" and stop
 4. s = RSASP1(skS, m)
-5. blind_sig = int_to_bytes(s, kLenInBytes)
+5. blind_sig = int_to_bytes(s, kLen)
 6. output blind_sig
 ~~~
 
@@ -344,17 +344,20 @@ as is done in Blind.
 Finalize(pkS, msg, blind_sig, inv)
 
 Parameters:
-- kLenInBytes, the length in bytes of the RSA modulus n
+- kLen, the length in bytes of the RSA modulus n
+- Hash, the hash function used to hash the message
+- MGF, the mask generation function
+- sLen, the length in bytes of the salt
 
 Inputs:
 - pkS, server public key (n, e)
 - msg, message to be signed, a byte string
 - blind_sig, signed and blinded element, a byte string of
-  length kLenInBytes
+  length kLen
 - inv, inverse of the blind, an integer
 
 Outputs:
-- sig, a byte string of length kLenInBytes
+- sig, a byte string of length kLen
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
@@ -362,11 +365,12 @@ Errors:
   have the expected length.
 
 Steps:
-1. If len(blind_sig) != kLenInBytes, raise "unexpected input size" and stop
+1. If len(blind_sig) != kLen, raise "unexpected input size" and stop
 2. z = bytes_to_int(blind_sig)
 3. s = z * inv mod n
-4. sig = int_to_bytes(s, kLenInBytes)
-5. result = RSASSA-PSS-VERIFY(pkS, msg, sig)
+4. sig = int_to_bytes(s, kLen)
+5. result = RSASSA-PSS-VERIFY(pkS, msg, sig) with
+   Hash, MGF, and sLenInBytes as defined in the parameters
 6. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
