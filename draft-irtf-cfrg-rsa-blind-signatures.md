@@ -294,7 +294,7 @@ Steps:
 10. output blinded_msg, inv
 ~~~
 
-The blinding factor r must be randomly chosen from a uniform distribution.
+The blinding factor r MUST be randomly chosen from a uniform distribution.
 This is typically done via rejection sampling.
 
 ## BlindSign
@@ -487,16 +487,16 @@ reduces PSS to FDH, so the same results apply.
 
 BlindSign is functionally a remote procedure call for applying the RSA private
 key operation. As such, side channel resistance is paramount to protect the private key
-from exposure {{RemoteTimingAttacks}}. Implementations MUST implement RSA blinding as a
-side channel attack mitigation. One mechanism is described in Section 10 of
-{{?TimingAttacks=DOI.10.1007/3-540-68697-5_9}}. Failure to do so may lead to side channel
-attacks that leak the private signing key.
+from exposure {{RemoteTimingAttacks}}. Implementations SHOULD implement some form of
+side channel attack mitigation, such as RSA blinding as described in Section 10 of
+{{?TimingAttacks=DOI.10.1007/3-540-68697-5_9}}. Failure to apply such mitigations can
+lead to side channel attacks that leak the private signing key.
 
 Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes the importance
 of implementation safeguards that protect against fault attacks that can also leak the
 private signing key. These safeguards require that implementations check that the result
 of the private key operation when signing is correct, i.e., given s = RSASP1(skS, m),
-verify that m = RSAVP1(pkS, s). Implementations MUST apply this (or equivalent) safeguard
+verify that m = RSAVP1(pkS, s). Implementations SHOULD apply this (or equivalent) safeguard
 to mitigate fault attacks, even if they are not implementations based on the Chinese
 remainder theorem.
 
