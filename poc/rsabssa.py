@@ -13,6 +13,7 @@ from os import urandom
 H = SHA384
 MgfHash = SHA384
 
+
 def wrap_print(arg, *args):
     line_length = 68
     string = arg + " " + " ".join(args)
@@ -156,7 +157,7 @@ def test(
     r_inv: int = None,
     sLen: int = 48,
     salt: bytes = None,
-    randomize: bool = False
+    randomize: bool = False,
 ) -> None:
     print("\n## {} Test Vector".format(description))
 
@@ -175,7 +176,12 @@ def test(
     wrap_print("random_msg = {}".format(random_msg.hex()))
 
     public_key = secret_key.public_key()
-    blinded_msg, inv = rsabssa_blind(public_key, msg, sLen, r_inv, salt)
+    blinded_msg, inv = None, None
+    while True:
+        try:
+            blinded_msg, inv = rsabssa_blind(public_key, msg, sLen, r_inv, salt)
+        finally:
+            break
     blind_sig = rsabssa_blind_sign(secret_key, blinded_msg)
     sig = rsabssa_finalize(public_key, blind_sig, inv, msg, sLen)
 
@@ -213,6 +219,7 @@ def test_RSABSSA_SHA384_PSS_Randomized() -> None:
         randomize=True,
     )
 
+
 def test_RSABSSA_SHA384_PSSZERO_Randomized() -> None:
     msg = I2OSP(
         0x8F3DC6FB8C4A02F4D6352EDF0907822C1210A9B32F9BDDA4C45A698C80023AA6B59F8CFEC5FDBB36331372EBEFEDAE7D,
@@ -240,7 +247,8 @@ def test_RSABSSA_SHA384_PSSZERO_Randomized() -> None:
         randomize=True,
     )
 
-def test_RSABSSA_SHA384_PSS_Deterinistic() -> None:
+
+def test_RSABSSA_SHA384_PSS_Deterministic() -> None:
     msg = I2OSP(
         0x8F3DC6FB8C4A02F4D6352EDF0907822C1210A9B32F9BDDA4C45A698C80023AA6B59F8CFEC5FDBB36331372EBEFEDAE7D,
         length=48,
@@ -263,6 +271,7 @@ def test_RSABSSA_SHA384_PSS_Deterinistic() -> None:
         salt=salt,
         randomize=False,
     )
+
 
 def test_RSABSSA_SHA384_PSSZERO_Deterministic() -> None:
     msg = I2OSP(
@@ -299,7 +308,14 @@ def test_deterministic() -> None:
     r_inv = 0x6E69972553327EE6240CE0DE7146AEA2243927CF9F7F52C0103367DF79E3BAFEBFA61C2FFDC41EA397A38523654A1A806F4EEBCD5FE9A2592A463F1FAA26C3601F83F29141EDA488F14F7C0AA82FAA025E37ADBE77E02E575F72F7B9D095882923476F2328DFAEB23B607D2F706C6C8EF6C2AEE50DDB14E6D27E043E7DEC8E5DEDE6844AA80B2206B6019350D37925BB8819653AA7A13BFB9CC3C95B53378F278903B5C06A10C0B3CE0AA028E9600F7B2733F0278565F9B88E9D92E039DB78300170D7BBD32CE2B89AD8944167839880E3A2AEBA05BF00EDC8032A63E6279BF42A131CCC9BB95B8693764B27665274FB673BDFB7D69B7957EE8B64A99EFBEED9
     sLen = 0
     secret_key = RSA.construct((n, e, d, p, q), consistency_check=True)
-    test("deterministic", msg=msg, secret_key=secret_key, r_inv=r_inv, sLen=sLen, randomize=False)
+    test(
+        "deterministic",
+        msg=msg,
+        secret_key=secret_key,
+        r_inv=r_inv,
+        sLen=sLen,
+        randomize=False,
+    )
 
 
 def generate_probabilistic_test_vector() -> None:
@@ -318,7 +334,7 @@ def generate_deterministic_test_vector() -> None:
 
 test_RSABSSA_SHA384_PSS_Randomized()
 test_RSABSSA_SHA384_PSSZERO_Randomized()
-test_RSABSSA_SHA384_PSS_Deterinistic()
+test_RSABSSA_SHA384_PSS_Deterministic()
 test_RSABSSA_SHA384_PSSZERO_Deterministic()
 test_deterministic()
 generate_probabilistic_test_vector()
