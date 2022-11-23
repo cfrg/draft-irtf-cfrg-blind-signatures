@@ -28,129 +28,101 @@ author:
 informative:
   WM99:
     title: "Unknown key-share attacks on the station-to-station (STS) protocol"
-    venue: International Workshop on Public Key Cryptography
+    refcontent: International Workshop on Public Key Cryptography
     date: October, 1999
-    authors:
-      -
-        ins: S. Blake-Wilson
-      -
-        ins: A. Menezes
+    author:
+      - ins: S. Blake-Wilson
+      - ins: A. Menezes
   KLRX20:
     title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
     target: https://eprint.iacr.org/2020/1071
     date: September, 2020
-    authors:
-      -
-        ins: J. Kastner
-      -
-        ins: J. Loss
-      -
-        ins: M. Rosenberg
-      -
-        ins: J. Xu
+    author:
+      - ins: J. Kastner
+      - ins: J. Loss
+      - ins: M. Rosenberg
+      - ins: J. Xu
   JKK14:
     title:  "Round-Optimal Password-Protected Secret Sharing and T-PAKE in the Password-Only model"
     target: https://eprint.iacr.org/2014/650
     date: August, 2014
-    authors:
-      -
-        ins: S. Jarecki
+    author:
+      - ins: S. Jarecki
         org: UC Irvine, CA, USA
-      -
-        ins: A. Kiayias
+      - ins: A. Kiayias
         org: University of Athens, Greece
-      -
-        ins: H. Krawczyk
+      - ins: H. Krawczyk
         org: IBM Research, NY, USA
   Lys22:
     title: "Security Analysis of RSA-BSSA"
     target: https://eprint.iacr.org/2022/895
-    authors:
-      -
-        ins: A. Lysyanskaya
+    author:
+      - ins: A. Lysyanskaya
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
     date: July, 2020
-    authors:
-      -
-        ins: W. Ladd
+    author:
+      - ins: W. Ladd
   PolytimeROS:
     title: "On the (in)security of ROS"
     target: https://eprint.iacr.org/2020/945
     date: July, 2020
-    authors:
-      -
-        ins: F. Benhamouda
-      -
-        ins: T. Lepoint
-      -
-        ins: J. Loss
-      -
-        ins: M. Orru
-      -
-        ins: M. Raykova
+    author:
+      - ins: F. Benhamouda
+      - ins: T. Lepoint
+      - ins: J. Loss
+      - ins: M. Orru
+      - ins: M. Raykova
   RSA-FDH:
     title: "Random Oracles are Practical: A Paradigm for Designing Efficient Protocols"
     target: https://cseweb.ucsd.edu/~mihir/papers/ro.pdf
     date: October, 1995
-    authors:
-      -
-        ins: M. Bellare
-      -
-        ins: P. Rogaway
+    author:
+      - ins: M. Bellare
+      - ins: P. Rogaway
   Chaum83:
     title: Blind Signatures for Untraceable Payments
     target: http://sceweb.sce.uhcl.edu/yang/teaching/csci5234WebSecurityFall2011/Chaum-blind-signatures.PDF
     date: 1983
-    authors:
-      -
-        ins: D. Chaum
+    author:
+      - ins: D. Chaum
         org: University of California, Santa Barbara, USA
   RemoteTimingAttacks:
     title: "Remote Timing Attacks are Practical"
     target: https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf
     date: May, 2003
-    venue: 12th Usenix Security Symposium
-    authors:
-      -
-        ins: D. Boneh
+    refcontent: 12th Usenix Security Symposium
+    author:
+      - ins: D. Boneh
         org: Stanford University
-      -
-        ins: D. Brumley
+      - ins: D. Brumley
         org: Stanford University
   TZ22:
     title: "Short Pairing-Free Blind Signatures with Exponential Security"
     target: https://eprint.iacr.org/2022/047
     date: January, 2022
-    authors:
-      -
-        ins: S. Tessaro
+    author:
+      - ins: S. Tessaro
         org: University of Washington
-      -
-        ins: C. Zhu
+      - ins: C. Zhu
         org: University of Washington
   UProve:
     title: U-Prove
     target: https://www.microsoft.com/en-us/research/project/u-prove/
     date: Februrary, 2012
-    authors:
-      -
-        ins: Microsoft
+    author:
+      - ins: Microsoft
         org: Microsoft
   GRSB19:
     title: Efficient Noninteractive Certification of RSA Moduli and Beyond
     target: https://eprint.iacr.org/2018/057.pdf
     date: October, 2019
-    authors:
-      -
-        ins: S. Goldberg
-      -
-        ins: L. Reyzin
-      -
-        ins: O. Sagga
-      -
-        ins: F. Baldimtsi
+    author:
+      - ins: S. Goldberg
+      - ins: L. Reyzin
+      - ins: O. Sagga
+      - ins: F. Baldimtsi
 
 --- abstract
 
@@ -167,8 +139,8 @@ for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
 a wide range of applications ranging from electric voting schemes to authentication mechanisms.
 
 Recently, interest in blind signatures has grown to address operational shortcomings from applications
-that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?I-D.irtf-cfrg-voprfs}}, such
-as Privacy Pass {{?I-D.ietf-privacypass-protocol}}. Specifically, VOPRFs are not necessarily
+that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?VOPRF=I-D.irtf-cfrg-voprf}}, such
+as Privacy Pass {{?PRIVACY-PASS=I-D.ietf-privacypass-protocol}}. Specifically, VOPRFs are not necessarily
 publicly verifiable, meaning that a verifier needs access to the VOPRF private key to verify
 that the output of a VOPRF protocol is valid for a given input. This limitation complicates
 deployments where it is not desirable to distribute private keys to entities performing verification.
@@ -243,7 +215,7 @@ Using these three functions, the core protocol runs as follows:
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
 input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in Section 8.1.2 of {{!RFC8017}}. The Finalize function performs that
+routine defined in {{Section 8.1.2 of !RFC8017}}. The Finalize function performs that
 check before returning the signature.
 
 In the remainder of this section, we specify Blind, BlindSign, and Finalize.
@@ -253,7 +225,7 @@ In the remainder of this section, we specify Blind, BlindSign, and Finalize.
 The Blind function encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server, encoded as a byte string,
 and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
-Section 5.2.2 and Section 9.1.1 of {{!RFC8017}}, respectively. If this function fails
+{{Sections 5.2.2 and 9.1.1 of !RFC8017}}, respectively. If this function fails
 with an "invalid blind" error, implementations SHOULD retry the function again. The
 probability of multiple such errors in sequence is negligible.
 
@@ -301,7 +273,7 @@ This is typically done via rejection sampling.
 
 BlindSign performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as a byte string.
-RSASP1 is as defined in Section 5.2.1 of {{!RFC8017}}.
+RSASP1 is as defined in {{Section 5.2.1 of !RFC8017}}.
 
 ~~~
 BlindSign(skS, blinded_msg)
@@ -402,7 +374,7 @@ Steps:
 # RSABSSA Variants {#rsabssa}
 
 In this section we define different named variants of RSABSSA. Each variant specifies
-a hash function, RSASSA-PSS parameters as defined in {{!RFC8017, Section 9.1.1}}, and
+a hash function, RSASSA-PSS parameters as defined in {{Section 9.1.1 of !RFC8017}}, and
 whether or not message randomization (as described in {{randomization}}) is performed
 on the input message. Future specifications can introduce other variants as desired.
 The named variants are as follows:
