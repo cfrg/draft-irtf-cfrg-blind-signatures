@@ -258,43 +258,53 @@ with an "invalid blind" error, implementations SHOULD retry the function again. 
 probability of multiple such errors in sequence is negligible.
 
 ~~~
-Blind(pkS, msg)
+blinded_msg, inv = Blind(pkS, msg)
+~~~
 
 Parameters:
-- kLen, the length in bytes of the RSA modulus n
-- Hash, the hash function used to hash the message
-- MGF, the mask generation function
-- sLen, the length in bytes of the salt
+
+- `kLen`, the length in bytes of the RSA modulus n
+- `Hash`, the hash function used to hash the message
+- `MGF`, the mask generation function
+- `sLen`, the length in bytes of the salt
+{: spacing="compact"}
 
 Inputs:
-- pkS, server public key (n, e)
-- msg, message to be signed, a byte string
+
+- `pkS`, server public key (n, e)
+- `msg`, message to be signed, a byte string
+{: spacing="compact"}
 
 Outputs:
-- blinded_msg, a byte string of length kLen
-- inv, an integer
+
+- `blinded_msg`, a byte string of length kLen
+- `inv`, an integer
+{: spacing="compact"}
 
 Errors:
+
 - "message too long": Raised when the input message is too long.
 - "encoding error": Raised when the input message fails encoding.
 - "invalid blind": Raised when the inverse of r cannot be found.
+{: spacing="compact"}
 
 Steps:
-1. encoded_msg = EMSA-PSS-ENCODE(msg, (kLen * 8) - 1)
-   with Hash, MGF, and sLenInBytes as defined in the parameters
-2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
-3. m = bytes_to_int(encoded_msg)
-4. r = random_integer_uniform(1, n)
-5. inv = inverse_mod(r, n)
-6. If inverse_mod fails, raise an "invalid blind" error
-   and stop
-7. x = RSAVP1(pkS, r)
-8. z = m * x mod n
-9. blinded_msg = int_to_bytes(z, kLen)
-10. output blinded_msg, inv
-~~~
 
-The blinding factor r MUST be randomly chosen from a uniform distribution.
+1. `encoded_msg = EMSA-PSS-ENCODE(msg, (kLen * 8) - 1)`
+   with `Hash`, `MGF`, and `sLen` as defined in the parameters
+2. If `EMSA-PSS-ENCODE` raises an error, raise the error and stop
+3. `m = bytes_to_int(encoded_msg)`
+4. `r = random_integer_uniform(1, n)`
+5. `inv = inverse_mod(r, n)`
+6. If `inverse_mod` fails, raise an "invalid blind" error
+   and stop
+7. `x = RSAVP1(pkS, r)`
+8. `z = m * x mod n`
+9. `blinded_msg = int_to_bytes(z, kLen)`
+10. output `blinded_msg, inv`
+{: spacing="compact"}
+
+The blinding factor `r` MUST be randomly chosen from a uniform distribution.
 This is typically done via rejection sampling.
 
 ## BlindSign
