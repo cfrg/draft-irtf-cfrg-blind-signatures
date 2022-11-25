@@ -600,7 +600,7 @@ higher-level constructions that present a richer feature set.
 ## Post-Quantum Readiness
 
 The blind signature protocol specified in this document is not post-quantum ready since it
-is based on RSA. (Shor's polynomial-time factorization algorithm readily applies.)
+is based on RSA. Shor's polynomial-time factorization algorithm readily applies.
 
 # IANA Considerations
 
