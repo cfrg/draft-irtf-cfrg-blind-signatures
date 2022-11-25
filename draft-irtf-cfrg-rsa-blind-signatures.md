@@ -283,7 +283,7 @@ Parameters:
 
 Inputs:
 - skS, server private key
-- blinded_msg, encoded and blinded message to be signed, an
+- blinded_msg, encoded and blinded message to be signed, a
   byte string
 
 Outputs:
