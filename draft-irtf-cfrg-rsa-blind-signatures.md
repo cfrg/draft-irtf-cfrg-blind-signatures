@@ -492,7 +492,7 @@ messages adhere to this form.
 ## Message Entropy {#message-entropy}
 
 As discussed in {{Lys22}}, a malicious signer can construct an invalid public key and use
-it to learn information about low-entropy with input messages. Note that some invalid public
+it to learn information about low-entropy input messages. Note that some invalid public
 keys may not yield valid signatures when run with the protocol, e.g., because the signature
 fails to verify. However, if an attacker can coerce the client to use these invalid public
 keys with low-entropy inputs, they can learn information about the client inputs before
@@ -502,7 +502,7 @@ Based on this fact, using the core protocol functions in {{core-protocol}} is po
 unless one of the following conditions are met:
 
 1. The client has proof that the signer's public key is honestly generated. {{GRSB19}} presents
-  some (non-interactive) honest-verifier zero-knoweldge proofs of various statements about the
+  some (non-interactive) honest-verifier zero-knowledge proofs of various statements about the
   public key.
 2. The client input message has high entropy.
 
