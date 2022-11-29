@@ -292,19 +292,14 @@ Outputs:
 - blind_sig, a byte string of length kLen
 
 Errors:
-- "unexpected input size": Raised when a byte string input doesn't
-  have the expected length.
-- "invalid message": Raised when the message representative
-  to sign is not an integer between 0 and n - 1.
+- "message representative out of range": Raised when the message representative
+  to sign is not an integer between 0 and n - 1 (raised by RSASP1)
 
 Steps:
-1. If len(blinded_msg) != kLen, raise "unexpected input size"
-   and stop
-2. m = bytes_to_int(blinded_msg)
-3. If m >= n, raise "invalid message" and stop
-4. s = RSASP1(skS, m)
-5. blind_sig = int_to_bytes(s, kLen)
-6. output blind_sig
+1. m = bytes_to_int(blinded_msg)
+2. s = RSASP1(skS, m)
+3. blind_sig = int_to_bytes(s, kLen)
+4. output blind_sig
 ~~~
 
 ## Finalize
