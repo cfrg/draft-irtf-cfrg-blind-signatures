@@ -176,6 +176,8 @@ in this document:
   fails if x and n are not co-prime.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
+- concat(x0, ..., xN): Concatenation of byte strings. For example,
+  concat(0x01, 0x0203, 0x040506) = 0x010203040506.
 
 # Blind Signature Protocol {#core-protocol}
 
@@ -367,7 +369,7 @@ Outputs:
 
 Steps:
 1. msgPrefix = random(32)
-2. randomMsg = msgPrefix || msg
+2. randomMsg = concat(msgPrefix, msg)
 3. output randomMsg
 ~~~
 
