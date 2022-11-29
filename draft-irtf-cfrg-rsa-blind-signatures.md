@@ -188,7 +188,7 @@ in this document:
   {{!RFC8017}}, respectively. Note that these functions operate on byte strings
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
-  such that M <= R < N.
+  between M inclusive and N exclusive, i.e., M <= R < N.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
