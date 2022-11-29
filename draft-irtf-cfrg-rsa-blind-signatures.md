@@ -229,7 +229,10 @@ key. It outputs the blinded message to be sent to the server, encoded as a byte 
 and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
 {{Sections 5.2.2 and 9.1.1 of !RFC8017}}, respectively. If this function fails
 with an "invalid blind" error, implementations SHOULD retry the function again. The
-probability of multiple such errors in sequence is negligible.
+probability of multiple such errors in sequence is negligible. Note that this function
+invokes RSAVP1, which is defined to throw an optional error for invalid inputs. However,
+this error cannot occur based on how RSAVP1 is invoked, so this error is not included
+in the list of errors for Blind.
 
 ~~~
 Blind(pkS, msg)
