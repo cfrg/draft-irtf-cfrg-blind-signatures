@@ -127,8 +127,10 @@ informative:
 --- abstract
 
 This document specifies an RSA-based blind signature protocol. RSA blind signatures were first
-introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
-in {{!RFC8017}} to enable blind signature support.
+introduced by Chaum for untraceable payments {{Chaum83}}. A signature that is output from this
+protocol can be verified as an RSA-PSS signature {{!RFC8017}}.
+
+This document is a product of the Crypto Forum Research Group (CFRG) in the IRTF.
 
 --- middle
 
@@ -156,6 +158,8 @@ This document specifies a protocol for computing the RSA blind signatures using 
 and a family of variants for this protocol, denoted RSABSSA. In order to facilitate deployment,
 it is defined in such a way that the resulting (unblinded) signature can be verified with a standard
 RSA-PSS library.
+
+This document represents the consensus of the Crypto Forum Research Group (CFRG).
 
 # Requirements Notation
 
