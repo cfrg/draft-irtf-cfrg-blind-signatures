@@ -26,6 +26,18 @@ author:
     email: caw@heapingbits.net
 
 informative:
+  GoogleVPN:
+    title: "VPN by Google One White Paper"
+    target: https://one.google.com/about/vpn/howitworks
+  ApplePrivateRelay:
+    title: "iCloud Private Relay Overview"
+    target: https://www.apple.com/icloud/docs/iCloud_Private_Relay_Overview_Dec2021.pdf
+  PrettyGoodPhonePrivacy:
+    title: "Pretty Good Phone Privacy"
+    target: https://www.usenix.org/conference/usenixsecurity21/presentation/schmitt
+    author:
+      - ins: P. Schmitt
+      - ins: B. Raghavan
   WM99:
     title: "Unknown key-share attacks on the station-to-station (STS) protocol"
     refcontent: International Workshop on Public Key Cryptography
@@ -136,7 +148,8 @@ in {{!RFC8017}} to enable blind signature support.
 
 Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
-a wide range of applications ranging from electronic voting schemes to authentication mechanisms.
+a wide range of applications ranging from privacy-preserving digital payments to
+authentication mechanisms {{GoogleVPN}} {{ApplePrivateRelay}} {{PrettyGoodPhonePrivacy}}.
 
 Recently, interest in blind signatures has grown to address operational shortcomings from applications
 that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?VOPRF=I-D.irtf-cfrg-voprf}}, such
