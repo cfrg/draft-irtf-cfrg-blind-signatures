@@ -455,7 +455,10 @@ document; see {{message-entropy}} for more details.
 
 Lastly, the design in this document differs from the analysis in {{BNPS03}} only in message
 encoding, i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively
-reduces PSS to FDH, so the same results apply.
+reduces PSS to FDH, so the same results apply. Beyond this seminal result, {{Lys22}} proved
+one-more-forgery polynomial security in the random oracle model under the one-more-RSA assumption.
+Their work considers scenarios where the signer public keys are maliciously controlled.
+See {{message-entropy}} for more discussion on those results.
 
 ## Timing Side Channels and Fault Attacks
 
