@@ -136,7 +136,7 @@ in {{!RFC8017}} to enable blind signature support.
 
 Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
-a wide range of applications ranging from electric voting schemes to authentication mechanisms.
+a wide range of applications ranging from electronic voting schemes to authentication mechanisms.
 
 Recently, interest in blind signatures has grown to address operational shortcomings from applications
 that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?VOPRF=I-D.irtf-cfrg-voprf}}, such
@@ -247,13 +247,13 @@ Outputs:
 - inv, an integer
 
 Errors:
-- "message too long": Raised when the input message is too long.
+- "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
 - "encoding error": Raised when the input message fails encoding.
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, (kLen * 8) - 1)
-   with Hash, MGF, and sLenInBytes as defined in the parameters
+   with Hash, MGF, and sLen as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
@@ -342,7 +342,7 @@ Steps:
 3. s = z * inv mod n
 4. sig = int_to_bytes(s, kLen)
 5. result = RSASSA-PSS-VERIFY(pkS, msg, sig) with
-   Hash, MGF, and sLenInBytes as defined in the parameters
+   Hash, MGF, and sLen as defined in the parameters
 6. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
@@ -350,7 +350,7 @@ Steps:
 # Message Randomization {#randomization}
 
 Message randomization is the process by which the message to be signed and verified
-is augmented with fresh randomness. As such, message randommization is a procedure
+is augmented with fresh randomness. As such, message randomization is a procedure
 invoked before the protocol in {{core-protocol}}, as it changes the contents of
 the message being signed. We denote this process by the function Randomize(msg),
 which takes as input a message `msg` and produces a randomized message `randomMsg`.
@@ -524,7 +524,7 @@ implementations SHOULD NOT allow clients to provide the salt directly.
 ## Key Substitution Attacks
 
 RSA is well known to permit key substitution attacks, wherein an attacker generates a key pair
-(skA, pkA) that verify some known (message, signature) pair produced under a different (skS, pkS)
+(skA, pkA) that verifies some known (message, signature) pair produced under a different (skS, pkS)
 key pair {{WM99}}. This means it may be possible for an attacker to use a (message, signature) pair
 from one context in another. Entities that verify signatures must take care to ensure a
 (message, signature) pair verifies with a valid public key from the expected issuer.
