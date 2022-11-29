@@ -32,6 +32,10 @@ def I2OSP(i: int, length: int) -> bytes:
     return i.to_bytes(length=length, byteorder="big")
 
 
+def to_hex(n):
+    return hex(n)[2:]
+
+
 def EMSA_PSS_ENCODE(kBits: int, msg: bytes, sLen: int, salt: bytes = None) -> bytes:
     m_hash = H.new(msg).digest()
     hLen = H.digest_size
@@ -163,11 +167,11 @@ def test(
 
     print("~~~")
 
-    wrap_print("p = {}".format(hex(secret_key.p)))
-    wrap_print("q = {}".format(hex(secret_key.q)))
-    wrap_print("n = {}".format(hex(secret_key.n)))
-    wrap_print("e = {}".format(hex(secret_key.e)))
-    wrap_print("d = {}".format(hex(secret_key.d)))
+    wrap_print("p = {}".format(to_hex(secret_key.p)))
+    wrap_print("q = {}".format(to_hex(secret_key.q)))
+    wrap_print("n = {}".format(to_hex(secret_key.n)))
+    wrap_print("e = {}".format(to_hex(secret_key.e)))
+    wrap_print("d = {}".format(to_hex(secret_key.d)))
 
     wrap_print("msg = {}".format(msg.hex()))
     random_msg = msg
