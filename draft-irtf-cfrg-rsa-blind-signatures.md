@@ -266,7 +266,7 @@ Outputs:
 
 Errors:
 - "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
-- "encoding error": Raised when the input message fails encoding.
+- "encoding error": Raised when the input message fails encoding (raised by EMSA-PSS-ENCODE).
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
