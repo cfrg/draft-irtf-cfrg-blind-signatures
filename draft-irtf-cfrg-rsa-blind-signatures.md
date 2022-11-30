@@ -191,7 +191,7 @@ in this document:
   between M inclusive and N exclusive, i.e., M <= R < N.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
 - len(s): The length of a byte string, in bytes.
-- random(n): Generate n random bytes using a cryptographically-secure pseudorandom number generator.
+- random(n): Generate n random bytes using a cryptographically-secure random number generator.
 - concat(x0, ..., xN): Concatenation of byte strings. For example,
   concat(0x01, 0x0203, 0x040506) = 0x010203040506.
 
@@ -534,7 +534,7 @@ As such, this interface is not suitable for applications that require determinis
 
 ## PSS Salt Choice
 
-For variants that have a non-zero PSS salt, the salt MUST be generated from a cryptographically secure pseudorandom number generator.
+For variants that have a non-zero PSS salt, the salt MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.
 If the PSS salt is not generated randomly, or is otherwise constructed maliciously, it might be
 possible for the salt to encode information that is not present in the signed message. For example,
 the salt might be maliciously constructed to encode the local IP address of the client. As a result,
