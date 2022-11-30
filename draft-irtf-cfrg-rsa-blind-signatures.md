@@ -26,137 +26,123 @@ author:
     email: caw@heapingbits.net
 
 informative:
+  GoogleVPN:
+    title: "VPN by Google One White Paper"
+    target: https://one.google.com/about/vpn/howitworks
+  ApplePrivateRelay:
+    title: "iCloud Private Relay Overview"
+    target: https://www.apple.com/icloud/docs/iCloud_Private_Relay_Overview_Dec2021.pdf
+  PrettyGoodPhonePrivacy:
+    title: "Pretty Good Phone Privacy"
+    target: https://www.usenix.org/conference/usenixsecurity21/presentation/schmitt
+    author:
+      - ins: P. Schmitt
+      - ins: B. Raghavan
   WM99:
     title: "Unknown key-share attacks on the station-to-station (STS) protocol"
-    venue: International Workshop on Public Key Cryptography
+    refcontent: International Workshop on Public Key Cryptography
     date: October, 1999
-    authors:
-      -
-        ins: S. Blake-Wilson
-      -
-        ins: A. Menezes
+    author:
+      - ins: S. Blake-Wilson
+      - ins: A. Menezes
   KLRX20:
     title: "On Pairing-Free Blind Signature Schemes in the Algebraic Group Model"
     target: https://eprint.iacr.org/2020/1071
     date: September, 2020
-    authors:
-      -
-        ins: J. Kastner
-      -
-        ins: J. Loss
-      -
-        ins: M. Rosenberg
-      -
-        ins: J. Xu
+    author:
+      - ins: J. Kastner
+      - ins: J. Loss
+      - ins: M. Rosenberg
+      - ins: J. Xu
   JKK14:
     title:  "Round-Optimal Password-Protected Secret Sharing and T-PAKE in the Password-Only model"
     target: https://eprint.iacr.org/2014/650
     date: August, 2014
-    authors:
-      -
-        ins: S. Jarecki
+    author:
+      - ins: S. Jarecki
         org: UC Irvine, CA, USA
-      -
-        ins: A. Kiayias
+      - ins: A. Kiayias
         org: University of Athens, Greece
-      -
-        ins: H. Krawczyk
+      - ins: H. Krawczyk
         org: IBM Research, NY, USA
   Lys22:
     title: "Security Analysis of RSA-BSSA"
     target: https://eprint.iacr.org/2022/895
-    authors:
-      -
-        ins: A. Lysyanskaya
+    author:
+      - ins: A. Lysyanskaya
   BLS-Proposal:
     title: "[Privacy-pass] External verifiability: a concrete proposal"
     target: https://mailarchive.ietf.org/arch/msg/privacy-pass/BDOOhSLwB3uUJcfBiss6nUF5sUA/
     date: July, 2020
-    authors:
-      -
-        ins: W. Ladd
+    author:
+      - ins: W. Ladd
   PolytimeROS:
     title: "On the (in)security of ROS"
     target: https://eprint.iacr.org/2020/945
     date: July, 2020
-    authors:
-      -
-        ins: F. Benhamouda
-      -
-        ins: T. Lepoint
-      -
-        ins: J. Loss
-      -
-        ins: M. Orru
-      -
-        ins: M. Raykova
+    author:
+      - ins: F. Benhamouda
+      - ins: T. Lepoint
+      - ins: J. Loss
+      - ins: M. Orru
+      - ins: M. Raykova
   RSA-FDH:
     title: "Random Oracles are Practical: A Paradigm for Designing Efficient Protocols"
     target: https://cseweb.ucsd.edu/~mihir/papers/ro.pdf
     date: October, 1995
-    authors:
-      -
-        ins: M. Bellare
-      -
-        ins: P. Rogaway
+    author:
+      - ins: M. Bellare
+      - ins: P. Rogaway
   Chaum83:
     title: Blind Signatures for Untraceable Payments
     target: http://sceweb.sce.uhcl.edu/yang/teaching/csci5234WebSecurityFall2011/Chaum-blind-signatures.PDF
     date: 1983
-    authors:
-      -
-        ins: D. Chaum
+    author:
+      - ins: D. Chaum
         org: University of California, Santa Barbara, USA
   RemoteTimingAttacks:
     title: "Remote Timing Attacks are Practical"
     target: https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf
     date: May, 2003
-    venue: 12th Usenix Security Symposium
-    authors:
-      -
-        ins: D. Boneh
+    refcontent: 12th Usenix Security Symposium
+    author:
+      - ins: D. Boneh
         org: Stanford University
-      -
-        ins: D. Brumley
+      - ins: D. Brumley
         org: Stanford University
   TZ22:
     title: "Short Pairing-Free Blind Signatures with Exponential Security"
     target: https://eprint.iacr.org/2022/047
     date: January, 2022
-    authors:
-      -
-        ins: S. Tessaro
+    author:
+      - ins: S. Tessaro
         org: University of Washington
-      -
-        ins: C. Zhu
+      - ins: C. Zhu
         org: University of Washington
   UProve:
     title: U-Prove
     target: https://www.microsoft.com/en-us/research/project/u-prove/
     date: Februrary, 2012
-    authors:
-      -
-        ins: Microsoft
+    author:
+      - ins: Microsoft
         org: Microsoft
   GRSB19:
     title: Efficient Noninteractive Certification of RSA Moduli and Beyond
     target: https://eprint.iacr.org/2018/057.pdf
     date: October, 2019
-    authors:
-      -
-        ins: S. Goldberg
-      -
-        ins: L. Reyzin
-      -
-        ins: O. Sagga
-      -
-        ins: F. Baldimtsi
+    author:
+      - ins: S. Goldberg
+      - ins: L. Reyzin
+      - ins: O. Sagga
+      - ins: F. Baldimtsi
 
 --- abstract
 
 This document specifies an RSA-based blind signature protocol. RSA blind signatures were first
-introduced by Chaum for untraceable payments {{Chaum83}}. It extends RSA-PSS encoding specified
-in {{!RFC8017}} to enable blind signature support.
+introduced by Chaum for untraceable payments {{Chaum83}}. A signature that is output from this
+protocol can be verified as an RSA-PSS signature {{!RFC8017}}.
+
+This document is a product of the Crypto Forum Research Group (CFRG) in the IRTF.
 
 --- middle
 
@@ -164,11 +150,12 @@ in {{!RFC8017}} to enable blind signature support.
 
 Originally introduced in the context of digital cash systems by Chaum
 for untraceable payments {{Chaum83}}, RSA blind signatures turned out to have
-a wide range of applications ranging from electric voting schemes to authentication mechanisms.
+a wide range of applications ranging from privacy-preserving digital payments to
+authentication mechanisms {{GoogleVPN}} {{ApplePrivateRelay}} {{PrettyGoodPhonePrivacy}}.
 
 Recently, interest in blind signatures has grown to address operational shortcomings from applications
-that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?I-D.irtf-cfrg-voprfs}}, such
-as Privacy Pass {{?I-D.ietf-privacypass-protocol}}. Specifically, VOPRFs are not necessarily
+that use Verifiable Oblivious Pseudorandom Functions (VOPRFs) {{?VOPRF=I-D.irtf-cfrg-voprf}}, such
+as Privacy Pass {{?PRIVACY-PASS=I-D.ietf-privacypass-protocol}}. Specifically, VOPRFs are not necessarily
 publicly verifiable, meaning that a verifier needs access to the VOPRF private key to verify
 that the output of a VOPRF protocol is valid for a given input. This limitation complicates
 deployments where it is not desirable to distribute private keys to entities performing verification.
@@ -185,6 +172,8 @@ and a family of variants for this protocol, denoted RSABSSA. In order to facilit
 it is defined in such a way that the resulting (unblinded) signature can be verified with a standard
 RSA-PSS library.
 
+This document represents the consensus of the Crypto Forum Research Group (CFRG).
+
 # Requirements Notation
 
 {::boilerplate bcp14}
@@ -199,11 +188,12 @@ in this document:
   {{!RFC8017}}, respectively. Note that these functions operate on byte strings
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
-  such that M <= R < N.
-- inverse_mod(x, n): Compute the multiplicative inverse of x mod n. This function
-  fails if x and n are not co-prime.
+  between M inclusive and N exclusive, i.e., M <= R < N.
+- inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure random number generator.
+- concat(x0, ..., xN): Concatenation of byte strings. For example,
+  concat(0x01, 0x0203, 0x040506) = 0x010203040506.
 
 # Blind Signature Protocol {#core-protocol}
 
@@ -243,7 +233,7 @@ Using these three functions, the core protocol runs as follows:
 
 Upon completion, correctness requires that clients can verify signature `sig` over private
 input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in Section 8.1.2 of {{!RFC8017}}. The Finalize function performs that
+routine defined in {{Section 8.1.2 of !RFC8017}}. The Finalize function performs that
 check before returning the signature.
 
 In the remainder of this section, we specify Blind, BlindSign, and Finalize.
@@ -253,9 +243,12 @@ In the remainder of this section, we specify Blind, BlindSign, and Finalize.
 The Blind function encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server, encoded as a byte string,
 and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
-Section 5.2.2 and Section 9.1.1 of {{!RFC8017}}, respectively. If this function fails
+{{Sections 5.2.2 and 9.1.1 of !RFC8017}}, respectively. If this function fails
 with an "invalid blind" error, implementations SHOULD retry the function again. The
-probability of multiple such errors in sequence is negligible.
+probability of multiple such errors in sequence is negligible. Note that this function
+invokes RSAVP1, which is defined to throw an optional error for invalid inputs. However,
+this error cannot occur based on how RSAVP1 is invoked, so this error is not included
+in the list of errors for Blind.
 
 ~~~
 Blind(pkS, msg)
@@ -275,13 +268,13 @@ Outputs:
 - inv, an integer
 
 Errors:
-- "message too long": Raised when the input message is too long.
-- "encoding error": Raised when the input message fails encoding.
+- "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
+- "encoding error": Raised when the input message fails encoding (raised by EMSA-PSS-ENCODE).
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, (kLen * 8) - 1)
-   with Hash, MGF, and sLenInBytes as defined in the parameters
+   with Hash, MGF, and sLen as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. r = random_integer_uniform(1, n)
@@ -301,7 +294,7 @@ This is typically done via rejection sampling.
 
 BlindSign performs the RSA private key operation on the client's
 blinded message input and returns the output encoded as a byte string.
-RSASP1 is as defined in Section 5.2.1 of {{!RFC8017}}.
+RSASP1 is as defined in {{Section 5.2.1 of !RFC8017}}.
 
 ~~~
 BlindSign(skS, blinded_msg)
@@ -311,26 +304,21 @@ Parameters:
 
 Inputs:
 - skS, server private key
-- blinded_msg, encoded and blinded message to be signed, an
+- blinded_msg, encoded and blinded message to be signed, a
   byte string
 
 Outputs:
 - blind_sig, a byte string of length kLen
 
 Errors:
-- "unexpected input size": Raised when a byte string input doesn't
-  have the expected length.
-- "invalid message": Raised when the message representative
-  to sign is not an integer between 0 and n - 1.
+- "message representative out of range": Raised when the message representative
+  to sign is not an integer between 0 and n - 1 (raised by RSASP1)
 
 Steps:
-1. If len(blinded_msg) != kLen, raise "unexpected input size"
-   and stop
-2. m = bytes_to_int(blinded_msg)
-3. If m >= n, raise "invalid message" and stop
-4. s = RSASP1(skS, m)
-5. blind_sig = int_to_bytes(s, kLen)
-6. output blind_sig
+1. m = bytes_to_int(blinded_msg)
+2. s = RSASP1(skS, m)
+3. blind_sig = int_to_bytes(s, kLen)
+4. output blind_sig
 ~~~
 
 ## Finalize
@@ -370,7 +358,7 @@ Steps:
 3. s = z * inv mod n
 4. sig = int_to_bytes(s, kLen)
 5. result = RSASSA-PSS-VERIFY(pkS, msg, sig) with
-   Hash, MGF, and sLenInBytes as defined in the parameters
+   Hash, MGF, and sLen as defined in the parameters
 6. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
@@ -378,7 +366,7 @@ Steps:
 # Message Randomization {#randomization}
 
 Message randomization is the process by which the message to be signed and verified
-is augmented with fresh randomness. As such, message randommization is a procedure
+is augmented with fresh randomness. As such, message randomization is a procedure
 invoked before the protocol in {{core-protocol}}, as it changes the contents of
 the message being signed. We denote this process by the function Randomize(msg),
 which takes as input a message `msg` and produces a randomized message `randomMsg`.
@@ -395,14 +383,14 @@ Outputs:
 
 Steps:
 1. msgPrefix = random(32)
-2. randomMsg = msgPrefix || msg
+2. randomMsg = concat(msgPrefix, msg)
 3. output randomMsg
 ~~~
 
 # RSABSSA Variants {#rsabssa}
 
 In this section we define different named variants of RSABSSA. Each variant specifies
-a hash function, RSASSA-PSS parameters as defined in {{!RFC8017, Section 9.1.1}}, and
+a hash function, RSASSA-PSS parameters as defined in {{Section 9.1.1 of !RFC8017}}, and
 whether or not message randomization (as described in {{randomization}}) is performed
 on the input message. Future specifications can introduce other variants as desired.
 The named variants are as follows:
@@ -481,7 +469,10 @@ document; see {{message-entropy}} for more details.
 
 Lastly, the design in this document differs from the analysis in {{BNPS03}} only in message
 encoding, i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively
-reduces PSS to FDH, so the same results apply.
+reduces PSS to FDH, so the same results apply. Beyond this seminal result, {{Lys22}} proved
+one-more-forgery polynomial security in the random oracle model under the one-more-RSA assumption.
+Their work considers scenarios where the signer public keys are maliciously controlled.
+See {{message-entropy}} for more discussion on those results.
 
 ## Timing Side Channels and Fault Attacks
 
@@ -520,7 +511,7 @@ messages adhere to this form.
 ## Message Entropy {#message-entropy}
 
 As discussed in {{Lys22}}, a malicious signer can construct an invalid public key and use
-it to learn information about low-entropy with input messages. Note that some invalid public
+it to learn information about low-entropy input messages. Note that some invalid public
 keys may not yield valid signatures when run with the protocol, e.g., because the signature
 fails to verify. However, if an attacker can coerce the client to use these invalid public
 keys with low-entropy inputs, they can learn information about the client inputs before
@@ -530,7 +521,7 @@ Based on this fact, using the core protocol functions in {{core-protocol}} is po
 unless one of the following conditions are met:
 
 1. The client has proof that the signer's public key is honestly generated. {{GRSB19}} presents
-  some (non-interactive) honest-verifier zero-knoweldge proofs of various statements about the
+  some (non-interactive) honest-verifier zero-knowledge proofs of various statements about the
   public key.
 2. The client input message has high entropy.
 
@@ -552,7 +543,7 @@ implementations SHOULD NOT allow clients to provide the salt directly.
 ## Key Substitution Attacks
 
 RSA is well known to permit key substitution attacks, wherein an attacker generates a key pair
-(skA, pkA) that verify some known (message, signature) pair produced under a different (skS, pkS)
+(skA, pkA) that verifies some known (message, signature) pair produced under a different (skS, pkS)
 key pair {{WM99}}. This means it may be possible for an attacker to use a (message, signature) pair
 from one context in another. Entities that verify signatures must take care to ensure a
 (message, signature) pair verifies with a valid public key from the expected issuer.
@@ -628,7 +619,7 @@ higher-level constructions that present a richer feature set.
 ## Post-Quantum Readiness
 
 The blind signature protocol specified in this document is not post-quantum ready since it
-is based on RSA. (Shor's polynomial-time factorization algorithm readily applies.)
+is based on RSA. Shor's polynomial-time factorization algorithm readily applies.
 
 # IANA Considerations
 
@@ -656,61 +647,61 @@ The following parameters are specified for each test vector:
 
 ## RSABSSA-SHA384-PSS-Randomized Test Vector
 ~~~
-p = 0xe1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc7567348893
-0559c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803f
-ca7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad
-9e41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf
-108602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b3120
-48b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d96
-322493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f2774
-017e32ebca06308a12ecc290c7cd1156dcccfb2311
-q = 0xc601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353
-c806426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b9
-452c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7
-a80c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf9
-62daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0
-a3c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da
-008ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc
-7c9803879d2fc4a28e69291d73dbd799f8bc238385
-n = 0xaec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e0
-47a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963b
-e335d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c5
-3377fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb04044
-3a2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617e
-c6685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de42
-0d63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a04
-13e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78
-c542cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d
-52a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d
-788a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443
-aac8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33
-cfd1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d
-000a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23b
-f8b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b3
-2948bdead5
-e = 0x10001
-d = 0xd43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a287077
-180b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1
-dac97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dc
-fbc4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d0
-52201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee
-7b502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a467
-6681af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aa
-e2c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0e
-a9f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37c
-e2986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624
-c5249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d1031
-4afd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731
-d131b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e
-3ac52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34
-b6d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecf
-eb877a051
+p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
+59c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803fca
+7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad9e
+41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf10
+8602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b312048
+b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d9632
+2493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f277401
+7e32ebca06308a12ecc290c7cd1156dcccfb2311
+q = c601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353c8
+06426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b945
+2c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7a8
+0c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf962
+daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0a3
+c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da00
+8ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc7c
+9803879d2fc4a28e69291d73dbd799f8bc238385
+n = aec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e047
+a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963be3
+35d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c533
+77fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb040443a
+2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617ec6
+685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de420d
+63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a0413
+e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78c5
+42cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d52
+a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d78
+8a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443aa
+c8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33cf
+d1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d00
+0a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23bf8
+b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b329
+48bdead5
+e = 10001
+d = d43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a28707718
+0b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1da
+c97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dcfb
+c4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d052
+201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee7b
+502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a46766
+81af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aae2
+c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0ea9
+f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37ce2
+986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624c5
+249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d10314a
+fd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731d1
+31b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e3a
+c52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34b6
+d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecfeb
+877a051
 msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c80023a
 a6b59f8cfec5fdbb36331372ebefedae7d
-msg_prefix = 7283fe9dc3a4b6622e98fa8ebab99ff8b4717b8d5195dc54502c034
-b1fde79ed
-random_msg = 7283fe9dc3a4b6622e98fa8ebab99ff8b4717b8d5195dc54502c034
-b1fde79ed8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c800
+msg_prefix = 190db6270a235a568a5f397012c635cb5603f9ec1498e8ab2cf4908
+c00a0cc20
+random_msg = 190db6270a235a568a5f397012c635cb5603f9ec1498e8ab2cf4908
+c00a0cc208f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c800
 23aa6b59f8cfec5fdbb36331372ebefedae7d
 salt = 051722b35f458781397c3a671a7d3bd3096503940e4c4f1aaa269d60300ce
 449555cd7340100df9d46944c5356825abf
@@ -798,61 +789,61 @@ c706195d52
 
 ## RSABSSA-SHA384-PSSZERO-Randomized Test Vector
 ~~~
-p = 0xe1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc7567348893
-0559c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803f
-ca7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad
-9e41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf
-108602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b3120
-48b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d96
-322493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f2774
-017e32ebca06308a12ecc290c7cd1156dcccfb2311
-q = 0xc601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353
-c806426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b9
-452c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7
-a80c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf9
-62daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0
-a3c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da
-008ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc
-7c9803879d2fc4a28e69291d73dbd799f8bc238385
-n = 0xaec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e0
-47a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963b
-e335d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c5
-3377fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb04044
-3a2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617e
-c6685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de42
-0d63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a04
-13e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78
-c542cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d
-52a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d
-788a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443
-aac8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33
-cfd1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d
-000a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23b
-f8b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b3
-2948bdead5
-e = 0x10001
-d = 0xd43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a287077
-180b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1
-dac97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dc
-fbc4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d0
-52201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee
-7b502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a467
-6681af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aa
-e2c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0e
-a9f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37c
-e2986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624
-c5249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d1031
-4afd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731
-d131b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e
-3ac52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34
-b6d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecf
-eb877a051
+p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
+59c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803fca
+7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad9e
+41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf10
+8602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b312048
+b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d9632
+2493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f277401
+7e32ebca06308a12ecc290c7cd1156dcccfb2311
+q = c601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353c8
+06426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b945
+2c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7a8
+0c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf962
+daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0a3
+c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da00
+8ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc7c
+9803879d2fc4a28e69291d73dbd799f8bc238385
+n = aec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e047
+a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963be3
+35d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c533
+77fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb040443a
+2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617ec6
+685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de420d
+63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a0413
+e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78c5
+42cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d52
+a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d78
+8a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443aa
+c8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33cf
+d1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d00
+0a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23bf8
+b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b329
+48bdead5
+e = 10001
+d = d43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a28707718
+0b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1da
+c97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dcfb
+c4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d052
+201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee7b
+502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a46766
+81af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aae2
+c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0ea9
+f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37ce2
+986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624c5
+249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d10314a
+fd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731d1
+31b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e3a
+c52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34b6
+d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecfeb
+877a051
 msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c80023a
 a6b59f8cfec5fdbb36331372ebefedae7d
-msg_prefix = 574ee33ed775752cc7cebcdd39368aba6acff4f6d5b1c8f997edc39
-795d34472
-random_msg = 574ee33ed775752cc7cebcdd39368aba6acff4f6d5b1c8f997edc39
-795d344728f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c800
+msg_prefix = dfe133d11c7ebf54943e86f56323bd16d89a43a8d2aaaa257cbe5a9
+4f59d436c
+random_msg = dfe133d11c7ebf54943e86f56323bd16d89a43a8d2aaaa257cbe5a9
+4f59d436c8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c800
 23aa6b59f8cfec5fdbb36331372ebefedae7d
 salt = 051722b35f458781397c3a671a7d3bd3096503940e4c4f1aaa269d60300ce
 449555cd7340100df9d46944c5356825abf
@@ -940,55 +931,55 @@ c706195d52
 
 ## RSABSSA-SHA384-PSS-Deterministic Test Vector
 ~~~
-p = 0xe1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc7567348893
-0559c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803f
-ca7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad
-9e41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf
-108602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b3120
-48b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d96
-322493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f2774
-017e32ebca06308a12ecc290c7cd1156dcccfb2311
-q = 0xc601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353
-c806426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b9
-452c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7
-a80c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf9
-62daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0
-a3c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da
-008ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc
-7c9803879d2fc4a28e69291d73dbd799f8bc238385
-n = 0xaec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e0
-47a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963b
-e335d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c5
-3377fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb04044
-3a2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617e
-c6685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de42
-0d63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a04
-13e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78
-c542cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d
-52a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d
-788a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443
-aac8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33
-cfd1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d
-000a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23b
-f8b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b3
-2948bdead5
-e = 0x10001
-d = 0xd43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a287077
-180b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1
-dac97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dc
-fbc4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d0
-52201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee
-7b502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a467
-6681af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aa
-e2c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0e
-a9f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37c
-e2986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624
-c5249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d1031
-4afd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731
-d131b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e
-3ac52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34
-b6d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecf
-eb877a051
+p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
+59c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803fca
+7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad9e
+41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf10
+8602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b312048
+b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d9632
+2493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f277401
+7e32ebca06308a12ecc290c7cd1156dcccfb2311
+q = c601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353c8
+06426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b945
+2c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7a8
+0c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf962
+daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0a3
+c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da00
+8ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc7c
+9803879d2fc4a28e69291d73dbd799f8bc238385
+n = aec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e047
+a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963be3
+35d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c533
+77fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb040443a
+2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617ec6
+685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de420d
+63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a0413
+e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78c5
+42cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d52
+a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d78
+8a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443aa
+c8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33cf
+d1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d00
+0a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23bf8
+b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b329
+48bdead5
+e = 10001
+d = d43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a28707718
+0b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1da
+c97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dcfb
+c4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d052
+201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee7b
+502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a46766
+81af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aae2
+c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0ea9
+f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37ce2
+986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624c5
+249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d10314a
+fd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731d1
+31b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e3a
+c52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34b6
+d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecfeb
+877a051
 msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c80023a
 a6b59f8cfec5fdbb36331372ebefedae7d
 random_msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698
@@ -1078,55 +1069,55 @@ a4fcf1e5ccee35ad85ecd453182df9ed735893f830b570faae8be0f6fe2e571a4e0d
 
 ## RSABSSA-SHA384-PSSZERO-Deterministic Test Vector
 ~~~
-p = 0xe1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc7567348893
-0559c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803f
-ca7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad
-9e41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf
-108602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b3120
-48b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d96
-322493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f2774
-017e32ebca06308a12ecc290c7cd1156dcccfb2311
-q = 0xc601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353
-c806426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b9
-452c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7
-a80c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf9
-62daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0
-a3c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da
-008ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc
-7c9803879d2fc4a28e69291d73dbd799f8bc238385
-n = 0xaec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e0
-47a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963b
-e335d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c5
-3377fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb04044
-3a2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617e
-c6685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de42
-0d63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a04
-13e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78
-c542cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d
-52a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d
-788a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443
-aac8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33
-cfd1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d
-000a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23b
-f8b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b3
-2948bdead5
-e = 0x10001
-d = 0xd43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a287077
-180b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1
-dac97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dc
-fbc4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d0
-52201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee
-7b502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a467
-6681af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aa
-e2c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0e
-a9f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37c
-e2986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624
-c5249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d1031
-4afd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731
-d131b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e
-3ac52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34
-b6d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecf
-eb877a051
+p = e1f4d7a34802e27c7392a3cea32a262a34dc3691bd87f3f310dc756734889305
+59c120fd0410194fb8a0da55bd0b81227e843fdca6692ae80e5a5d414116d4803fca
+7d8c30eaaae57e44a1816ebb5c5b0606c536246c7f11985d731684150b63c9a3ad9e
+41b04c0b5b27cb188a692c84696b742a80d3cd00ab891f2457443dadfeba6d6daf10
+8602be26d7071803c67105a5426838e6889d77e8474b29244cefaf418e381b312048
+b457d73419213063c60ee7b0d81820165864fef93523c9635c22210956e53a8d9632
+2493ffc58d845368e2416e078e5bcb5d2fd68ae6acfa54f9627c42e84a9d3f277401
+7e32ebca06308a12ecc290c7cd1156dcccfb2311
+q = c601a9caea66dc3835827b539db9df6f6f5ae77244692780cd334a006ab353c8
+06426b60718c05245650821d39445d3ab591ed10a7339f15d83fe13f6a3dfb20b945
+2c6a9b42eaa62a68c970df3cadb2139f804ad8223d56108dfde30ba7d367e9b0a7a8
+0c4fdba2fd9dde6661fc73fc2947569d2029f2870fc02d8325acf28c9afa19ecf962
+daa7916e21afad09eb62fe9f1cf91b77dc879b7974b490d3ebd2e95426057f35d0a3
+c9f45f79ac727ab81a519a8b9285932d9b2e5ccd347e59f3f32ad9ca359115e7da00
+8ab7406707bd0e8e185a5ed8758b5ba266e8828f8d863ae133846304a2936ad7bc7c
+9803879d2fc4a28e69291d73dbd799f8bc238385
+n = aec4d69addc70b990ea66a5e70603b6fee27aafebd08f2d94cbe1250c556e047
+a928d635c3f45ee9b66d1bc628a03bac9b7c3f416fe20dabea8f3d7b4bbf7f963be3
+35d2328d67e6c13ee4a8f955e05a3283720d3e1f139c38e43e0338ad058a9495c533
+77fc35be64d208f89b4aa721bf7f7d3fef837be2a80e0f8adf0bcd1eec5bb040443a
+2b2792fdca522a7472aed74f31a1ebe1eebc1f408660a0543dfe2a850f106a617ec6
+685573702eaaa21a5640a5dcaf9b74e397fa3af18a2f1b7c03ba91a6336158de420d
+63188ee143866ee415735d155b7c2d854d795b7bc236cffd71542df34234221a0413
+e142d8c61355cc44d45bda94204974557ac2704cd8b593f035a5724b1adf442e78c5
+42cd4414fce6f1298182fb6d8e53cef1adfd2e90e1e4deec52999bdc6c29144e8d52
+a125232c8c6d75c706ea3cc06841c7bda33568c63a6c03817f722b50fcf898237d78
+8a4400869e44d90a3020923dc646388abcc914315215fcd1bae11b1c751fd52443aa
+c8f601087d8d42737c18a3fa11ecd4131ecae017ae0a14acfc4ef85b83c19fed33cf
+d1cd629da2c4c09e222b398e18d822f77bb378dea3cb360b605e5aa58b20edc29d00
+0a66bd177c682a17e7eb12a63ef7c2e4183e0d898f3d6bf567ba8ae84f84f1d23bf8
+b8e261c3729e2fa6d07b832e07cddd1d14f55325c6f924267957121902dc19b3b329
+48bdead5
+e = 10001
+d = d43242aefe1fb2c13fbc66e20b678c4336d20b1808c558b6e62ad16a28707718
+0b177e1f01b12f9c6cd6c52630257ccef26a45135a990928773f3bd2fc01a313f1da
+c97a51cec71cb1fd7efc7adffdeb05f1fb04812c924ed7f4a8269925dad88bd7dcfb
+c4ef01020ebfc60cb3e04c54f981fdbd273e69a8a58b8ceb7c2d83fbcbd6f784d052
+201b88a9848186f2a45c0d2826870733e6fd9aa46983e0a6e82e35ca20a439c5ee7b
+502a9062e1066493bdadf8b49eb30d9558ed85abc7afb29b3c9bc644199654a46766
+81af4babcea4e6f71fe4565c9c1b85d9985b84ec1abf1a820a9bbebee0df1398aae2
+c85ab580a9f13e7743afd3108eb32100b870648fa6bc17e8abac4d3c99246b1f0ea9
+f7f93a5dd5458c56d9f3f81ff2216b3c3680a13591673c43194d8e6fc93fc1e37ce2
+986bd628ac48088bc723d8fbe293861ca7a9f4a73e9fa63b1b6d0074f5dea2a624c5
+249ff3ad811b6255b299d6bc5451ba7477f19c5a0db690c3e6476398b1483d10314a
+fd38bbaf6e2fbdbcd62c3ca9797a420ca6034ec0a83360a3ee2adf4b9d4ba29731d1
+31b099a38d6a23cc463db754603211260e99d19affc902c915d7854554aabf608e3a
+c52c19b8aa26ae042249b17b2d29669b5c859103ee53ef9bdc73ba3c6b537d5c34b6
+d8f034671d7f3a8a6966cc4543df223565343154140fd7391c7e7be03e241f4ecfeb
+877a051
 msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698c80023a
 a6b59f8cfec5fdbb36331372ebefedae7d
 random_msg = 8f3dc6fb8c4a02f4d6352edf0907822c1210a9b32f9bdda4c45a698
