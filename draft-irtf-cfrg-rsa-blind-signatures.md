@@ -202,18 +202,34 @@ where they interact to compute `sig = Sign(skS, msg)`, where `msg` is the privat
 to be signed, and `skS` is the server's private key. In this protocol, the server
 learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
 
-The protocol consists of three functions, Blind, BlindSign, and Finalize, described below.
+The protocol consists of three functions -- Blind, BlindSign, and Finalize -- and requires
+one round of interaction between client and server. Let `msg` be the private input message
+that the client wants to sign, and `(skS, pkS)` be the server's private and public key pair.
+The protocol begins by the client computing:
 
-* Blind(pkS, msg): encodes an input message `msg` and blinds it with a randomly generated
-blinding factor using the server's public key `pkS`, producing a blinded messsage for
-the server and the inverse of the blind.
-* BlindSign(skS, blinded_msg): performs the raw RSA private key operation using private key
-`skS` on the client's blinded message `blinded_msg`, and returns the output.
-* Finalize(pkS, msg, blinded_sig, inv): unblinds the server's response `blinded_sig` using the
-inverse `inv` to produce a signature, verifies it for correctness using message `msg` and public
-key `pkS`, and outputs the signature upon success.
+~~~
+blinded_msg, inv = Blind(pkS, msg)
+~~~
 
-Using these three functions, the core protocol runs as follows:
+The client then sends `blinded_msg` to the server, which then processes the message
+by computing:
+
+~~~
+blind_sig = BlindSign(skS, blinded_msg)
+~~~
+
+The server then sends `blind_sig` to the client, which the finalizes the protocol by computing:
+
+~~~
+sig = Finalize(pkS, msg, blind_sig, inv)
+~~~
+
+Upon completion, correctness requires that clients can verify signature `sig` over private
+input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
+routine defined in {{Section 8.1.2 of !RFC8017}}. The Finalize function performs that
+check before returning the signature.
+
+In pictures, the core protocol runs as follows:
 
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
@@ -231,12 +247,8 @@ Using these three functions, the core protocol runs as follows:
   sig = Finalize(pkS, msg, blind_sig, inv)
 ~~~
 
-Upon completion, correctness requires that clients can verify signature `sig` over private
-input message `msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in {{Section 8.1.2 of !RFC8017}}. The Finalize function performs that
-check before returning the signature.
-
-In the remainder of this section, we specify Blind, BlindSign, and Finalize.
+In the remainder of this section, we specify Blind, BlindSign, and Finalize that are
+used in this protocol.
 
 ## Blind {#blind}
 
