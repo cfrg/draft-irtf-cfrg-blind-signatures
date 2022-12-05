@@ -265,14 +265,14 @@ Message preparation, denoted by the Prepare function, is the process by which th
 to be signed and verified is prepared for input to the blind signing protocol.
 There are two types of preparation functions: the identity preparation function,
 and a randomized preparation function. The identity preparation function returns
-the input message without transformation, i.e., `msg = Prepare(msg)`.
+the input message without transformation, i.e., `msg = PrepareIdentity(msg)`.
 
 The randomized preparation function augments the input message with fresh randomness.
-We denote this process by the function Randomize(msg), which takes as input a message
-`msg` and produces a randomized message `randomMsg`. Its implementation is shown below.
+We denote this process by the function `PrepareRandomize(msg)`, which takes as input a message
+`msg` and produces a randomized message `input_msg`. Its implementation is shown below.
 
 ~~~
-Randomize(msg)
+PrepareRandomize(msg)
 
 Inputs:
 - msg, message to be signed, a byte string
@@ -420,27 +420,30 @@ Future specifications can introduce other variants as desired. The named variant
 
 1. RSABSSA-SHA384-PSS-Randomized: This named variant uses SHA-384 as the hash function,
 MGF1 with SHA-384 as the PSS mask generation function, a 48-byte salt length, and uses
-the randomized preparation function (Randomize).
+the randomized preparation function (PrepareRandomize).
 
 1. RSABSSA-SHA384-PSSZERO-Randomized: This named variant uses SHA-384 as the hash function,
 MGF1 with SHA-384 as the PSS mask generation function, an empty PSS salt, and uses
-the randomized preparation function (Randomize).
+the randomized preparation function (PrepareRandomize).
 
 1. RSABSSA-SHA384-PSS-Deterministic: This named variant uses SHA-384 as the hash function,
 MGF1 with SHA-384 as the PSS mask generation function, 48-byte salt length, and uses
-the identity preparation function.
+the identity preparation function (PrepareIdentity).
 
 1. RSABSSA-SHA384-PSSZERO-Deterministic: This named variant uses SHA-384 as the hash function,
 MGF1 with SHA-384 as the PSS mask generation function, an empty PSS salt, and uses
-the identity preparation function. This is the only variant that produces deterministic signatures
-over the client's input message `msg`.
+the identity preparation function (PrepareIdentity). This is the only variant that
+produces deterministic signatures over the client's input message `msg`.
 
 The RECOMMENDED variants are RSABSSA-SHA384-PSS-Randomized or RSABSSA-SHA384-PSSZERO-Randomized.
 
 Not all named variants can be used interchangeably. In particular, applications that provide
-high-entropy input messages can safely use named variants without randomized message preparation, as
-the additional message randomization does not offer security advantages. See {{Lys22}} and
-{{message-entropy}} for more information.
+high-entropy input messages can safely use named variants without randomized message preparation,
+as the additional message randomization does not offer security advantages. See {{Lys22}} and
+{{message-entropy}} for more information. For all other applications, the variants that use the
+randomized preparation function are safe to use as protect clients from malicious signers. A
+verifier that accepts randomized messages needs to remove the random component from the signed
+part of messages before processing.
 
 Applications that require deterministic signatures can use the RSABSSA-SHA384-PSSZERO-Deterministic
 variant, but only if their input messages have high entropy. Applications that use
@@ -539,13 +542,15 @@ fails to verify. However, if an attacker can coerce the client to use these inva
 keys with low-entropy inputs, they can learn information about the client inputs before
 the protocol completes.
 
-Based on this fact, using the core protocol functions in {{core-protocol}} is possibly unsafe,
-unless one of the following conditions are met:
+A client that uses this protocol might be vulnerable to attack from a malicious signer
+unless it is able to ensure that either:
 
 1. The client has proof that the signer's public key is honestly generated. {{GRSB19}} presents
   some (non-interactive) honest-verifier zero-knowledge proofs of various statements about the
   public key.
-2. The client input message has high entropy.
+1. The input message has a value that the signer is unable to guess. That is, the client has
+  added a high-entropy component that was not available to the signer prior to them choosing
+  their signing key.
 
 The named variants that use the randomization preparation function -- RSABSSA-SHA384-PSS-Randomized and
 RSABSSA-SHA384-PSSZERO-Randomized -- explicitly inject fresh entropy alongside each message
