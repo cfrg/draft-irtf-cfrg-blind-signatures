@@ -282,8 +282,8 @@ Outputs:
 
 Steps:
 1. msgPrefix = random(32)
-2. randomMsg = concat(msgPrefix, msg)
-3. output randomMsg
+2. input_msg = concat(msgPrefix, msg)
+3. output input_msg
 ~~~
 
 ## Blind {#blind}
