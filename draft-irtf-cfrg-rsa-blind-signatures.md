@@ -278,7 +278,7 @@ Inputs:
 - msg, message to be signed, a byte string
 
 Outputs:
-- randomMsg, a byte string that is 32 bytes longer than input msg
+- input_msg, a byte string that is 32 bytes longer than msg
 
 Steps:
 1. msgPrefix = random(32)
