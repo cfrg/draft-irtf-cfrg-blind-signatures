@@ -286,7 +286,7 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_length(n))
+1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_len(n))
    with Hash, MGF, and sLen as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
