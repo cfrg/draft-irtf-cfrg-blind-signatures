@@ -189,6 +189,7 @@ in this document:
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   between M inclusive and N exclusive, i.e., M <= R < N.
+- bit_len(n): Compute the minimum number of bits needed to represent the positive integer n.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure random number generator.
@@ -199,9 +200,10 @@ in this document:
 
 The core RSA Blind Signature Protocol is a two-party protocol between a client and server
 where they interact to compute `sig = Sign(skS, input_msg)`, where `input_msg = Prepare(msg)`
-is a prepared version of the private message `msg`, and `skS` is the server's private key.
-In this protocol, the server learns nothing of `msg` or `input_msg`, whereas the client
-learns `sig` and nothing of `skS`.
+is a prepared version of the private message `msg` provided by the client, and `skS` is the
+signing key provided by the server. Upon completion of this protocol, the server learns nothing,
+whereas the client learns `sig`. In particular, this means the server learns nothing of `msg`
+or `input_msg` and the client learns nothing of `skS`.
 
 The protocol consists of four functions -- Prepare, Blind, BlindSign, and Finalize -- and requires
 one round of interaction between client and server. Let `msg` be the client's private input
@@ -321,7 +323,7 @@ Errors:
 - "invalid blind": Raised when the inverse of r cannot be found.
 
 Steps:
-1. encoded_msg = EMSA-PSS-ENCODE(msg, (kLen * 8) - 1)
+1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_len(n))
    with Hash, MGF, and sLen as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
@@ -359,14 +361,17 @@ Outputs:
 - blind_sig, a byte string of length kLen
 
 Errors:
+- "signing failure": Raised when the signing operation fails
 - "message representative out of range": Raised when the message representative
   to sign is not an integer between 0 and n - 1 (raised by RSASP1)
 
 Steps:
 1. m = bytes_to_int(blinded_msg)
 2. s = RSASP1(skS, m)
-3. blind_sig = int_to_bytes(s, kLen)
-4. output blind_sig
+3. m' = RSAVP1(pkS, s)
+4. If m != m', raise "signing failure" and stop
+5. blind_sig = int_to_bytes(s, kLen)
+6. output blind_sig
 ~~~
 
 ## Finalize
@@ -478,7 +483,7 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 # Security Considerations {#sec-considerations}
 
 Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved the following properties of
-Chaum's original blind signature protocol based on RSA-FDH:
+Chaum's original blind signature protocol based on RSA with the Full Domain Hash (FDH) {{RSA-FDH}}:
 
 - One-more-forgery polynomial security. This means the adversary, interacting with the server
   (signer) as a client, cannot output n+1 valid message and signature tuples after only
@@ -512,9 +517,9 @@ Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes t
 of implementation safeguards that protect against fault attacks that can also leak the
 private signing key. These safeguards require that implementations check that the result
 of the private key operation when signing is correct, i.e., given s = RSASP1(skS, m),
-verify that m = RSAVP1(pkS, s). Implementations SHOULD apply this (or equivalent) safeguard
-to mitigate fault attacks, even if they are not implementations based on the Chinese
-remainder theorem.
+verify that m = RSAVP1(pkS, s), as is required by BlindSign. Applying this (or equivalent)
+safeguard is necessary to mitigate fault attacks, even for implementations that are not
+based on the Chinese remainder theorem.
 
 ## Message Robustness
 
