@@ -189,7 +189,7 @@ in this document:
   in big-endian byte order.
 - random_integer_uniform(M, N): Generate a random, uniformly distributed integer R
   between M inclusive and N exclusive, i.e., M <= R < N.
-- bit_length(n): Compute the minimum number of bits needed to represent the positive integer n.
+- bit_len(n): Compute the minimum number of bits needed to represent the positive integer n.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure random number generator.
