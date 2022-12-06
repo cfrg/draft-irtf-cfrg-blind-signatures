@@ -323,14 +323,17 @@ Outputs:
 - blind_sig, a byte string of length kLen
 
 Errors:
+- "signing failure": Raised when the signing operation fails
 - "message representative out of range": Raised when the message representative
   to sign is not an integer between 0 and n - 1 (raised by RSASP1)
 
 Steps:
 1. m = bytes_to_int(blinded_msg)
 2. s = RSASP1(skS, m)
-3. blind_sig = int_to_bytes(s, kLen)
-4. output blind_sig
+3. m' = RSAVP1(pkS, s)
+4. If m != m', raise "signing failure" and stop
+5. blind_sig = int_to_bytes(s, kLen)
+6. output blind_sig
 ~~~
 
 ## Finalize
@@ -499,9 +502,9 @@ Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes t
 of implementation safeguards that protect against fault attacks that can also leak the
 private signing key. These safeguards require that implementations check that the result
 of the private key operation when signing is correct, i.e., given s = RSASP1(skS, m),
-verify that m = RSAVP1(pkS, s). Implementations SHOULD apply this (or equivalent) safeguard
-to mitigate fault attacks, even if they are not implementations based on the Chinese
-remainder theorem.
+verify that m = RSAVP1(pkS, s), as is required by BlindSign. Applying this (or equivalent)
+safeguard is necessary to mitigate fault attacks, even for implementations that are not
+based on the Chinese remainder theorem.
 
 ## Message Robustness
 
