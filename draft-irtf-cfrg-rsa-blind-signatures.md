@@ -468,7 +468,7 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 # Security Considerations {#sec-considerations}
 
 Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved the following properties of
-Chaum's original blind signature protocol based on RSA-FDH:
+Chaum's original blind signature protocol based on RSA with the Full Domain Hash (FDH) {{RSA-FDH}}:
 
 - One-more-forgery polynomial security. This means the adversary, interacting with the server
   (signer) as a client, cannot output n+1 valid message and signature tuples after only
