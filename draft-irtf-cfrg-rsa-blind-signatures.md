@@ -199,8 +199,10 @@ in this document:
 
 The core RSA Blind Signature Protocol is a two-party protocol between a client and server
 where they interact to compute `sig = Sign(skS, msg)`, where `msg` is the private message
-to be signed, and `skS` is the server's private key. In this protocol, the server
-learns nothing of `msg`, whereas the client learns `sig` and nothing of `skS`.
+to be signed provided by the client, and `skS` is the signing key provided by the server.
+Upon completion of this protocol, the server learns nothing, whereas the client learns
+`sig`. In particular, this means the server learns nothing of `msg` and the client learns
+nothing of `skS`.
 
 The protocol consists of three functions -- Blind, BlindSign, and Finalize -- and requires
 one round of interaction between client and server. Let `msg` be the private input message
