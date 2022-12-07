@@ -455,7 +455,7 @@ variant, but only if their input messages have high entropy. Applications that u
 RSABSSA-SHA384-PSSZERO-Deterministic SHOULD carefully analyze the security implications,
 taking into account the possibility of adversarially generated signer keys as described in
 {{message-entropy}}. When it is not clear whether an application requires deterministic or
-randomized signatures, applications SHOULD use one of the recommended variants with randomized message preparation.
+randomized signatures, applications SHOULD use one of the variants with randomized message preparation.
 
 # Implementation and Usage Considerations
 
