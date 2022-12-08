@@ -564,13 +564,17 @@ to satisfy condition (2). As such, these variants are safe for all application u
 Note that these variants effectively mean that the resulting signature is always randomized.
 As such, this interface is not suitable for applications that require deterministic signatures.
 
-## PSS Salt Choice
+## Randomness Generation
 
-For variants that have a non-zero PSS salt, the salt MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.
-If the PSS salt is not generated randomly, or is otherwise constructed maliciously, it might be
-possible for the salt to encode information that is not present in the signed message. For example,
-the salt might be maliciously constructed to encode the local IP address of the client. As a result,
-implementations SHOULD NOT allow clients to provide the salt directly.
+For variants that have a non-zero PSS salt or use message randomization, the salt or message
+randomizer prefix MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.
+If these values are not generated randomly, or are otherwise constructed maliciously, it might be
+possible for them to encode information that is not present in the signed message. For example,
+the PSS salt might be maliciously constructed to encode the local IP address of the client. As a result,
+implementations SHOULD NOT allow clients to provide these values directly.
+
+Note that malicious implementations could also encode client information in the message being signed,
+but since clients can verify the resulting message signature using the public key this can be detected.
 
 ## Key Substitution Attacks
 
