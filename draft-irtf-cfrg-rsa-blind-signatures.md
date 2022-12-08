@@ -293,12 +293,15 @@ Steps:
 The Blind function encodes an input message and blinds it with the server's public
 key. It outputs the blinded message to be sent to the server, encoded as a byte string,
 and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
-{{Sections 5.2.2 and 9.1.1 of !RFC8017}}, respectively. If this function fails
-with an "invalid blind" error, implementations SHOULD retry the function again. The
-probability of multiple such errors in sequence is negligible. Note that this function
-invokes RSAVP1, which is defined to throw an optional error for invalid inputs. However,
-this error cannot occur based on how RSAVP1 is invoked, so this error is not included
-in the list of errors for Blind.
+{{Sections 5.2.2 and 9.1.1 of !RFC8017}}, respectively.
+
+If this function fails with an "invalid blind" error, implementations SHOULD retry
+the function again. The probability of one or more such errors in sequence is negligible.
+See {{errors}} for more information about dealing with such errors.
+
+Note that this function invokes RSAVP1, which is defined to throw an optional error
+for invalid inputs. However, this error cannot occur based on how RSAVP1 is invoked,
+so this error is not included in the list of errors for Blind.
 
 ~~~
 Blind(pkS, msg)
@@ -469,6 +472,13 @@ generated throughout this specification, along with the conditions that lead to 
 are listed in the definitions for Blind, BlindSign, and Finalize.
 These errors are meant as a guide for implementors. They are not an exhaustive list of all
 the errors an implementation might emit. For example, implementations might run out of memory.
+
+Moreover, implementations can handle errors as needed or desired. Where applicable, this document
+provides guidance for how to deal with explicit errors that are generated in the protocol. For
+example, the "invalid blind" error that is generated in Blind occurs when the client generates
+a prime factor of the server's public key. {{blind}} indicates that implementations SHOULD
+retry the Blind function when this error occurs, but an implementation could also handle this
+exceptional event differently, e.g., by informing the server that the key has been factored.
 
 ## Signing Key Usage and Certification {#cert-oid}
 
