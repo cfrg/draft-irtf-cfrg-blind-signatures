@@ -523,6 +523,11 @@ side channel attack mitigation, such as RSA blinding as described in Section 10 
 {{?TimingAttacks=DOI.10.1007/3-540-68697-5_9}}. Failure to apply such mitigations can
 lead to side channel attacks that leak the private signing key.
 
+Moreover, we assume that the server does not initiate the protocol and therefore has
+no knowledge of when the Prepare and Blind operations take place. If this were not the
+case, additional side-channel mitigations might be required to prevent timing side
+channels through Prepare and Blind.
+
 Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes the importance
 of implementation safeguards that protect against fault attacks that can also leak the
 private signing key. These safeguards require that implementations check that the result
