@@ -1255,3 +1255,8 @@ a4fcf1e5ccee35ad85ecd453182df9ed735893f830b570faae8be0f6fe2e571a4e0d
 927cba4debd368d3b4fca33ec6251897a137cf75474a32ac8256df5e5ffa518b88b4
 3fb6f63a24
 ~~~
+
+# Acknowledgments
+{:numbered="false"}
+
+We would like to thank Bjoern Tackmann who provided an editorial and security review of this document.
