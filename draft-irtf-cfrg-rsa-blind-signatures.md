@@ -139,8 +139,8 @@ informative:
 --- abstract
 
 This document specifies an RSA-based blind signature protocol. RSA blind signatures were first
-introduced by Chaum for untraceable payments {{Chaum83}}. A signature that is output from this
-protocol can be verified as an RSA-PSS signature {{!RFC8017}}.
+introduced by Chaum for untraceable payments. A signature that is output from this
+protocol can be verified as an RSA-PSS signature.
 
 This document is a product of the Crypto Forum Research Group (CFRG) in the IRTF.
 
@@ -605,7 +605,7 @@ This document document uses PSS encoding as specified in {{!RFC8017}} for a numb
 reasons. First, it is recommended in recent standards, including TLS 1.3 {{?RFC8446}},
 X.509v3 {{?RFC4055}}, and even PKCS#1 itself. According to {{?RFC8017}}, "Although no
 attacks are known against RSASSA-PKCS#1 v1.5, in the interest of increased robustness,
-RSA-PSS is recommended for eventual adoption in new applications." While RSA-PSS is
+RSA-PSS {{!RFC8017}} is recommended for eventual adoption in new applications." While RSA-PSS is
 more complex than RSASSA-PKCS#1 v1.5 encoding, ubiquity of RSA-PSS support influenced
 the design decision in this draft, despite PKCS#1 v1.5 having equivalent security
 properties for digital signatures {{?JKM18=DOI.10.1145/3243734.3243798}}
