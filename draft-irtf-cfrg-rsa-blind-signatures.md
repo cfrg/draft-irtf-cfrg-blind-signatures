@@ -541,8 +541,8 @@ based on the Chinese remainder theorem.
 An essential property of blind signature protocols is that the signer learns nothing of the message
 being signed. In some circumstances, this may raise concerns of arbitrary signing oracles. Applications
 using blind signature protocols should take precautions to ensure that such oracles do not cause
-cross-protocol attacks. This can be done, for example, by keeping blind signature keys distinct
-from signature keys used for other protocols, such as TLS.
+cross-protocol attacks. Ensuring that the signing key used for RSABSSA is distinct from other protocols
+prevents such cross-protocol attacks.
 
 An alternative solution to this problem of message blindness is to give signers proof that the
 message being signed is well-structured. Depending on the application, zero knowledge proofs
@@ -581,8 +581,8 @@ As such, this interface is not suitable for applications that require determinis
 
 ## Randomness Generation
 
-For variants that have a non-zero PSS salt or use message randomization, the salt or message
-randomizer prefix MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.
+All random values in the protocol, including the salt, message randomizer prefix, and random blind
+value in `Blind`, MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.s
 If these values are not generated randomly, or are otherwise constructed maliciously, it might be
 possible for them to encode information that is not present in the signed message. For example,
 the PSS salt might be maliciously constructed to encode the local IP address of the client. As a result,
