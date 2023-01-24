@@ -258,7 +258,7 @@ In pictures, the core protocol runs as follows:
   sig = Finalize(pkS, input_msg, blind_sig, inv)
 ~~~
 
-In the remainder of this section, we specify the Prepare, Blind, BlindSign, and Finalize 
+In the remainder of this section, we specify the Prepare, Blind, BlindSign, and Finalize
 functions that are used in this protocol.
 
 ## Prepare {#randomization}
