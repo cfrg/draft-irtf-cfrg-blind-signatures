@@ -165,7 +165,7 @@ on the key is doubled compared to a scheme where only the public key is required
 In contrast, digital signatures provide a primitive that is publicly verifiable and does not
 require access to the private key for verification. Moreover, {{JKK14}} shows that one can realize
 a VOPRF in the Random Oracle Model by hashing a signature-message pair, where the signature is
-computed using from a deterministic blind signature protocol.
+computed using a deterministic blind signature protocol.
 
 This document specifies a protocol for computing the RSA blind signatures using RSA-PSS encoding,
 and a family of variants for this protocol, denoted RSABSSA. In order to facilitate deployment,
@@ -228,7 +228,7 @@ by computing:
 blind_sig = BlindSign(skS, blinded_msg)
 ~~~
 
-The server then sends `blind_sig` to the client, which the finalizes the protocol by computing:
+The server then sends `blind_sig` to the client, which then finalizes the protocol by computing:
 
 ~~~
 sig = Finalize(pkS, input_msg, blind_sig, inv)
@@ -258,14 +258,14 @@ In pictures, the core protocol runs as follows:
   sig = Finalize(pkS, input_msg, blind_sig, inv)
 ~~~
 
-In the remainder of this section, we specify Blind, BlindSign, and Finalize that are
-used in this protocol.
+In the remainder of this section, we specify the Prepare, Blind, BlindSign, and Finalize 
+functions that are used in this protocol.
 
 ## Prepare {#randomization}
 
 Message preparation, denoted by the Prepare function, is the process by which the message
 to be signed and verified is prepared for input to the blind signing protocol.
-There are two types of preparation functions: the identity preparation function,
+There are two types of preparation functions: an identity preparation function,
 and a randomized preparation function. The identity preparation function returns
 the input message without transformation, i.e., `msg = PrepareIdentity(msg)`.
 
@@ -422,8 +422,9 @@ Steps:
 # RSABSSA Variants {#rsabssa}
 
 In this section we define different named variants of RSABSSA. Each variant specifies
-a hash function, RSASSA-PSS parameters as defined in {{Section 9.1.1 of !RFC8017}}, and
+RSASSA-PSS parameters as defined in {{Section 9.1.1 of !RFC8017}} and
 the type of message preparation function applied (as described in {{randomization}}).
+Each variant uses the MGF1 Mask Generation Function defined in {{Section B.2.1. of !RFC8017}}.
 Future specifications can introduce other variants as desired. The named variants are as follows:
 
 1. RSABSSA-SHA384-PSS-Randomized: This named variant uses SHA-384 as the hash function,
@@ -449,7 +450,7 @@ Not all named variants can be used interchangeably. In particular, applications 
 high-entropy input messages can safely use named variants without randomized message preparation,
 as the additional message randomization does not offer security advantages. See {{Lys22}} and
 {{message-entropy}} for more information. For all other applications, the variants that use the
-randomized preparation function are safe to use as protect clients from malicious signers. A
+randomized preparation function protect clients from malicious signers. A
 verifier that accepts randomized messages needs to remove the random component from the signed
 part of messages before processing.
 
@@ -608,7 +609,7 @@ attacks are known against RSASSA-PKCS#1 v1.5, in the interest of increased robus
 RSA-PSS {{!RFC8017}} is recommended for eventual adoption in new applications." While RSA-PSS is
 more complex than RSASSA-PKCS#1 v1.5 encoding, ubiquity of RSA-PSS support influenced
 the design decision in this draft, despite PKCS#1 v1.5 having equivalent security
-properties for digital signatures {{?JKM18=DOI.10.1145/3243734.3243798}}
+properties for digital signatures {{?JKM18=DOI.10.1145/3243734.3243798}}.
 
 Full Domain Hash (FDH) {{RSA-FDH}} encoding is also possible, and this variant has
 equivalent security to PSS {{?KK18=DOI.10.1007/s00145-017-9257-9}}. However, FDH is
