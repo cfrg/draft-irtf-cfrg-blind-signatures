@@ -195,13 +195,16 @@ in this document:
 - random(n): Generate n random bytes using a cryptographically-secure random number generator.
 - concat(x0, ..., xN): Concatenation of byte strings. For example,
   concat(0x01, 0x0203, 0x040506) = 0x010203040506.
+- slice(x, i, j): Return bytes in the byte string `x` starting from offset `i` and ending at
+  offset `j`, exclusive. For example, slice(0x010203040506, 1, 6) = 0x0203040506.
 
 # Blind Signature Protocol {#core-protocol}
 
-The core RSA Blind Signature Protocol is a two-party protocol between a client and server
+The RSA Blind Signature Protocol is a two-party protocol between a client and server
 where they interact to compute `sig = Sign(skS, input_msg)`, where `input_msg = Prepare(msg)`
 is a prepared version of the private message `msg` provided by the client, and `skS` is the
-signing key provided by the server. Upon completion of this protocol, the server learns nothing,
+signing key provided by the server. See {{cert-oid}} for details on how `skS` is generated
+and used in this protocol. Upon completion of this protocol, the server learns nothing,
 whereas the client learns `sig`. In particular, this means the server learns nothing of `msg`
 or `input_msg` and the client learns nothing of `skS`.
 
@@ -234,12 +237,13 @@ The server then sends `blind_sig` to the client, which the finalizes the protoco
 sig = Finalize(pkS, input_msg, blind_sig, inv)
 ~~~
 
-Upon completion, correctness requires that clients can verify signature `sig` over
-the prepared message `input_msg` using the server public key `pkS` by invoking the RSASSA-PSS-VERIFY
-routine defined in {{Section 8.1.2 of !RFC8017}}. The Finalize function performs that
-check before returning the signature.
+The output of the protocol is `input_msg` and `sig`. Upon completion, correctness requires that
+clients can verify signature `sig` over the prepared message `input_msg` using the server
+public key `pkS` by invoking the RSASSA-PSS-VERIFY routine defined in
+{{Section 8.1.2 of !RFC8017}}. The Finalize function performs this check before returning the signature.
+See {{verification}} for more details about verifying signatures produced through this protocol.
 
-In pictures, the core protocol runs as follows:
+In pictures, the protocol runs as follows:
 
 ~~~
    Client(pkS, msg)                      Server(skS, pkS)
@@ -419,6 +423,22 @@ Steps:
    raise "invalid signature" and stop
 ~~~
 
+## Verification
+
+As described in {{core-protocol}}, the output of the protocol is the prepared
+message `input_msg` and the signature `sig`. The message that applications
+consume is `msg`, from which `input_msg` is derived. Clients verify the
+`msg` signature using the server's public key `pkS` by invoking the
+RSASSA-PSS-VERIFY routine defined in {{Section 8.1.2 of !RFC8017}}
+with `(n, e)` as `pkS`, M as `input_msg`, and `S` as `sig`.
+
+Verification and the message that applications consume therefore depends on
+which preparation function is used. In particular, if the PrepareIdentity
+function is used, then the application message is `input_msg`.
+In contrast, if the PrepareRandomize function is used, then the application
+message is `slice(input_msg, 32, len(input_msg))`, i.e., the prepared message
+with the random prefix removed.
+
 # RSABSSA Variants {#rsabssa}
 
 In this section we define different named variants of RSABSSA. Each variant specifies
@@ -480,7 +500,10 @@ a prime factor of the server's public key. {{blind}} indicates that implementati
 retry the Blind function when this error occurs, but an implementation could also handle this
 exceptional event differently, e.g., by informing the server that the key has been factored.
 
-## Signing Key Usage and Certification {#cert-oid}
+## Signing Key Generation and Usage {#cert-oid}
+
+The RECOMMENDED method for generating the server signing key pair is as specified in FIPS 186-4
+{{?DSS=DOI.10.6028/NIST.FIPS.186-4}}.
 
 A server signing key MUST NOT be reused for any other protocol beyond RSABSSA. Moreover, a
 server signing key MUST NOT be reused for different RSABSSA encoding options. That is,
