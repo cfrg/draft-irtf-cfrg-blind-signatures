@@ -196,7 +196,7 @@ in this document:
 - concat(x0, ..., xN): Concatenation of byte strings. For example,
   concat(0x01, 0x0203, 0x040506) = 0x010203040506.
 - slice(x, i, j): Return bytes in the byte string `x` starting from offset `i` and ending at
-  offset `j`, exclusive. For example, slice(0x010203040506, 1, 6) = 0x0203040506.
+  offset `j`, inclusive. For example, slice(0x010203040506, 1, 5) = 0x0203040506.
 
 # Blind Signature Protocol {#core-protocol}
 
