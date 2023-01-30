@@ -515,27 +515,16 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 
 # Security Considerations {#sec-considerations}
 
-Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved the following properties of
-Chaum's original blind signature protocol based on RSA with the Full Domain Hash (FDH) {{RSA-FDH}}:
-
-- One-more-forgery polynomial security. This means the adversary, interacting with the server
-  (signer) as a client, cannot output n+1 valid message and signature tuples after only
-  interacting with the server n times, for some n which is polynomial in the protocol's security
-  parameter.
-- Concurrent polynomial security. This means that servers can engage in polynomially many
-  invocations of the protocol without compromising security.
-
-Both results rely upon the RSA Known Target Inversion Problem being hard. However, this analysis
-is incomplete as it does not account for adversarially-generated keys. This threat model has
-important implications for appliations using the blind signature protocol described in this
-document; see {{message-entropy}} for more details.
-
-Lastly, the design in this document differs from the analysis in {{BNPS03}} only in message
-encoding, i.e., using PSS instead of FDH. Note, importantly, that an empty salt effectively
-reduces PSS to FDH, so the same results apply. Beyond this seminal result, {{Lys22}} proved
-one-more-forgery polynomial security in the random oracle model under the one-more-RSA assumption.
-Their work considers scenarios where the signer public keys are maliciously controlled.
-See {{message-entropy}} for more discussion on those results.
+Lysyanskaya proved one-more-forgery polynomial security of RSABSSA variants in the random
+oracle model under the one-more-RSA assumption in {{Lys22}}. This means the adversary
+cannot output n+1 valid message and signature tuples, where all messages are distinct, after
+interacting with the server (signer) as a client only n times, for some n which is polynomial
+in the protocol's security parameter.
+Lysyanskaya also proved that the RSABSSA variants which use the PrepareRandomize function
+achieve blindness in {{Lys22}}. Blindness means that the malicious signer learns nothing
+about the client input and output after the protocol execution. However, additional assumptions on the message
+inputs are required for blindness to hold for RSABSSA variants that use the PrepareIdentity
+function; see {{message-entropy}} for more discussion on those results.
 
 ## Timing Side Channels and Fault Attacks
 
@@ -595,7 +584,7 @@ unless it is able to ensure that either:
   added a high-entropy component that was not available to the signer prior to them choosing
   their signing key.
 
-The named variants that use the randomization preparation function -- RSABSSA-SHA384-PSS-Randomized and
+The named variants that use the PrepareRandomize function -- RSABSSA-SHA384-PSS-Randomized and
 RSABSSA-SHA384-PSSZERO-Randomized -- explicitly inject fresh entropy alongside each message
 to satisfy condition (2). As such, these variants are safe for all application use cases.
 
