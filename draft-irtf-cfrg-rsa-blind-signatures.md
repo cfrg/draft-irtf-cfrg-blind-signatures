@@ -499,7 +499,7 @@ interacting with the server (signer) as a client only n times, for some n which 
 in the protocol's security parameter.
 Lysyanskaya also proved that the RSABSSA variants which use the PrepareRandomize function
 achieve blindness in {{Lys22}}. Blindness means that the malicious signer learns nothing
-about the client input during the protocol. However, additional assumptions on the message
+about the client input and output after the protocol execution. However, additional assumptions on the message
 inputs are required for blindness to hold for RSABSSA variants that use the PrepareIdentity
 function; see {{message-entropy}} for more discussion on those results.
 
