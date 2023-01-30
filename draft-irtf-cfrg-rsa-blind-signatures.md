@@ -628,58 +628,6 @@ equivalent security to PSS {{?KK18=DOI.10.1007/s00145-017-9257-9}}. However, FDH
 less standard and not used widely in related technologies. Moreover, FDH is
 deterministic, whereas PSS supports deterministic and probabilistic encodings.
 
-## Alternative Blind Signature Protocols
-
-RSA has some advantages as a signature protocol, particularly around verification efficiency.
-However, the protocol in this document is not without shortcomings, including:
-
-- RSA key and signature sizes are larger than those of alternative blind signature protocols;
-- No evaluation batching support, which means that the cost of the protocol scales linearly
-  with the number of invocations; and
-- Extensions for features such as threshold signing are more complex to instantiate compared
-  to other protocols based on, for example, Schnorr signatures.
-
-There are a number of blind signature protocols beyond blind RSA. This section summarizes
-these at a high level, and discusses why an RSA-based variant was chosen for the basis of
-this specification, despite the shortcomings above.
-
-- Blind Schnorr {{?Sch01=DOI.10.1007/3-540-45600-7_1}}: This is a three-message protocol based on the classical Schnorr
-signature protocol over elliptic curve groups. Although simple, the hardness problem upon
-which this is based -- Random inhomogeneities in a Overdetermined Solvable system of linear
-equations, or ROS -- can be broken in polynomial time when a small number of concurrent
-signing sessions are invoked {{PolytimeROS}}, leading to signature forgeries. Even
-with small concurrency limits, Wagner's generalized attack {{?Wagner02=DOI.10.1007/3-540-45708-9_19}}
-leads to subexponential forgery speedup. For example, a limit of 15 parallel sessions yields
-an attack runtime of approximately 2^55, which is substantially lower than acceptable security
-levels. In contrast, the variant in this specification has no such concurrency limit.
-- Clause Blind Schnorr {{?FPS20=DOI.10.1007/978-3-030-45724-2_3}}: This is a three-message protocol
-based on a variant of the blind Schnorr signature protocol. This variant of the protocol is not
-known to be vulnerable to the attack in {{PolytimeROS}}, though the protocol is still new and
-under consideration. The three-message flow necessarily requires two round trips
-between the client and server, which may be prohibitive for large-scale signature generation.
-Further analysis and experimentation with this protocol is needed.
-- BSA {{?Abe01=DOI.10.1007/3-540-44987-6_9}}: This is a three-message protocol based on elliptic
-curve groups similar to blind Schnorr. It is also not known to be vulnerable to the ROS attack
-in {{PolytimeROS}}. Kastner et al. {{KLRX20}} proved concurrent security with a polynomial number
-of sessions. For similar reasons to the clause blind Schnorr protocol above, the additional
-number of round trips requires further analysis and experimentation.
-- WFROS-based Schemes {{TZ22}}: This work contains four proposed schemes, each of which are
-three-message protocols based on a variant of the blind Schnorr signature protocol. Security of these
-schemes depend on the Weighted Fractional ROS problem, for which the authors prove an exponential
-and unconditional lower bound, and therefore have tighter security bounds than the Clause Blind Schnorr
-schemes. The performance of the scheme is similar to Clause Blind Schnorr, yet signing is more efficient.
-Similarly to Clause Blind Schnorr schemes, the two round trips required by three-message flows need further analysis and experimentation.
-- Blind BLS {{BLS-Proposal}}: The Boneh-Lynn-Shacham {{?I-D.irtf-cfrg-bls-signature}} protocol can
-incorporate message blinding when properly instantiated with Type III pairing group. This is a
-two-message protocol similar to the RSA variant, though it requires pairing support, which is
-not common in widely deployed cryptographic libraries backing protocols such as TLS. In contrast,
-the specification in this document relies upon widely deployed cryptographic primitives.
-
-Beyond blind signature protocols, anonymous credential schemes with public verifiability
-such as U-Prove {{UProve}} may be used instead of blind signature protocols. Anonymous credentials
-may even be constructed with blind signature protocols. However, anonymous credentials are
-higher-level constructions that present a richer feature set.
-
 ## Post-Quantum Readiness
 
 The blind signature protocol specified in this document is not post-quantum ready since it
