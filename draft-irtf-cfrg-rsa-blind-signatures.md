@@ -582,7 +582,7 @@ As such, this interface is not suitable for applications that require determinis
 ## Randomness Generation
 
 All random values in the protocol, including the salt, message randomizer prefix, and random blind
-value in `Blind`, MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.s
+value in `Blind`, MUST be generated from a cryptographically secure random number generator {{?RFC4086}}.
 If these values are not generated randomly, or are otherwise constructed maliciously, it might be
 possible for them to encode information that is not present in the signed message. For example,
 the PSS salt might be maliciously constructed to encode the local IP address of the client. As a result,
