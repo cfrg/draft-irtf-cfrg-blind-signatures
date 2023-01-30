@@ -493,10 +493,10 @@ OID {{!RFC5756}}. It MUST NOT use the rsaEncryption OID {{?RFC5280}}.
 # Security Considerations {#sec-considerations}
 
 Lysyanskaya proved one-more-forgery polynomial security of RSABSSA variants in the random
-oracle model under the one-more-RSA assumption in {{Lys22}}. This means the adversary,
-interacting with the server (signer) as a client, cannot output n+1 valid message and
-signature tuples after only interacting with the server n times for n distinct
-messages, for some n which is polynomial in the protocol's security parameter.
+oracle model under the one-more-RSA assumption in {{Lys22}}. This means the adversary
+cannot output n+1 valid message and signature tuples, where all messages are distinct, after
+interacting with the server (signer) as a client only n times, for some n which is polynomial
+in the protocol's security parameter.
 Lysyanskaya also proved that the RSABSSA variants which use the PrepareRandomize function
 achieve blindness in {{Lys22}}. Blindness means that the malicious signer learns nothing
 about the client input during the protocol. However, additional assumptions on the message
