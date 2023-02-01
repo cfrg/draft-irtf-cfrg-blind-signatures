@@ -172,7 +172,8 @@ and a family of variants for this protocol, denoted RSABSSA. In order to facilit
 it is defined in such a way that the resulting (unblinded) signature can be verified with a standard
 RSA-PSS library.
 
-This document represents the consensus of the Crypto Forum Research Group (CFRG).
+This document represents the consensus of the Crypto Forum Research Group (CFRG). It is
+not an IETF product and is not a standard.
 
 # Requirements Notation
 
