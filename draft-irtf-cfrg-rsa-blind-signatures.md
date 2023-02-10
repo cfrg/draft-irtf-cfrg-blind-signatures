@@ -192,6 +192,7 @@ in this document:
   between M inclusive and N exclusive, i.e., M <= R < N.
 - bit_len(n): Compute the minimum number of bits needed to represent the positive integer n.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
+- is_coprime(x, n): Determines whether x and n are co-prime.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure random number generator.
 - concat(x0, ..., xN): Concatenation of byte strings. For example,
@@ -329,20 +330,24 @@ Errors:
 - "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
 - "encoding error": Raised when the input message fails encoding (raised by EMSA-PSS-ENCODE).
 - "invalid blind": Raised when the inverse of r cannot be found.
+- "invalid message": Raised when the message would not be co-prime with n.
 
 Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_len(n))
    with Hash, MGF, and sLen as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
-4. r = random_integer_uniform(1, n)
-5. inv = inverse_mod(r, n)
-6. If inverse_mod fails, raise an "invalid blind" error
+4. c = is_coprime(m, n)
+5. If c is true, raise an "invalid message" error
    and stop
-7. x = RSAVP1(pkS, r)
-8. z = m * x mod n
-9. blinded_msg = int_to_bytes(z, kLen)
-10. output blinded_msg, inv
+6. r = random_integer_uniform(1, n)
+7. inv = inverse_mod(r, n)
+8. If inverse_mod fails, raise an "invalid blind" error
+   and stop
+9. x = RSAVP1(pkS, r)
+10. z = m * x mod n
+11. blinded_msg = int_to_bytes(z, kLen)
+12. output blinded_msg, inv
 ~~~
 
 The blinding factor r MUST be randomly chosen from a uniform distribution.
