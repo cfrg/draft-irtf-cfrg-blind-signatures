@@ -192,7 +192,7 @@ in this document:
   between M inclusive and N exclusive, i.e., M <= R < N.
 - bit_len(n): Compute the minimum number of bits needed to represent the positive integer n.
 - inverse_mod(x, n): Compute the multiplicative inverse of x mod n or fail if x and n are not co-prime.
-- is_coprime(x, n): Determines whether x and n are co-prime.
+- is_coprime(x, n): Return true if x and n are co-prime, and false otherwise.
 - len(s): The length of a byte string, in bytes.
 - random(n): Generate n random bytes using a cryptographically-secure random number generator.
 - concat(x0, ..., xN): Concatenation of byte strings. For example,
@@ -301,9 +301,12 @@ key. It outputs the blinded message to be sent to the server, encoded as a byte 
 and the corresponding inverse, an integer. RSAVP1 and EMSA-PSS-ENCODE are as defined in
 {{Sections 5.2.2 and 9.1.1 of !RFC8017}}, respectively.
 
-If this function fails with an "invalid blind" error, implementations SHOULD retry
+If this function fails with an "blinding error" error, implementations SHOULD retry
 the function again. The probability of one or more such errors in sequence is negligible.
-See {{errors}} for more information about dealing with such errors.
+This function can also fail with an "invalid input" error, which indicates that one of
+the inputs (likely the public key) was invalid. Implementations SHOULD update the public
+key before calling this function again. See {{errors}} for more information about
+dealing with such errors.
 
 Note that this function invokes RSAVP1, which is defined to throw an optional error
 for invalid inputs. However, this error cannot occur based on how RSAVP1 is invoked,
@@ -329,8 +332,8 @@ Outputs:
 Errors:
 - "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
 - "encoding error": Raised when the input message fails encoding (raised by EMSA-PSS-ENCODE).
-- "invalid blind": Raised when the inverse of r cannot be found.
-- "invalid message": Raised when the message would not be co-prime with n.
+- "blinding error": Raised when the inverse of r cannot be found.
+- "invalid input": Raised when the message is not be co-prime with n.
 
 Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_len(n))
@@ -338,11 +341,11 @@ Steps:
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. c = is_coprime(m, n)
-5. If c is true, raise an "invalid message" error
+5. If c is true, raise an "invalid input" error
    and stop
 6. r = random_integer_uniform(1, n)
 7. inv = inverse_mod(r, n)
-8. If inverse_mod fails, raise an "invalid blind" error
+8. If inverse_mod fails, raise an "blinding error" error
    and stop
 9. x = RSAVP1(pkS, r)
 10. z = m * x mod n
@@ -502,8 +505,8 @@ the errors an implementation might emit. For example, implementations might run 
 
 Moreover, implementations can handle errors as needed or desired. Where applicable, this document
 provides guidance for how to deal with explicit errors that are generated in the protocol. For
-example, the "invalid blind" error that is generated in Blind occurs when the client generates
-a prime factor of the server's public key. {{blind}} indicates that implementations SHOULD
+example, "blinding error" is generated in Blind when the client produces a prime factor of
+the server's public key. {{blind}} indicates that implementations SHOULD
 retry the Blind function when this error occurs, but an implementation could also handle this
 exceptional event differently, e.g., by informing the server that the key has been factored.
 
