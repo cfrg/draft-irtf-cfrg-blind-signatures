@@ -88,7 +88,7 @@ def random_integer_uniform(min: int, max: int) -> int:
 
 
 def is_coprime(a, b):
-    return GCD(a, b) > 1
+    return GCD(a, b) == 1
 
 
 def rsabssa_randomize(msg: bytes) -> bytes:
