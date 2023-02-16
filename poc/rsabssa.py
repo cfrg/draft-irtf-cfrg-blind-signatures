@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from Crypto.Util.number import size, inverse, ceil_div
+from Crypto.Util.number import size, inverse, ceil_div, GCD
 from Crypto.Hash import SHA384
 from Crypto.Util.strxor import strxor
 from Crypto.PublicKey import RSA
@@ -87,6 +87,10 @@ def random_integer_uniform(min: int, max: int) -> int:
             return min + r
 
 
+def is_coprime(a, b):
+    return GCD(a, b) > 1
+
+
 def rsabssa_randomize(msg: bytes) -> bytes:
     msg_prefix = urandom(32)
 
@@ -103,6 +107,9 @@ def rsabssa_blind(
     kLen = ceil_div(kBits, 8)
     encoded_msg = EMSA_PSS_ENCODE(kBits, msg, sLen, salt)
     m = OS2IP(encoded_msg)
+
+    if is_coprime(m, n):
+        raise "Invalid input"
 
     if r_inv is not None:  # for test vector verification
         r = inverse(r_inv, n)
