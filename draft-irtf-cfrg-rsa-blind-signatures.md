@@ -333,7 +333,7 @@ Errors:
 - "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
 - "encoding error": Raised when the input message fails encoding (raised by EMSA-PSS-ENCODE).
 - "blinding error": Raised when the inverse of r cannot be found.
-- "invalid input": Raised when the message is not be co-prime with n.
+- "invalid input": Raised when the message is not co-prime with n.
 
 Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_len(n))
@@ -341,7 +341,7 @@ Steps:
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. c = is_coprime(m, n)
-5. If c is true, raise an "invalid input" error
+5. If c is false, raise an "invalid input" error
    and stop
 6. r = random_integer_uniform(1, n)
 7. inv = inverse_mod(r, n)
