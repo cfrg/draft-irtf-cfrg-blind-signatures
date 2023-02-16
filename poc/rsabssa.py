@@ -108,7 +108,7 @@ def rsabssa_blind(
     encoded_msg = EMSA_PSS_ENCODE(kBits, msg, sLen, salt)
     m = OS2IP(encoded_msg)
 
-    if is_coprime(m, n):
+    if not is_coprime(m, n):
         raise "Invalid input"
 
     if r_inv is not None:  # for test vector verification
