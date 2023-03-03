@@ -167,10 +167,10 @@ require access to the private key for verification. Moreover, {{JKK14}} shows th
 a VOPRF in the Random Oracle Model by hashing a signature-message pair, where the signature is
 computed using a deterministic blind signature protocol.
 
-This document specifies a protocol for computing the RSA blind signatures using RSA-PSS encoding,
-and a family of variants for this protocol, denoted RSABSSA. In order to facilitate deployment,
-it is defined in such a way that the resulting (unblinded) signature can be verified with a standard
-RSA-PSS library.
+This document specifies a protocol for computing RSA blind signatures using RSA-PSS encoding,
+and a family of variants for this protocol, denoted RSABSSA (RSA Blind Signature with Appendix).
+In order to facilitate deployment, it is defined in such a way that the resulting (unblinded)
+signature can be verified with a standard RSA-PSS library.
 
 This document represents the consensus of the Crypto Forum Research Group (CFRG). It is
 not an IETF product and is not a standard.
