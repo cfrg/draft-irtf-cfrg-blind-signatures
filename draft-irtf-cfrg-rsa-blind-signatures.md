@@ -327,7 +327,7 @@ Inputs:
 
 Outputs:
 - blinded_msg, a byte string of length kLen
-- inv, an integer
+- inv, an integer used to unblind the signature in Finalize
 
 Errors:
 - "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
