@@ -327,7 +327,7 @@ Inputs:
 
 Outputs:
 - blinded_msg, a byte string of length kLen
-- inv, an integer
+- inv, an integer representing the inverse of r mod n
 
 Errors:
 - "message too long": Raised when the input message is too long (raised by EMSA-PSS-ENCODE).
