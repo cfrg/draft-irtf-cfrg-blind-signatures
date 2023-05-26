@@ -1,0 +1,2819 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2021-05-09T01:04:54.157093+00:00",
+  "repo": "chris-wood/draft-wood-cfrg-blind-signatures",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "good first issue",
+      "description": "Good for newcomers",
+      "color": "7057ff"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Further information is requested",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "MDU6SXNzdWU3MjgzNTg1Mzk=",
+      "title": "Consider renaming to something not \"blind signature\"",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/1",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "It's not the most inclusive term, though it is the established term in the literature.",
+      "createdAt": "2020-10-23T16:34:09Z",
+      "updatedAt": "2021-05-06T12:52:07Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We of course want to keep that discussion open and would welcome input on that from the broader community.\r\n\r\nFrom #70:\r\n\r\n\r\n> The term being widely used in the academic literature makes it hard to move away from it without causing some confusion about what our scheme implements.\r\n\r\n> We also thought through about what it was referring to and got some interesting inputs from persons in the blind community such as:\r\n> I'd even argue that in the case of the examples you mention it's an entirely appropriate use of the word because it describes the same thing - a situation in which someone does not have access to all their sensory characteristics or is not able to use all their sensory characteristics.\r\nWe considered \"unlinkable signatures\" to emphasize that between signing and verification, the signature should not be linkable but it doesn't convey all the nuance we were hoping for.",
+          "createdAt": "2021-05-06T09:07:51Z",
+          "updatedAt": "2021-05-06T09:07:51Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "[Oblivious signatures](https://link.springer.com/content/pdf/10.1007/3-540-58618-0_62.pdf) _might_ also work, but the definition would need to stretch somewhat. Or we could just describe in words what this thing does, i.e., \"private RSA signature computation,\" and note (just once) that this is referred to as a \"blind signature\" in the literature? \r\n\r\nOne small downside I see is that not using the established name runs the risk of this type of specification flying under the radar. For example, a quick search for \"blind signatures\" might not reveal this specification, even though it may be what you're looking for.",
+          "createdAt": "2021-05-06T12:52:07Z",
+          "updatedAt": "2021-05-06T12:52:07Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "MDU6SXNzdWU3MjgzNTg3MjQ=",
+      "title": "Produce test vectors",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/2",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "After we finish the implementation!",
+      "createdAt": "2020-10-23T16:34:28Z",
+      "updatedAt": "2021-01-06T18:29:32Z",
+      "closedAt": "2021-01-06T18:29:32Z",
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "MDU6SXNzdWU3MzQ1NDM5MzE=",
+      "title": "Define our own scheme prefix",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/3",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The function definitions currently use rasasse as a prefix, but that's already used in the 8017 RFC.\r\n\r\nI suggest we move to use `rsabssa` for RSA Blind Signatures Scheme with Appendix.\r\n\r\nAt least for now. Maybe #1 will change it but until we have another term I think that can do it.",
+      "createdAt": "2020-11-02T14:19:46Z",
+      "updatedAt": "2020-12-03T22:31:28Z",
+      "closedAt": "2020-12-03T22:31:28Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proposal in #17",
+          "createdAt": "2020-12-02T15:45:48Z",
+          "updatedAt": "2020-12-02T15:45:48Z"
+        }
+      ]
+    },
+    {
+      "number": 4,
+      "id": "MDU6SXNzdWU3MzQ1NTc0NDg=",
+      "title": "should this take `msg` as input, or `msg_hash`?",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/4",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This is to discuss the input to the `rsassa_pss_sign_blind` function.\r\n\r\nI suggest msg since EMSA-PSS-ENCODE takes care of bringing it to modBits-1.\r\n\r\nProtocols are still free to hash before that, but don't have to.",
+      "createdAt": "2020-11-02T14:36:40Z",
+      "updatedAt": "2020-12-03T22:31:25Z",
+      "closedAt": "2020-12-03T22:31:25Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proposal in #17",
+          "createdAt": "2020-12-02T15:45:39Z",
+          "updatedAt": "2020-12-02T15:45:39Z"
+        }
+      ]
+    },
+    {
+      "number": 5,
+      "id": "MDU6SXNzdWU3MzQ1NjU4MDQ=",
+      "title": "Define mechanism to carry public key tweak",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/5",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Do we carry it in a certificate? If so, how? (Custom OID? Something else?)",
+      "createdAt": "2020-11-02T14:47:28Z",
+      "updatedAt": "2021-01-25T22:00:20Z",
+      "closedAt": "2021-01-25T22:00:20Z",
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "MDU6SXNzdWU3MzQ1NjYzNDQ=",
+      "title": "Define PSS parameters",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/6",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "We need to choose the hash function, mask generation function, and salt length. I think we ought to be opinionated, as PSS is already complicated enough at the API level.",
+      "createdAt": "2020-11-02T14:48:10Z",
+      "updatedAt": "2020-11-02T14:58:12Z",
+      "closedAt": "2020-11-02T14:58:11Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ah, I filed #8 since with my preferences.",
+          "createdAt": "2020-11-02T14:52:09Z",
+          "updatedAt": "2020-11-02T14:52:09Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "Thanks! Closing in favor of #8.",
+          "createdAt": "2020-11-02T14:58:11Z",
+          "updatedAt": "2020-11-02T14:58:11Z"
+        }
+      ]
+    },
+    {
+      "number": 7,
+      "id": "MDU6SXNzdWU3MzQ1NjY1ODM=",
+      "title": "Cross-protocol attack considerations",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/7",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "What do we want to say about cross-protocol attacks, if anything?",
+      "createdAt": "2020-11-02T14:48:31Z",
+      "updatedAt": "2021-01-25T22:22:27Z",
+      "closedAt": "2021-01-25T22:22:27Z",
+      "comments": []
+    },
+    {
+      "number": 8,
+      "id": "MDU6SXNzdWU3MzQ1NjkwNTg=",
+      "title": "PSS Encoding Options",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/8",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Preference is assume MGF1-SHA384 (or eventually also SHA256) but we certainly don't want to allow SHA1.\r\n\r\nWe can fix the salt to (0x)00 00 00 00 00 00 00 00 same as in 8017.",
+      "createdAt": "2020-11-02T14:51:43Z",
+      "updatedAt": "2020-12-02T15:44:41Z",
+      "closedAt": "2020-12-02T15:44:41Z",
+      "comments": []
+    },
+    {
+      "number": 9,
+      "id": "MDU6SXNzdWU3MzQ1NjkxNDU=",
+      "title": "Make fully- and partially-blind public keys play nice",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/9",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "In the partially-blind scheme, the server's public key is \"replaced\" with the output of the augmentation function. Does this mean a public key (with a tweak) can be used for both fully and partially blind schemes, or should a key only be usable in one variant? In the former, how does a client signal that the protocol ought to use the \"fully blind scheme\"? Does it send an empty \"aux\" string, or some sentinel value? ",
+      "createdAt": "2020-11-02T14:51:48Z",
+      "updatedAt": "2021-01-25T22:00:21Z",
+      "closedAt": "2021-01-25T22:00:21Z",
+      "comments": []
+    },
+    {
+      "number": 10,
+      "id": "MDU6SXNzdWU3MzQ1NzAzNjU=",
+      "title": "Partially-blind performance concerns",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/10",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Typically RSA public keys are a small Fermat prime (not 3). Augmented public keys can potentially be *much* larger, which might lead to worse performance overall. Moreover, this might introduce timing side channels during the private key operation. ",
+      "createdAt": "2020-11-02T14:53:11Z",
+      "updatedAt": "2021-01-25T22:00:21Z",
+      "closedAt": "2021-01-25T22:00:21Z",
+      "comments": []
+    },
+    {
+      "number": 11,
+      "id": "MDU6SXNzdWU3MzQ1NzEyOTk=",
+      "title": "Timing side channels",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/11",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "What do we want to say about them, if anything? And what do we want to say about masked exponentiation implementations?",
+      "createdAt": "2020-11-02T14:54:24Z",
+      "updatedAt": "2021-01-06T18:30:22Z",
+      "closedAt": "2021-01-06T18:30:22Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "This is fixed by #24.",
+          "createdAt": "2021-01-06T18:30:22Z",
+          "updatedAt": "2021-01-06T18:30:22Z"
+        }
+      ]
+    },
+    {
+      "number": 12,
+      "id": "MDU6SXNzdWU3MzQ1NzI0MDY=",
+      "title": "FIPS compliance concerns",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/12",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "I think FIPS compliance requires public keys to be one of the permitted primes (65537 typically) -- augmented public keys will likely not be one of these permitted values. Is that a problem?",
+      "createdAt": "2020-11-02T14:55:42Z",
+      "updatedAt": "2021-01-25T22:00:21Z",
+      "closedAt": "2021-01-25T22:00:21Z",
+      "comments": []
+    },
+    {
+      "number": 13,
+      "id": "MDU6SXNzdWU3MzQ1NzI5NTE=",
+      "title": "Key generation",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/13",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Do we need to specify key generation? The tweak search algorithm needs \\lambda(N), so maybe we can just say that the key generation produces this value for the server to use. ",
+      "createdAt": "2020-11-02T14:56:23Z",
+      "updatedAt": "2020-12-11T21:17:05Z",
+      "closedAt": "2020-12-11T21:17:04Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "Closing, since I think this is probably out of scope.",
+          "createdAt": "2020-12-11T21:17:04Z",
+          "updatedAt": "2020-12-11T21:17:04Z"
+        }
+      ]
+    },
+    {
+      "number": 15,
+      "id": "MDU6SXNzdWU3Mzg0ODIwNDI=",
+      "title": "Small exponent concerns",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/15",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "We should add some text (and perhaps refactor the augmentation tweak search algorithm) to prohibit small exponents. Wiener's attack, for example, is a problem for tweaked d' if d' < N^{1/4}, so we have to prohibit these as outputs.\r\n\r\nThis should minimally be discussed in the security considerations.",
+      "createdAt": "2020-11-08T14:52:55Z",
+      "updatedAt": "2021-01-25T22:00:21Z",
+      "closedAt": "2021-01-25T22:00:21Z",
+      "comments": []
+    },
+    {
+      "number": 16,
+      "id": "MDU6SXNzdWU3NTUzNTc0MzI=",
+      "title": "Failing to find inverse",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/16",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "How do we handle the case of failing to find an inverse?\r\n\r\nThat probably means that r = p or q.\r\n\r\nI think we should just fail at the point",
+      "createdAt": "2020-12-02T15:10:17Z",
+      "updatedAt": "2020-12-03T22:31:21Z",
+      "closedAt": "2020-12-03T22:31:21Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Proposal in #17",
+          "createdAt": "2020-12-02T15:45:25Z",
+          "updatedAt": "2020-12-02T15:45:25Z"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "id": "MDU6SXNzdWU3NTc0OTg5NDQ=",
+      "title": "Note V-OPRF relation",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/18",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "[2014/650](https://eprint.iacr.org/2014/650.pdf) prove that hashing the signature input and output together is an efficient way to instantiate a V-OPRF:\r\n\r\n> Not surprisingly given this similarity, we observe that an efficient realization of V-OPRF can be achieved (in ROM) by hashing a deterministic blind signature-message pair.\r\n\r\nThis is worth noting, especially given the relation to draft-irtf-cfrg-voprf.",
+      "createdAt": "2020-12-05T01:02:42Z",
+      "updatedAt": "2021-01-26T10:51:20Z",
+      "closedAt": "2021-01-26T10:51:20Z",
+      "comments": []
+    },
+    {
+      "number": 19,
+      "id": "MDU6SXNzdWU3NTg5NDI4MDc=",
+      "title": "Add RSA blinding considerations",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/19",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Servers should implement [blinding](https://crypto.stanford.edu/~dabo/papers/ssl-timing.pdf) before evaluation. We can add this to the timing considerations section?",
+      "createdAt": "2020-12-07T23:55:50Z",
+      "updatedAt": "2020-12-11T14:55:50Z",
+      "closedAt": "2020-12-11T14:55:50Z",
+      "comments": []
+    },
+    {
+      "number": 22,
+      "id": "MDU6SXNzdWU3NTk5MDU4OTM=",
+      "title": "Add key substitution considerations",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/22",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "RSA permits [key substitution attacks](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.30.1051&rep=rep1&type=pdf), wherein an attacker can find a key pair (skA, pkA) that verify for some known (message, signature) pair under a fixed (skS, pkS) key. Whether this is a problem depends on the application, I think, but we should note that it's a thing. ",
+      "createdAt": "2020-12-09T01:10:37Z",
+      "updatedAt": "2021-01-26T10:52:25Z",
+      "closedAt": "2021-01-26T10:52:25Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed in #31",
+          "createdAt": "2021-01-26T10:52:23Z",
+          "updatedAt": "2021-01-26T10:52:23Z"
+        }
+      ]
+    },
+    {
+      "number": 23,
+      "id": "MDU6SXNzdWU3NjA4MTQ5ODQ=",
+      "title": "Drop partial blindness",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/23",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "The tweak algorithm effectively scatter shots the (e, d) pairs across the \\phi(n) space, meaning that sometimes they may be huge and sometimes they may be small. I ran some basic benchmarks to see how much of an impact the size of these exponents have on the RSA operation (modular exponentiation, no Montgomery), and here's how things look:\r\n\r\n~~~\r\nDid 460 RSA 2048 mod exp with exponent bit length 2048 operations in 1030854us (446.2 ops/sec)\r\nDid 720 RSA 2048 mod exp with exponent bit length 1024 operations in 1063593us (677.0 ops/sec)\r\nDid 420 RSA 2048 mod exp with exponent bit length 512 operations in 1010230us (415.7 ops/sec)\r\nDid 1040 RSA 2048 mod exp with exponent bit length 256 operations in 1016176us (1023.4 ops/sec)\r\nDid 1096 RSA 2048 mod exp with exponent bit length 128 operations in 1006693us (1088.7 ops/sec)\r\nDid 1314 RSA 2048 mod exp with exponent bit length 64 operations in 1126541us (1166.4 ops/sec)\r\nDid 1508 RSA 2048 mod exp with exponent bit length 32 operations in 1067422us (1412.7 ops/sec)\r\nDid 1392 RSA 2048 mod exp with exponent bit length 16 operations in 1063266us (1309.2 ops/sec)\r\nDid 1479 RSA 2048 mod exp with exponent bit length 8 operations in 1030031us (1435.9 ops/sec)\r\nDid 1580 RSA 2048 mod exp with exponent bit length 4 operations in 1043926us (1513.5 ops/sec)\r\nDid 65 RSA 4096 mod exp with exponent bit length 4096 operations in 1064538us (61.1 ops/sec)\r\nDid 132 RSA 4096 mod exp with exponent bit length 2048 operations in 1087009us (121.4 ops/sec)\r\nDid 209 RSA 4096 mod exp with exponent bit length 1024 operations in 1060371us (197.1 ops/sec)\r\nDid 270 RSA 4096 mod exp with exponent bit length 512 operations in 1039257us (259.8 ops/sec)\r\nDid 312 RSA 4096 mod exp with exponent bit length 256 operations in 1061919us (293.8 ops/sec)\r\nDid 403 RSA 4096 mod exp with exponent bit length 128 operations in 1066304us (377.9 ops/sec)\r\nDid 440 RSA 4096 mod exp with exponent bit length 64 operations in 1013502us (434.1 ops/sec)\r\nDid 460 RSA 4096 mod exp with exponent bit length 32 operations in 1007691us (456.5 ops/sec)\r\nDid 470 RSA 4096 mod exp with exponent bit length 16 operations in 1076252us (436.7 ops/sec)\r\nDid 465 RSA 4096 mod exp with exponent bit length 8 operations in 1043780us (445.5 ops/sec)\r\nDid 480 RSA 4096 mod exp with exponent bit length 4 operations in 1002908us (478.6 ops/sec)\r\n~~~\r\n\r\n@FredericJacobs, given this, what do you think about dropping this altogether?",
+      "createdAt": "2020-12-10T01:59:46Z",
+      "updatedAt": "2021-01-25T22:01:27Z",
+      "closedAt": "2021-01-25T22:01:27Z",
+      "comments": []
+    },
+    {
+      "number": 28,
+      "id": "MDU6SXNzdWU3NzMwNjc5OTg=",
+      "title": "Salt state tracking vectors",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/28",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "The salt is expected to be |hash|-bytes of random data, but neither clients nor servers actually have a way of verifying that this is random data. It's possible, for example, that a malicious implementation might encoded state in the salt that leaks the identity of the client to a verifier. We should note this in the security considerations. Specifically, we should note that execution of this code must not be outsourced to untrusted code. ",
+      "createdAt": "2020-12-22T16:15:52Z",
+      "updatedAt": "2021-01-26T10:52:02Z",
+      "closedAt": "2021-01-26T10:52:02Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Addressed in #31",
+          "createdAt": "2021-01-26T10:52:02Z",
+          "updatedAt": "2021-01-26T10:52:02Z"
+        }
+      ]
+    },
+    {
+      "number": 29,
+      "id": "MDU6SXNzdWU3OTM3NTQ5Mzc=",
+      "title": "Partially blind signatures",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/29",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "It's possible to extend this scheme to support partially blinded signatures. Specifically, public auxiliary information is used\r\nto augment the public and private keys used during the signature verification. This issue describes how clients and servers might augment a public key pair `(pkS, skS)` using information `aux` and tweak `tweak`.\r\n\r\nAugmenting a public key:\r\n\r\n~~~\r\nrsassa_pss_augment_public_key(pkS = (n, e), tweak, aux)\r\n\r\nParameters:\r\n- H, a cryptographic hash function\r\n- l, H output truncation length\r\n\r\nInputs:\r\n- pkS, server public key (n, e)\r\n- tweak, Public key tweak\r\n- aux, public auxiliary information, an octet string\r\n\r\nSteps:\r\n1. c = H(aux || tweak)[0:l]\r\n2. t = OS2IP(c)\r\n3. e_aug = 2 * t + 1\r\n4. return (n, e_aug)\r\n~~~\r\n\r\nAugmenting a private key:\r\n\r\n~~~\r\nrsassa_pss_augment_private_key(skS = (n, d), tweak, aux)\r\n\r\nParameters:\r\n- H, a cryptographic hash function\r\n- l, H output truncation length\r\n\r\nInputs:\r\n- skS, server private key (n, d)\r\n- tweak, Public key tweak\r\n- aux, public auxiliary information, an octet string\r\n\r\nSteps:\r\n1. c = H(aux || tweak)[0:l]\r\n2. t = OS2IP(c)\r\n3. e_aug = 2 * t + 1\r\n4. d_aug = inverse_mod(e_aug, phi(n))\r\n5. return (n, d_aug)\r\n~~~\r\n\r\nThe augmentation function defined above computes the following value for each auxiliary input:\r\n\r\n~~~\r\n   augment(aux, tweak) = (2 * H_l(aux || tweak)) + 1\r\n~~~\r\n\r\nwhere `H\\_l` is `H` truncated to `l` bytes. Let `f(aux)` denote shorthand for `augment(aux, tweak)`, where `tweak` is implicit from context. This function MUST be collision resistant and deterministic. Moreover, it must generate outputs that are relatively prime to one another. Specifically, let `p\\_k(x)` denote the k-th largest prime factor of input `x`, and let `k(x)` denote the number of prime factors for input `x`. The augmentation function MUST satisfy the following condition:\r\n\r\nFor all distinct `aux\\_i` and `aux\\_j` that belong to the set of auxiliary information elements, there must exists a prime factor `p\\k(f(aux\\_i))` that does not divide `f(aux\\_j)` and is also relatively prime to `\\lambda(n)`, the Carmichael function of RSA modulus n.\r\n\r\nIn other words, each output of `f` must have at least one prime factor that foes not appear in all other outputs of `f`. To ensure this, the server must check that its given tweak produces such outputs for all possible auxiliary information inputs. The following Python-like code presents an algorithm for finding a tweak suitable for a given set of auxiliary information elements, denoted `C`.\r\n\r\n~~~\r\ndef augment(aux, H, tweak):\r\n    return (2 * H(aux + tweak)) + 1\r\n\r\ndef prime_factors(n):\r\n    factors = []\r\n    factor = 1\r\n    i = 3\r\n\r\n    if n % 2 == 0:\r\n        factors.append(2)\r\n\r\n    while i <= (n / i):\r\n        if n % i == 0:\r\n            factor = int(i)\r\n            factors.append(factor)\r\n            while n % i == 0:\r\n                n = n / i\r\n        else:\r\n            i += 1\r\n\r\n    if factor < n:\r\n        factor = int(n)\r\n    factors.append(factor)\r\n\r\n    return factors\r\n\r\ndef find_augmenter(C, H, L):\r\n    '''\r\n    For all c_i, c_j such that c_i != cj:\r\n    1. The largest prime factor of f(c_i) must not divide f(c_j)\r\n    2. f(c_i) must be relatively prime to L = \\lambda = 2((p-1)/2)((q-1)/2)\r\n    '''\r\n    def is_valid_tweak(s, C, H, L):\r\n        augmented = [augment(c, H, s) for c in C]\r\n        for fci in augmented:\r\n            if not math.gcd(fci, L) == 1:\r\n                return False\r\n            for fcj in augmented:\r\n                if fci != fcj:\r\n                    unique_factor = False\r\n                    for pki in prime_factors(fci):\r\n                        if (fcj % pki) != 0:\r\n                            unique_factor = True\r\n                            break\r\n                    if not unique_factor:\r\n                        return False\r\n        return True\r\n\r\n    while True:\r\n        s = os.urandom(32)\r\n        if is_valid_tweak(s, C, H, L):\r\n            return s\r\n~~~\r\n\r\nPartial blindness this way is not without considerations, including:\r\n- How do augmented and non-augmented keys co-exist, if at all?\r\n- How is the public key tweak carried? In a new certificate OID? Something else?\r\n- - Exponents may not be small, which has compliance (FIPS) and performance implications. Specifically, the tweak algorithm effectively scatter shots the (e, d) pairs across the \\phi(n) space, meaning that sometimes they may be huge and sometimes they may be small. I ran some basic benchmarks to see how much of an impact the size of these exponents have on the RSA operation (modular exponentiation, no Montgomery), and here's how things look:\r\n\r\n~~~\r\nDid 460 RSA 2048 mod exp with exponent bit length 2048 operations in 1030854us (446.2 ops/sec)\r\nDid 720 RSA 2048 mod exp with exponent bit length 1024 operations in 1063593us (677.0 ops/sec)\r\nDid 420 RSA 2048 mod exp with exponent bit length 512 operations in 1010230us (415.7 ops/sec)\r\nDid 1040 RSA 2048 mod exp with exponent bit length 256 operations in 1016176us (1023.4 ops/sec)\r\nDid 1096 RSA 2048 mod exp with exponent bit length 128 operations in 1006693us (1088.7 ops/sec)\r\nDid 1314 RSA 2048 mod exp with exponent bit length 64 operations in 1126541us (1166.4 ops/sec)\r\nDid 1508 RSA 2048 mod exp with exponent bit length 32 operations in 1067422us (1412.7 ops/sec)\r\nDid 1392 RSA 2048 mod exp with exponent bit length 16 operations in 1063266us (1309.2 ops/sec)\r\nDid 1479 RSA 2048 mod exp with exponent bit length 8 operations in 1030031us (1435.9 ops/sec)\r\nDid 1580 RSA 2048 mod exp with exponent bit length 4 operations in 1043926us (1513.5 ops/sec)\r\nDid 65 RSA 4096 mod exp with exponent bit length 4096 operations in 1064538us (61.1 ops/sec)\r\nDid 132 RSA 4096 mod exp with exponent bit length 2048 operations in 1087009us (121.4 ops/sec)\r\nDid 209 RSA 4096 mod exp with exponent bit length 1024 operations in 1060371us (197.1 ops/sec)\r\nDid 270 RSA 4096 mod exp with exponent bit length 512 operations in 1039257us (259.8 ops/sec)\r\nDid 312 RSA 4096 mod exp with exponent bit length 256 operations in 1061919us (293.8 ops/sec)\r\nDid 403 RSA 4096 mod exp with exponent bit length 128 operations in 1066304us (377.9 ops/sec)\r\nDid 440 RSA 4096 mod exp with exponent bit length 64 operations in 1013502us (434.1 ops/sec)\r\nDid 460 RSA 4096 mod exp with exponent bit length 32 operations in 1007691us (456.5 ops/sec)\r\nDid 470 RSA 4096 mod exp with exponent bit length 16 operations in 1076252us (436.7 ops/sec)\r\nDid 465 RSA 4096 mod exp with exponent bit length 8 operations in 1043780us (445.5 ops/sec)\r\nDid 480 RSA 4096 mod exp with exponent bit length 4 operations in 1002908us (478.6 ops/sec)\r\n~~~",
+      "createdAt": "2021-01-25T21:56:55Z",
+      "updatedAt": "2021-01-25T22:01:02Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 41,
+      "id": "MDU6SXNzdWU4MTIxNDgyMjg=",
+      "title": "RSASP1, RSASP1",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/41",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We need to add where those functions are coming from as a reader of the spec might not understand that this comes from RSASP1.\r\n\r\nI'll open a PR clarifying that.",
+      "createdAt": "2021-02-19T16:11:12Z",
+      "updatedAt": "2021-02-22T14:47:59Z",
+      "closedAt": "2021-02-22T14:47:59Z",
+      "comments": []
+    },
+    {
+      "number": 45,
+      "id": "MDU6SXNzdWU4MTM1NzAxODM=",
+      "title": "Confirm that results from BNPS03 apply to this construction",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/45",
+      "state": "OPEN",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From the security section:\r\n\r\n> Bellare et al. {{?BNPS03=DOI.10.1007/s00145-002-0120-1}} proved security of Chaum's original blind signature scheme based on RSA-FDH based on \"one-more-RSA-inversion.\" Note that the design in this document differs only in message encoding, i.e., using PSS instead of FDH. [[OPEN ISSUE: confirm that results from BNPS03 apply to this construction]]",
+      "createdAt": "2021-02-22T14:49:47Z",
+      "updatedAt": "2021-02-22T14:49:47Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 48,
+      "id": "MDU6SXNzdWU4MTM4MjE1MTQ=",
+      "title": "Evaluate(), evaluated_message",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/48",
+      "state": "CLOSED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "A function named `Evaluate` doesn't give any indication about what it does, and an `evaluated_message` could literally be anything.\r\n\r\nWouldn't something like `Sign` (or `BlindSign`) and `blind_signature` improve clarity?",
+      "createdAt": "2021-02-22T20:04:28Z",
+      "updatedAt": "2021-02-22T21:18:19Z",
+      "closedAt": "2021-02-22T21:18:19Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "`Evaluate` is just for consistency with the VOPRFs draft. `BlindSign` or `SignRaw` would probably work too. I don't feel strongly about this.",
+          "createdAt": "2021-02-22T20:12:32Z",
+          "updatedAt": "2021-02-22T20:12:32Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Evaluate is just for consistency with the VOPRFs draft.\r\n\r\nI know :)\r\n\r\nBut I'm not convinced that this name makes sense in the context of RSA.\r\n\r\nGlancing at these functions or at a public API implementing these, it may not be obvious to answer the simple questions \"where is the blind signature? where is blind signing actually done?\".\r\n\r\n`BlindSign` would immediately answer these and clarify the purpose of `Finalize()`.",
+          "createdAt": "2021-02-22T20:26:13Z",
+          "updatedAt": "2021-02-22T20:26:13Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "> BlindSign would immediately answer these and clarify the purpose of Finalize().\r\n\r\nYep, I don't disagree. Can you send a PR?",
+          "createdAt": "2021-02-22T20:43:38Z",
+          "updatedAt": "2021-02-22T20:43:38Z"
+        }
+      ]
+    },
+    {
+      "number": 51,
+      "id": "MDU6SXNzdWU4MTQ3MDc2MjY=",
+      "title": "Repository URL",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/51",
+      "state": "CLOSED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixed.",
+      "createdAt": "2021-02-23T18:07:31Z",
+      "updatedAt": "2021-02-23T18:31:49Z",
+      "closedAt": "2021-02-23T18:28:58Z",
+      "comments": []
+    },
+    {
+      "number": 52,
+      "id": "MDU6SXNzdWU4MTQ3MzI5NTg=",
+      "title": "json & txt test vector files still mention old name",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/52",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "jedisct1"
+      ],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-23T18:41:55Z",
+      "updatedAt": "2021-02-23T18:57:10Z",
+      "closedAt": "2021-02-23T18:57:10Z",
+      "comments": [
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "No problem, I'm going to fix this.",
+          "createdAt": "2021-02-23T18:44:27Z",
+          "updatedAt": "2021-02-23T18:44:27Z"
+        }
+      ]
+    },
+    {
+      "number": 55,
+      "id": "MDU6SXNzdWU4MTU5MjU4MTc=",
+      "title": "Emphasize randomness importance",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/55",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "From Jeff Burdges on the list:\r\n\r\n> It\u2019s critically important the blinding factor r be a uniformly random \r\n> integer mod n, which I think deserves more emphasis than you give.  \r\n> There is an easy deanonymization attack if r were say generated a \r\n> random integer mod 2^{floor(log2 n)}.  You hould emphasize that \r\n> random_integer should be instantiated with a CSPRNG and rejection \r\n> sampling, maybe even specify the rejection sampling algorithm starting \r\n> with shake or chacha.  ",
+      "createdAt": "2021-02-24T23:19:33Z",
+      "updatedAt": "2021-03-01T11:40:11Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This is a very good point.\r\n\r\nSpecifying a rejection sampling algorithm sounds clearly out of scope, though.\r\n\r\nRejection sampling can be cited as a way to get a uniformly distributed integer, but giving too much details can lead to confusion.\r\n\r\nIn practice, what most people really want is just use whatever function their big number library already provides for that purpose -- and, with big numbers, doing anything else would be more complicated anyway.",
+          "createdAt": "2021-02-24T23:46:14Z",
+          "updatedAt": "2021-02-24T23:46:14Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Maybe rename `random_integer` to `random_integer_uniform` so that it's hard to miss, even if the Notation section was overlooked?\r\n\r\nThe definition of the function may actually cause more confusion.\r\n\r\nVirtually all implementations of a `random_integer(M, N)` function return `R` so that `M <= R < N`, not `M < R <= N` as we define it. Not a big deal, though.",
+          "createdAt": "2021-02-25T00:10:43Z",
+          "updatedAt": "2021-02-25T00:10:50Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "I'm also hesitant to go into more detail about the implementation of this function. \r\n\r\n> Maybe rename random_integer to random_integer_uniform so that it's hard to miss, even if the Notation section was overlooked?\r\n\r\nYeah, that would certainly make the requirement more clear, and might be enough?",
+          "createdAt": "2021-02-25T00:40:51Z",
+          "updatedAt": "2021-02-25T00:40:51Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "- [ ] we should add a line in the security considerations section linking to the paper Jeff mentioned on the IETF mailing list explaining the importance of the uniform distribution for choosing the blind.",
+          "createdAt": "2021-02-25T19:44:57Z",
+          "updatedAt": "2021-02-25T19:45:08Z"
+        },
+        {
+          "author": "tjesi",
+          "authorAssociation": "NONE",
+          "body": "I think it is good practice to check that `r` is valid before using it in any computations. It is valid if `gcd(r,n) = 1`, and then there will always exist an inverse. However, if `gcd(r,n) > 1` then you have found a factor of `n`, and hence, the parameters are broken, but I guess this will never happen in practice when choosing reasonable sizes for `n`.",
+          "createdAt": "2021-02-28T13:33:58Z",
+          "updatedAt": "2021-02-28T13:33:58Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "It wouldn't hurt to do it. Checking that `r` is not `0` or one of the prime factors is very cheap. But in the specification, it may be reasonable to assume that the modular inversion function isn't completely broken.\n\nIf `r_inv` is not `r^-1`, `Finalize` would return an error, so the implications would be minimal anyway.\n",
+          "createdAt": "2021-02-28T14:09:33Z",
+          "updatedAt": "2021-02-28T14:09:33Z"
+        },
+        {
+          "author": "tjesi",
+          "authorAssociation": "NONE",
+          "body": "Fair point, but then I would compute `r_inv` before using `r`, instead of afterwards.",
+          "createdAt": "2021-03-01T09:10:30Z",
+          "updatedAt": "2021-03-01T09:10:30Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@tjesi what do you think about https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/commit/b55838ad941bcf7aa82c828844b9b8e02294868b ?",
+          "createdAt": "2021-03-01T11:33:32Z",
+          "updatedAt": "2021-03-01T11:33:32Z"
+        },
+        {
+          "author": "tjesi",
+          "authorAssociation": "NONE",
+          "body": "I am satisfied \ud83d\udc4d ",
+          "createdAt": "2021-03-01T11:40:10Z",
+          "updatedAt": "2021-03-01T11:40:10Z"
+        }
+      ]
+    },
+    {
+      "number": 58,
+      "id": "MDU6SXNzdWU4MTY3Mzk5MzA=",
+      "title": "Elaborate on tradeoffs and limitations of RSA",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/58",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Consider:\r\n\r\n1) round complexity versus batching in replies\r\n2) complexity of threshold private keys\r\n3) determining if the protocol requires public verifiability versus just designated verifier\r\n4) do tokens require single-use or is private multi-use sufficient\r\n\r\ncc @chelseakomlo :-) \r\n",
+      "createdAt": "2021-02-25T19:46:19Z",
+      "updatedAt": "2021-02-25T19:46:19Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 69,
+      "id": "MDU6SXNzdWU4Njk5MzA2MjU=",
+      "title": "Jeff's concern about blinding factors",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/69",
+      "state": "CLOSED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "On the mailing list, Jeff says:\r\n\r\n> We need a strong clarification that blinding factors should be rejection sampled from the RSA group, meaning same bit width and rejection if they exceed the modulus.  I\u2019ve some GCD test in GNU Taler\u2019s code but that\u2019s unnecessary since n - phi(n) = pq - (p-1)(q-1) = p + q -1 << n. \r\n> \r\n> Implementations that produce produce blinding factors using floor(log_2 n) bits provide no appreciable anonymity.  It\u2019s a trivial attack:  An exchange computes isig[i] / rsig[j] for all issued signatures isig[i] and all redeemed signatures rsig[j].  Anytime i and j correspond then isig[i] / rsig[j] gives a blinding factor, so if blinding factors leak half a bit of entropy, then the exchange deanonymizes the user after only a few spent coins, usually only one transaction.\r\n> \r\n> Implementations that produce blinding factors using the PSS code deanonymize users with only one coin!  I\u2019d say blinding factors are the most important part of the document.\r\n\r\nI don't fully understand the claim. The blinding factors in the spec are defined as:\r\n> r = random_integer_uniform(1, n)\r\n\r\nwhich should alleviate Jeff's concern.\r\n\r\n",
+      "createdAt": "2021-04-28T13:09:40Z",
+      "updatedAt": "2021-04-28T19:32:01Z",
+      "closedAt": "2021-04-28T19:32:01Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@burdges, can you clarify?",
+          "createdAt": "2021-04-28T13:10:29Z",
+          "updatedAt": "2021-04-28T13:10:29Z"
+        },
+        {
+          "author": "burdges",
+          "authorAssociation": "NONE",
+          "body": "Yes, an integer selected uniformly mod n works fine, but people often mess this up.  ",
+          "createdAt": "2021-04-28T15:06:37Z",
+          "updatedAt": "2021-04-28T15:06:37Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "Would it help if we added an appendix that describes how one might implement `random_integer_uniform`, i.e., either via rejection sampling or by taking @kwantam's suggestion and generating more bits than necessary before reducing mod n?",
+          "createdAt": "2021-04-28T15:08:47Z",
+          "updatedAt": "2021-04-28T15:08:47Z"
+        },
+        {
+          "author": "burdges",
+          "authorAssociation": "NONE",
+          "body": "Yes, I'd emphasize that uniform mod n matters and mention the reduction trick suffices.  ",
+          "createdAt": "2021-04-28T15:14:52Z",
+          "updatedAt": "2021-04-28T15:14:52Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "@FredericJacobs can we close this and fold it into #55?",
+          "createdAt": "2021-04-28T15:15:47Z",
+          "updatedAt": "2021-04-28T15:15:47Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Totally",
+          "createdAt": "2021-04-28T19:32:01Z",
+          "updatedAt": "2021-04-28T19:32:01Z"
+        }
+      ]
+    },
+    {
+      "number": 70,
+      "id": "MDU6SXNzdWU4NzY5NzA2MjA=",
+      "title": "Consider finding a better name",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/issues/70",
+      "state": "CLOSED",
+      "author": "martinthomson",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Yes, \"blind\" is a term of art, but it is used in an unnecessarily pejorative fashion.",
+      "createdAt": "2021-05-06T00:41:03Z",
+      "updatedAt": "2021-05-06T09:06:52Z",
+      "closedAt": "2021-05-06T09:06:52Z",
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks @martinthomson. This was actually the first issue we filed on this repo (#1) and it was closed. But we of course want to keep that discussion open and would welcome input on that from the broader community.\r\n\r\nThe term being widely used in the academic literature makes it hard to move away from it without causing some confusion about what our scheme implements.\r\n\r\nWe also thought through about what it was referring to and got some interesting inputs from persons in the blind community such as:\r\n>  I'd even argue that in the case of the examples you mention it's an entirely appropriate use of the word because it describes the same thing - a situation in which someone does not have access to all their sensory characteristics or is not able to use all their sensory characteristics.\r\n\r\nWe considered \"unlinkable signatures\" to emphasize that between signing and verification, the signature should not be linkable but it doesn't convey all the nuance we were hoping for.",
+          "createdAt": "2021-05-06T09:06:08Z",
+          "updatedAt": "2021-05-06T09:06:08Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Continuing discussion in #1 ",
+          "createdAt": "2021-05-06T09:06:52Z",
+          "updatedAt": "2021-05-06T09:06:52Z"
+        }
+      ]
+    }
+  ],
+  "pulls": [
+    {
+      "number": 14,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTE0MTYzODI0",
+      "title": "More content",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/14",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-11-02T16:10:43Z",
+      "updatedAt": "2020-11-02T16:11:47Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "c1ccaa366bfb4e4e7af9ddb804c4f18eec475c95",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/wip-blind-sigs",
+      "headRefOid": "5a26221f937590926d98b4ae1b2f87a1cdfe4278",
+      "closedAt": "2020-11-02T16:11:47Z",
+      "mergedAt": "2020-11-02T16:11:47Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "73380920f25514509e0928c75ceba5e6c467298c"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 17,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTMxMTA3NDM2",
+      "title": "Some changes to RSABSSA",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/17",
+      "state": "MERGED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-12-02T15:45:09Z",
+      "updatedAt": "2020-12-03T21:50:20Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "73380920f25514509e0928c75ceba5e6c467298c",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "fj/wip-blind-sigs-2",
+      "headRefOid": "33eebb204ebd33229d23bdfca673f2d20f21e847",
+      "closedAt": "2020-12-03T21:50:04Z",
+      "mergedAt": "2020-12-03T21:50:04Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "cf4ec5a89d1eb1ffc1cd90295b247c1243c26328"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTQzNTA0MDcx",
+          "commit": {
+            "abbreviatedOid": "6e73999"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "Looks good modulo some nits! ",
+          "createdAt": "2020-12-03T05:21:25Z",
+          "updatedAt": "2020-12-03T20:01:09Z",
+          "comments": [
+            {
+              "originalPosition": 40,
+              "body": "```suggestion\r\nCryptographic signatures provide a primitive that is publicly verifiable and does not require access to the private key to verify. \r\n```",
+              "createdAt": "2020-12-03T05:21:25Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 41,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-12-03T05:21:54Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 5,
+              "body": "Can we make these alphabetical? ",
+              "createdAt": "2020-12-03T19:53:31Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 32,
+              "body": "```suggestion\r\nRecently, interest in blind signatures has grown to address operational shortcomings from ECVOPRFs \r\n```",
+              "createdAt": "2020-12-03T19:53:56Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 34,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-12-03T19:54:08Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 35,
+              "body": "```suggestion\r\nThis limitation complicates deployments where it is not desirable to distribute secret keys entities performing token verification.\r\n```",
+              "createdAt": "2020-12-03T19:54:47Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 33,
+              "body": "```suggestion\r\nfor which the private key is required VOPRF evaluations and therefore required for both issuance and redemption of tokens in anonymous authentication protocols such as Privacy Pass {{?I-D.davidson-pp-protocol}}.\r\n```",
+              "createdAt": "2020-12-03T19:55:38Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 38,
+              "body": "```suggestion\r\nIn order to facilitate the deployment of our scheme, we define it in such a way that the resulting (unblinded) signature can be verified with a standard RSA-PSS library.\r\n```",
+              "createdAt": "2020-12-03T19:56:06Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 46,
+              "body": "```suggestion\r\nIn order to facilitate adoption in protocols that have additional requirements, such as the ability to provide public metadata as input to the signature, we specify an extension of the signature scheme that enables partial blindness through key augmentation.\r\n```",
+              "createdAt": "2020-12-03T19:57:09Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 84,
+              "body": "```suggestion\r\n- \"encoding error\": Raised when the input message fails encoding.\r\n- \"invalid blind\": Raised when an invalid blind is generated.\r\n```",
+              "createdAt": "2020-12-03T19:59:02Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 105,
+              "body": "```suggestion\r\n9. If finding the inverse fails, output an \"invalid blind\" error and stop. \r\n```",
+              "createdAt": "2020-12-03T19:59:21Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 99,
+              "body": "```suggestion\r\n3. If EMSA-PSS-ENCODE outputs an error, output the error and stop.\r\n```",
+              "createdAt": "2020-12-03T19:59:29Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 132,
+              "body": "```suggestion\r\nSignature verification can be performed by invoking the RSASSA-PSS-VERIFY routine defined in {{!RFC3447}}.\r\n```",
+              "createdAt": "2020-12-03T20:00:04Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 170,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-12-03T20:00:51Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            },
+            {
+              "originalPosition": 178,
+              "body": "```suggestion\r\n```",
+              "createdAt": "2020-12-03T20:00:58Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTQ0NDQxNTcy",
+          "commit": {
+            "abbreviatedOid": "1ca632a"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-12-03T20:56:13Z",
+          "updatedAt": "2020-12-03T20:56:18Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "What do you mean here?",
+              "createdAt": "2020-12-03T20:56:13Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTQ0NDQzNDQy",
+          "commit": {
+            "abbreviatedOid": "1ca632a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-12-03T20:58:55Z",
+          "updatedAt": "2020-12-03T20:58:56Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Put your name first :-)",
+              "createdAt": "2020-12-03T20:58:55Z",
+              "updatedAt": "2020-12-03T21:48:06Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTQ0NDgxOTA4",
+          "commit": {
+            "abbreviatedOid": "33eebb2"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2020-12-03T21:49:48Z",
+          "updatedAt": "2020-12-03T21:49:48Z",
+          "comments": [
+            {
+              "originalPosition": 5,
+              "body": "Done!",
+              "createdAt": "2020-12-03T21:49:48Z",
+              "updatedAt": "2020-12-03T21:49:48Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 20,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTM0NjE1NTc2",
+      "title": "Add RSA blinding to the evaluation step.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/20",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "I thought it best to not leave this up to implementations. @FredericJacobs, curious to hear your thoughts. :) \r\n\r\nCloses #19.",
+      "createdAt": "2020-12-08T17:42:38Z",
+      "updatedAt": "2020-12-11T14:55:31Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "09d798cb4e564d48150ea962eb3775143202077d",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/add-evaluate-blind",
+      "headRefOid": "d13d1cf6911c4ada95d2da61901f0872211c7764",
+      "closedAt": "2020-12-11T14:55:31Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Do we want to mandate that blinding or do we want to be more open to other SCA mitigations?\r\n\r\nI do think we would want to require a mechanism and suggest this one but be open to other instantiations of mitigations that would not break the wire format or resulting signature.",
+          "createdAt": "2020-12-11T13:27:48Z",
+          "updatedAt": "2020-12-11T13:27:48Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "Closing in favor of #24.",
+          "createdAt": "2020-12-11T14:55:31Z",
+          "updatedAt": "2020-12-11T14:55:31Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTUwMDk1OTkw",
+          "commit": {
+            "abbreviatedOid": "d13d1cf"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-12-11T13:28:12Z",
+          "updatedAt": "2020-12-11T13:28:12Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 21,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTM0NjkyNzM4",
+      "title": "Discuss related work.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/21",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "We might want to add more detail about each variant, but this at least gets us started. There's also an open question I have about BLS. In particular, does it work with symmetric pairings, or does it require asymmetric pairings? (The latter would be worse from a bandwidth perspective, I think.)",
+      "createdAt": "2020-12-08T20:06:41Z",
+      "updatedAt": "2020-12-11T14:58:02Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "09d798cb4e564d48150ea962eb3775143202077d",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/add-others",
+      "headRefOid": "0169313116ac5ca6ed99c282a45decd881902e5d",
+      "closedAt": "2020-12-11T14:58:02Z",
+      "mergedAt": "2020-12-11T14:58:02Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "1c77342d31893f78bb0e3f9df53b68487bfa4502"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTUwMTcwOTc4",
+          "commit": {
+            "abbreviatedOid": "0169313"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2020-12-11T14:57:49Z",
+          "updatedAt": "2020-12-11T14:57:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 24,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTM2OTc0MTIz",
+      "title": "Generalize timing SCA resistance.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/24",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #19, replaces #20.",
+      "createdAt": "2020-12-11T14:55:03Z",
+      "updatedAt": "2020-12-11T14:55:50Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "8d204e679afbf6316001cf8f2938ddd23f580ebb",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/simplify-reqs",
+      "headRefOid": "7885f3255afb95c76715c3a84ff8aca120e2bbb3",
+      "closedAt": "2020-12-11T14:55:50Z",
+      "mergedAt": "2020-12-11T14:55:50Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "50a6fdcde7cd970c2b3aee7e1bfb66622f4d6f68"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 25,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTM3NDEwODYy",
+      "title": "Specify the OID.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/25",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-12-11T21:11:30Z",
+      "updatedAt": "2020-12-12T13:05:05Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "1c77342d31893f78bb0e3f9df53b68487bfa4502",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/oids",
+      "headRefOid": "9e53298ee821629ddc749a3fb5f30899b128ac23",
+      "closedAt": "2020-12-12T13:05:05Z",
+      "mergedAt": "2020-12-12T13:05:05Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "49925d2e9b7f6ee1e0088678ca1e316a2d307631"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 26,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTM3NDEzNjE0",
+      "title": "Remove partially blind support.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/26",
+      "state": "CLOSED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #23.",
+      "createdAt": "2020-12-11T21:14:17Z",
+      "updatedAt": "2021-01-26T19:06:49Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "1c77342d31893f78bb0e3f9df53b68487bfa4502",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/remove-partial-blindness",
+      "headRefOid": "02930ebba8f9fc39b2797e866c65fb1b21479bea",
+      "closedAt": "2021-01-17T16:16:01Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'm not sure we want to remove this partially blind support.\r\n\r\nDon't we want to keep it in the draft at least for triggering discussions? I think there is value to not have to transmit a huge list of keys.",
+          "createdAt": "2020-12-14T18:18:50Z",
+          "updatedAt": "2020-12-14T18:18:50Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "If we're going to keep it then the text here needs a lot of work and a lot of disclaimers. Can you please send a PR to clean these things up and make it safe for public consumption?",
+          "createdAt": "2020-12-14T18:21:30Z",
+          "updatedAt": "2020-12-14T18:21:30Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 27,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTQ0MTkzNDUx",
+      "title": "Add new test vectors.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/27",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Derived from BoringSSL.",
+      "createdAt": "2020-12-22T15:28:16Z",
+      "updatedAt": "2021-01-26T19:06:49Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "49925d2e9b7f6ee1e0088678ca1e316a2d307631",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/update-vectors",
+      "headRefOid": "b3c8f88d621f146d56478818694733f5469204f2",
+      "closedAt": "2021-01-06T17:51:58Z",
+      "mergedAt": "2021-01-06T17:51:58Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "4ebc1b451e455d3de05fa00cbd083b62e55b1308"
+      },
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I'll verify those today!",
+          "createdAt": "2021-01-05T12:57:34Z",
+          "updatedAt": "2021-01-05T12:57:34Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTYyMTg5Nzg5",
+          "commit": {
+            "abbreviatedOid": "b3c8f88"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-01-05T22:41:12Z",
+          "updatedAt": "2021-01-05T22:41:19Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "e is binary encoded, which is weird since the rest is hex.",
+              "createdAt": "2021-01-05T22:41:12Z",
+              "updatedAt": "2021-01-05T22:41:19Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTYyMTkwMzcy",
+          "commit": {
+            "abbreviatedOid": "b3c8f88"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-01-05T22:42:25Z",
+          "updatedAt": "2021-01-05T22:42:25Z",
+          "comments": [
+            {
+              "originalPosition": 1,
+              "body": "It's a hex string -- 0x010001 == 65537.",
+              "createdAt": "2021-01-05T22:42:25Z",
+              "updatedAt": "2021-01-05T22:42:25Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTYyMTk3MjA2",
+          "commit": {
+            "abbreviatedOid": "b3c8f88"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-01-05T22:56:47Z",
+          "updatedAt": "2021-01-05T22:56:55Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "There is `inv` but not the blinding factor? ",
+              "createdAt": "2021-01-05T22:56:47Z",
+              "updatedAt": "2021-01-05T22:56:55Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTYyMTk3Njc1",
+          "commit": {
+            "abbreviatedOid": "b3c8f88"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-01-05T22:57:47Z",
+          "updatedAt": "2021-01-05T22:57:47Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Yeah, I figure you can just compute the blind from its inverse.",
+              "createdAt": "2021-01-05T22:57:47Z",
+              "updatedAt": "2021-01-05T22:57:47Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 30,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTYxMzg5MjA0",
+      "title": "Fix \"encoded\" confusion. Remove partial blindness.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/30",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-01-25T21:57:23Z",
+      "updatedAt": "2021-01-26T19:06:30Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "4ebc1b451e455d3de05fa00cbd083b62e55b1308",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/clarify-and-port-blindness",
+      "headRefOid": "905a97e7970ec4f622397e828359c39056929fae",
+      "closedAt": "2021-01-25T21:58:47Z",
+      "mergedAt": "2021-01-25T21:58:47Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "52a270b3d3926a83ba1751fa7deac023c0eb79a4"
+      },
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "looks good to me. I'll do another pass on the document tomorrow",
+          "createdAt": "2021-01-25T21:58:40Z",
+          "updatedAt": "2021-01-25T21:58:40Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 31,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTYxMzk5Njcy",
+      "title": "Salt state, key substitution attacks, and some nits.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/31",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #18, #22, #28.",
+      "createdAt": "2021-01-25T22:18:33Z",
+      "updatedAt": "2021-01-26T10:51:24Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "52a270b3d3926a83ba1751fa7deac023c0eb79a4",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/salt-state-key-sub-nits",
+      "headRefOid": "4ef7cec62dfc518ad19dfdaad68b492fc3e8287e",
+      "closedAt": "2021-01-26T10:51:20Z",
+      "mergedAt": "2021-01-26T10:51:20Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "2393864231a1528fabd212994dabfe38d4787d45"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTc2MjMyMjgy",
+          "commit": {
+            "abbreviatedOid": "4ef7cec"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM",
+          "createdAt": "2021-01-26T10:51:10Z",
+          "updatedAt": "2021-01-26T10:51:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 32,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTYxODMzNzYw",
+      "title": "Fixing typo",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/32",
+      "state": "MERGED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-01-26T14:49:11Z",
+      "updatedAt": "2021-01-26T19:06:20Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "2393864231a1528fabd212994dabfe38d4787d45",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "typo-1",
+      "headRefOid": "918fe6d156e73b0cddcd63013aa4e4048ca62ef3",
+      "closedAt": "2021-01-26T17:37:59Z",
+      "mergedAt": "2021-01-26T17:37:59Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "4c101b98cdf6c267a8ea1090d0fcd4df04a07120"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTc2NTk2NTgw",
+          "commit": {
+            "abbreviatedOid": "918fe6d"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-01-26T17:37:55Z",
+          "updatedAt": "2021-01-26T17:37:55Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 33,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc1ODI3Nzk2",
+      "title": "Fix the test vectors (encoded_message vs blinded message)",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/33",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The value for `encoded_message` was actually the blinded message, and the encoded message itself was missing.\r\n\r\nSo, add the encoded message and fix the name of the blinded one.",
+      "createdAt": "2021-02-18T16:43:48Z",
+      "updatedAt": "2021-02-19T15:43:15Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "98f9aaa0f55b9bee9ecfcf575d750a3c7f75e6ef",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/fix-test-vectors",
+      "headRefOid": "08495af06251f040741f9a09833d8577078e50b9",
+      "closedAt": "2021-02-18T23:08:46Z",
+      "mergedAt": "2021-02-18T23:08:46Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "c05f50690c2340bfb3ddf5ec319b261a9615fa4c"
+      },
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, that comes from us renaming a bunch of things around. Couldn't keep track of those myself!",
+          "createdAt": "2021-02-19T15:33:29Z",
+          "updatedAt": "2021-02-19T15:33:29Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "Heh, yeah :) Frank keeps us honest!",
+          "createdAt": "2021-02-19T15:43:15Z",
+          "updatedAt": "2021-02-19T15:43:15Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTkzNzI4MzE0",
+          "commit": {
+            "abbreviatedOid": "08495af"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-18T23:08:39Z",
+          "updatedAt": "2021-02-18T23:08:39Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc1ODI4MjAz",
+      "title": "Compat with Sage 9, and better match output labels w/ spec",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/34",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In Sage 9, `~lmask` returns a rational number, that doesn't support logical operators.\r\n\r\nFix this, and also change some output labels to better match the specification.",
+      "createdAt": "2021-02-18T16:44:26Z",
+      "updatedAt": "2021-02-19T01:04:35Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "98f9aaa0f55b9bee9ecfcf575d750a3c7f75e6ef",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/fix-poc",
+      "headRefOid": "0a96d8ffc145abb01bd3d913d6f027bba57c0e08",
+      "closedAt": "2021-02-18T23:12:23Z",
+      "mergedAt": "2021-02-18T23:12:23Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "46c4deb2454b41e82e37a52e08d476d6ca3408b8"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTkzNzMwMTcz",
+          "commit": {
+            "abbreviatedOid": "0a96d8f"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Thanks :) I generated test vectors from a BoringSSL implementation, but this is better!",
+          "createdAt": "2021-02-18T23:12:19Z",
+          "updatedAt": "2021-02-18T23:12:19Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 35,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc1ODI5MTEy",
+      "title": "Blind: EMSA-PSS-ENCODE already hashes the message",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/35",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "`RFC8017` defines `EMSA-PSS-ENCODE` as:\r\n\r\n> 1. ...\r\n> 2. Let mHash = Hash(M), an octet string of length hLen.\r\n> 3. ...\r\n\r\nThe specification would suggest double hashing. So, remove step 1 in the `blind` function.",
+      "createdAt": "2021-02-18T16:45:41Z",
+      "updatedAt": "2021-02-19T01:04:11Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "98f9aaa0f55b9bee9ecfcf575d750a3c7f75e6ef",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/blind-no-double-hash",
+      "headRefOid": "6c1d192fac0b7649393fd0842d7fbb8cad6d5109",
+      "closedAt": "2021-02-18T23:11:40Z",
+      "mergedAt": "2021-02-18T23:11:40Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "34805b2a24db3ec7c43f2370d196ed75a2b84e9b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTkzNzI5ODEy",
+          "commit": {
+            "abbreviatedOid": "6c1d192"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-18T23:11:37Z",
+          "updatedAt": "2021-02-18T23:11:37Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 36,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc1ODM0NDc2",
+      "title": "finalize(): add the message hash function to the inputs",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/36",
+      "state": "CLOSED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "`rsassa_pss_sign_verify()` needs to hash the message, so, just like in the blinding function, the hash function has to be part of the inputs.\r\n\r\nAlternatively, the input could be the hash, but implementations can figure out what would be the best fit for their APIs.",
+      "createdAt": "2021-02-18T16:53:30Z",
+      "updatedAt": "2021-02-19T15:49:03Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "46c4deb2454b41e82e37a52e08d476d6ca3408b8",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/finalize-hash",
+      "headRefOid": "a5e5c367e724b5dc624ff4d44e0ffe2185b50c53",
+      "closedAt": "2021-02-19T15:38:09Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "We chose to leave this out to align with [RFC8017](https://tools.ietf.org/html/rfc8017), which takes a hashed message as input. I do not feel strongly about this. @FredericJacobs?",
+          "createdAt": "2021-02-18T23:11:20Z",
+          "updatedAt": "2021-02-18T23:11:20Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "As currently specified, the input is the message, not the hash.\n\nWe either need to add an extra step to evaluate the hash function, or change the input to be the message hash.\n\nThe former avoids an extra evaluation of the hash function, the latter can simplify the API and make it consistent with the blinding API.",
+          "createdAt": "2021-02-19T01:18:13Z",
+          "updatedAt": "2021-02-19T01:18:13Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "> We either need to add an extra step to evaluate the hash function, or change the input to be the message hash.\r\n\r\nThis is purely an editorial thing, I think. I'm fine changing the input name to be \"message_hash\". (That is, as I understand it, consistent with other APIs, for better or worse.)",
+          "createdAt": "2021-02-19T01:24:42Z",
+          "updatedAt": "2021-02-19T01:24:42Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The input name was changed to `msg_hash`.\r\n\r\nBut at that point, `rsabssa_sign_blind()` becomes the only one that doesn't take a message hash as an input.",
+          "createdAt": "2021-02-19T12:38:51Z",
+          "updatedAt": "2021-02-19T12:38:51Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think this PR is covered by #40? ",
+          "createdAt": "2021-02-19T15:27:48Z",
+          "updatedAt": "2021-02-19T15:27:48Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 37,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc1ODU2MjI3",
+      "title": "Suggest sanity checks in signature and verification functions",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/37",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Suggest to immediately reject input that could be untrusted and potentially very large.",
+      "createdAt": "2021-02-18T17:23:45Z",
+      "updatedAt": "2021-02-19T01:04:51Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "98f9aaa0f55b9bee9ecfcf575d750a3c7f75e6ef",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/sanity-checks",
+      "headRefOid": "0dc8590509ddb97bc668c41b4e95da2747e7095b",
+      "closedAt": "2021-02-18T23:10:37Z",
+      "mergedAt": "2021-02-18T23:10:37Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "311c11c4a918204121264fa17d852e62795f0e53"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTkzNzI5MDY0",
+          "commit": {
+            "abbreviatedOid": "0dc8590"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-18T23:10:10Z",
+          "updatedAt": "2021-02-18T23:10:10Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc2MzcwMjY4",
+      "title": "Remove the auxiliary public information",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/38",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-19T10:50:50Z",
+      "updatedAt": "2021-02-19T13:17:59Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "46c4deb2454b41e82e37a52e08d476d6ca3408b8",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "remove-aux",
+      "headRefOid": "0d020acfa1e68f378d0941952f257b2d4a3ddffd",
+      "closedAt": "2021-02-19T13:01:17Z",
+      "mergedAt": "2021-02-19T13:01:17Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "63bfb767bd8a4435973f1213ddbe0e38181ad91c"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk0MTY1MTE4",
+          "commit": {
+            "abbreviatedOid": "0d020ac"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "Oops, thanks!",
+          "createdAt": "2021-02-19T13:01:13Z",
+          "updatedAt": "2021-02-19T13:01:13Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc2NDI1Mzgy",
+      "title": "Document the Verify function",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/39",
+      "state": "CLOSED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-19T12:29:41Z",
+      "updatedAt": "2021-02-19T15:21:14Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "46c4deb2454b41e82e37a52e08d476d6ca3408b8",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "verify",
+      "headRefOid": "53d3193406f721d594ce87fe9675038a888e142e",
+      "closedAt": "2021-02-19T13:45:23Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "(I'm prepping a PR right now which should fix some things -- stand by!)",
+          "createdAt": "2021-02-19T13:26:17Z",
+          "updatedAt": "2021-02-19T13:26:17Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks!\r\n\r\nThere is still a reference to a `Verify` function in the [overview](https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/blob/master/draft-wood-cfrg-rsa-blind-signatures.md#blind-signature-protocol-overview-overview).",
+          "createdAt": "2021-02-19T13:45:23Z",
+          "updatedAt": "2021-02-19T13:45:23Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 40,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc2NDY4OTc3",
+      "title": "Fix the Finalize function message, and sketch the internal verification function",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/40",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "@jedisct1 I think this should clarify the issues you raised. It removes the redundant hash computation in the finalize step. We may want to consider noting that clients can use the out-of-the-box verification API if they're OK with the performance hit. What do you think?",
+      "createdAt": "2021-02-19T13:46:16Z",
+      "updatedAt": "2021-02-19T15:49:49Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "63bfb767bd8a4435973f1213ddbe0e38181ad91c",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/fix-finalize-no-hash",
+      "headRefOid": "7fba461e81c2eca74c7237aee0875ac9a5ec9354",
+      "closedAt": "2021-02-19T15:32:07Z",
+      "mergedAt": "2021-02-19T15:32:07Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "1862d41ab7445f26d919a1c86d5191f5b350fd4e"
+      },
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "@jedisct1 @FredericJacobs I reverted the change to make an internal verify function, since Frank pointed out some dumb mistakes on my part. Now this PR just calls the PSS verify function directly. (We can specify a more efficient internal verification routine in a future change, since it's just a performance improvement for clients.)",
+          "createdAt": "2021-02-19T15:23:25Z",
+          "updatedAt": "2021-02-19T15:23:25Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk0MjE1NDA0",
+          "commit": {
+            "abbreviatedOid": "12628c5"
+          },
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-19T14:02:57Z",
+          "updatedAt": "2021-02-19T14:02:57Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk0MjQ5NDMy",
+          "commit": {
+            "abbreviatedOid": "12628c5"
+          },
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-02-19T14:39:35Z",
+          "updatedAt": "2021-02-19T14:39:35Z",
+          "comments": [
+            {
+              "originalPosition": 160,
+              "body": "`m` doesn't look very useful here :)",
+              "createdAt": "2021-02-19T14:39:35Z",
+              "updatedAt": "2021-02-19T15:22:23Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk0Mjk2MjY3",
+          "commit": {
+            "abbreviatedOid": "7fba461"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This looks good to me. ",
+          "createdAt": "2021-02-19T15:26:55Z",
+          "updatedAt": "2021-02-19T15:26:55Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk0MzE0MDc0",
+          "commit": {
+            "abbreviatedOid": "7fba461"
+          },
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-02-19T15:45:30Z",
+          "updatedAt": "2021-02-19T15:45:30Z",
+          "comments": [
+            {
+              "originalPosition": 102,
+              "body": "`RSASSA-PSS-VERIFY` returns `valid signature` or `invalid signature`. We still want to return the signature instead.",
+              "createdAt": "2021-02-19T15:45:30Z",
+              "updatedAt": "2021-02-19T15:45:30Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk0MzE4MDgx",
+          "commit": {
+            "abbreviatedOid": "7fba461"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-02-19T15:49:48Z",
+          "updatedAt": "2021-02-19T15:49:49Z",
+          "comments": [
+            {
+              "originalPosition": 102,
+              "body": "Fixed [directly on master](https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/commit/5168f87b3b50cbc81061f8f453204de6c76e8ec5).",
+              "createdAt": "2021-02-19T15:49:48Z",
+              "updatedAt": "2021-02-19T15:49:49Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 42,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc3Njg1MDY1",
+      "title": "Some edits.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/42",
+      "state": "MERGED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "- Adds some line about the need to rate-limit the number of evaluations in the overview.\r\n- Changes to \"kBits\" and \"kLen\" to align with naming pattern from rfc3447\r\n- Uses \"HF\" for Hash Function as H seems to be used in the other RFC for hashes. \r\n- Fix some error definitions\r\n- Use `raise` instead of `output` for error.",
+      "createdAt": "2021-02-22T14:33:23Z",
+      "updatedAt": "2021-02-22T14:48:30Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "af70b27403cb22ea99541aff93b6a96a6e8ac03a",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "fj/review-edits",
+      "headRefOid": "3d7b4f67d0a526529e79641093d6526f241c30ff",
+      "closedAt": "2021-02-22T14:48:30Z",
+      "mergedAt": "2021-02-22T14:48:30Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "6d0bf64934fe2e245848d0a6e2d692355cc69149"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NDEwOTQ4",
+          "commit": {
+            "abbreviatedOid": "196edc2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2021-02-22T14:35:38Z",
+          "updatedAt": "2021-02-22T14:38:29Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "This is outside the scope of the protocol, so please revert it. We might fold it into the Security Considerations as something to consider for deployments.",
+              "createdAt": "2021-02-22T14:35:39Z",
+              "updatedAt": "2021-02-22T14:46:28Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NDIxODgz",
+          "commit": {
+            "abbreviatedOid": "5f7f45f"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-02-22T14:45:51Z",
+          "updatedAt": "2021-02-22T14:45:51Z",
+          "comments": [
+            {
+              "originalPosition": 8,
+              "body": "Done!",
+              "createdAt": "2021-02-22T14:45:51Z",
+              "updatedAt": "2021-02-22T14:46:28Z"
+            }
+          ]
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NDIzMzU2",
+          "commit": {
+            "abbreviatedOid": "3d7b4f6"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-22T14:47:12Z",
+          "updatedAt": "2021-02-22T14:47:12Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 43,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc3NjkwNjIx",
+      "title": "Add Bellare et al. proof of RSA-FDH blind signature scheme.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/43",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-22T14:41:11Z",
+      "updatedAt": "2021-02-22T14:50:45Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "af70b27403cb22ea99541aff93b6a96a6e8ac03a",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/cite-proof",
+      "headRefOid": "fb4850b7644d11b5bc4ccabde4135633522aa81d",
+      "closedAt": "2021-02-22T14:48:46Z",
+      "mergedAt": "2021-02-22T14:48:46Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "326630ebe309fdf271d2c12f8ba8e44f4994cad6"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 44,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc3NjkyNDI2",
+      "title": "Cite functions from RFC3447.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/44",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #41.",
+      "createdAt": "2021-02-22T14:43:31Z",
+      "updatedAt": "2021-02-22T14:48:02Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "af70b27403cb22ea99541aff93b6a96a6e8ac03a",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/cite-funcs",
+      "headRefOid": "349e0e4e3758e0b06386fd1fc44d78b4b9265fa5",
+      "closedAt": "2021-02-22T14:47:59Z",
+      "mergedAt": "2021-02-22T14:47:59Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "4f9bd0ae8a6fa0fffee37a4d899edc311a51570b"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NDI0MjMy",
+          "commit": {
+            "abbreviatedOid": "349e0e4"
+          },
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-22T14:47:54Z",
+          "updatedAt": "2021-02-22T14:47:54Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 46,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc3NzE4MTUz",
+      "title": "Finalize already verifies the signature",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/46",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The overview suggests that clients have to verify the signature returned by the finalization function.\r\n\r\nClarify that this is not necessary, as it is already done by the finalization function before returning.\r\n\r\nThis is obvious when directly implementing the protocol, but it may be way less obvious when using higher-level APIs.",
+      "createdAt": "2021-02-22T15:18:33Z",
+      "updatedAt": "2021-02-22T16:38:51Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "326630ebe309fdf271d2c12f8ba8e44f4994cad6",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/finalize-already-verifies",
+      "headRefOid": "950509239204148c26766fc5e34e487c5654eaac",
+      "closedAt": "2021-02-22T15:44:04Z",
+      "mergedAt": "2021-02-22T15:44:04Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "0d9a1fb81617adb2494fde57e31a1e84dcf183f5"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NDg3MjMx",
+          "commit": {
+            "abbreviatedOid": "9505092"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-22T15:43:49Z",
+          "updatedAt": "2021-02-22T15:43:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 47,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc3ODk0NzE4",
+      "title": "Some more fixes.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/47",
+      "state": "MERGED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-22T19:47:30Z",
+      "updatedAt": "2021-02-22T19:49:01Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "0d9a1fb81617adb2494fde57e31a1e84dcf183f5",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "fj/more-fixes",
+      "headRefOid": "1404c37799e0770c7036d3ac69dc199b2a3f5755",
+      "closedAt": "2021-02-22T19:49:01Z",
+      "mergedAt": "2021-02-22T19:49:01Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "430be8c8e239fec9f73ee75ac96152cea7ce64d5"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NzIyNzAx",
+          "commit": {
+            "abbreviatedOid": "1404c37"
+          },
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-22T19:48:46Z",
+          "updatedAt": "2021-02-22T19:48:46Z",
+          "comments": []
+        },
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1NzIyODI5",
+          "commit": {
+            "abbreviatedOid": "1404c37"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-22T19:48:56Z",
+          "updatedAt": "2021-02-22T19:48:56Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 49,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc3OTM4MDcz",
+      "title": "Rename Evaluate to BlindSign which is more self-explanatory",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/49",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixes #48",
+      "createdAt": "2021-02-22T21:03:20Z",
+      "updatedAt": "2021-02-22T21:35:13Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "430be8c8e239fec9f73ee75ac96152cea7ce64d5",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/blindsign",
+      "headRefOid": "cde7d22c86cd1470ee1cc31c348ca22949d62e10",
+      "closedAt": "2021-02-22T21:18:19Z",
+      "mergedAt": "2021-02-22T21:18:19Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "413d4fd1c6b65404832fd219983e0ce83ab2c8c4"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk1Nzg3Njg0",
+          "commit": {
+            "abbreviatedOid": "cde7d22"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "LGTM. @FredericJacobs?",
+          "createdAt": "2021-02-22T21:13:33Z",
+          "updatedAt": "2021-02-22T21:13:33Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 50,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc4NTEwNjQ0",
+      "title": "Temporary change.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/50",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-23T14:51:54Z",
+      "updatedAt": "2021-02-23T14:54:01Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "413d4fd1c6b65404832fd219983e0ce83ab2c8c4",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/final-nit",
+      "headRefOid": "6fbe3d7b1899f7c719ceb8dea6862672a72920a1",
+      "closedAt": "2021-02-23T14:54:01Z",
+      "mergedAt": "2021-02-23T14:54:01Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "a20d1096c718d281bf9a0e3ce779765e4bc1a3b6"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 53,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc4Njc3Mzk0",
+      "title": "evaluated_message -> blind_sig",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/53",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Also use `blind_sig` instead of `blind_signature` in the sage code to exactly match the spec.",
+      "createdAt": "2021-02-23T18:49:26Z",
+      "updatedAt": "2021-02-23T18:56:51Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "ce9e877a692529612a5fad1dff04e56e2b3457ea",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/blindsig",
+      "headRefOid": "bdd63c2663a96517dc1865690f06b1696262c12c",
+      "closedAt": "2021-02-23T18:56:51Z",
+      "mergedAt": "2021-02-23T18:56:51Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "36008bb8725ec798e0e1aa232848cefea1097650"
+      },
+      "comments": [
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixes #52",
+          "createdAt": "2021-02-23T18:49:58Z",
+          "updatedAt": "2021-02-23T18:49:58Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "LGTM. I'll let @chris-wood merge after his approval.",
+          "createdAt": "2021-02-23T18:55:40Z",
+          "updatedAt": "2021-02-23T18:55:40Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk2NjkxMTIy",
+          "commit": {
+            "abbreviatedOid": "bdd63c2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-23T18:56:48Z",
+          "updatedAt": "2021-02-23T18:56:48Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 54,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTc4Nzg0MTUx",
+      "title": "Add implementations",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/54",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add a link to the Sage reference implementation + an implementation in Zig, and an implementation in C, over OpenSSL or BoringSSL.\r\n\r\nA Rust implementation will follow.",
+      "createdAt": "2021-02-23T22:01:26Z",
+      "updatedAt": "2021-02-24T23:15:52Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "36008bb8725ec798e0e1aa232848cefea1097650",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/implementations",
+      "headRefOid": "b4e95aab44e5e83755ca48a6c6e811c8d62f7dbb",
+      "closedAt": "2021-02-24T22:54:07Z",
+      "mergedAt": "2021-02-24T22:54:07Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "53c42426956ed22b8f29c107db64c8698aded85a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk4MDA5Mzkz",
+          "commit": {
+            "abbreviatedOid": "b4e95aa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-24T22:54:03Z",
+          "updatedAt": "2021-02-24T22:54:03Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 56,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwMDkxMDUw",
+      "title": "Rename and redefine `random_integer`",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/56",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Rename `random_integer()` to `random_integer_uniform()` to emphasize the fact that is has to be uniformly distributed.\r\n    \r\nAlso slightly change its definition to match most off the shelf implementations, including the one we define in the PoC. Fix the upper bound in the PoC by the way.",
+      "createdAt": "2021-02-25T13:17:36Z",
+      "updatedAt": "2021-02-25T19:44:26Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "53c42426956ed22b8f29c107db64c8698aded85a",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/random-integer-uniform",
+      "headRefOid": "b427ca3d7748a94b301816ad1a78cdf90b2e3fe8",
+      "closedAt": "2021-02-25T19:43:19Z",
+      "mergedAt": "2021-02-25T19:43:19Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "c32e0868d3b725b9cd9438c1d9f62ef484936f34"
+      },
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This looks good to me. I was also thinking that we should add a line in the security considerations section linking to the paper Jeff mentioned on the IETF mailing list explaining the importance of the uniform distribution for choosing the blind.\r\n",
+          "createdAt": "2021-02-25T13:55:37Z",
+          "updatedAt": "2021-02-25T13:55:37Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Jeff mentioned a deanonymization attack, but do you happen to know what actual paper it is described in?",
+          "createdAt": "2021-02-25T14:27:31Z",
+          "updatedAt": "2021-02-25T14:27:31Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "@FredericJacobs can you please file an issue for adding that?",
+          "createdAt": "2021-02-25T19:43:17Z",
+          "updatedAt": "2021-02-25T19:43:17Z"
+        },
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think it's already covered by #55 ",
+          "createdAt": "2021-02-25T19:44:26Z",
+          "updatedAt": "2021-02-25T19:44:26Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk4OTM2NjA0",
+          "commit": {
+            "abbreviatedOid": "b427ca3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-25T19:43:00Z",
+          "updatedAt": "2021-02-25T19:43:00Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 57,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwMzQwMDA0",
+      "title": "Hi!",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/57",
+      "state": "MERGED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-25T19:30:27Z",
+      "updatedAt": "2021-02-25T19:41:21Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "53c42426956ed22b8f29c107db64c8698aded85a",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "fj/back",
+      "headRefOid": "2341d389c622b6fc8ffd715d99f642df25e3435a",
+      "closedAt": "2021-02-25T19:41:21Z",
+      "mergedAt": "2021-02-25T19:41:21Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "7fdb378c20ce0b4e1c99cf31041b66056cdb5f74"
+      },
+      "comments": [
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Welcome :)",
+          "createdAt": "2021-02-25T19:33:48Z",
+          "updatedAt": "2021-02-25T19:33:48Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 59,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwODEwNDA2",
+      "title": "Add Rust implementation",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/59",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-26T11:53:09Z",
+      "updatedAt": "2021-02-26T14:22:17Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "c32e0868d3b725b9cd9438c1d9f62ef484936f34",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/rust-impl",
+      "headRefOid": "eb23efc5089934fda88fc67b278a6feb1e6e6082",
+      "closedAt": "2021-02-26T14:10:42Z",
+      "mergedAt": "2021-02-26T14:10:42Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "2397deaead54eae653f3294f6257ba96d0016211"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk5NjA4NzA4",
+          "commit": {
+            "abbreviatedOid": "eb23efc"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-26T14:10:38Z",
+          "updatedAt": "2021-02-26T14:10:38Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 60,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwOTA0Mjk4",
+      "title": "Test vector: there's one & rename evaluated_message",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/60",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Partially-blind signatures are not part of the document, so we don't need a single-item section any more.\r\n\r\nAlso rename evalutated_message in the definitions.",
+      "createdAt": "2021-02-26T14:34:20Z",
+      "updatedAt": "2021-02-26T14:53:28Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "2397deaead54eae653f3294f6257ba96d0016211",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/tv1",
+      "headRefOid": "e13d571354650dfb22e223eecbf666e77cfb526f",
+      "closedAt": "2021-02-26T14:53:28Z",
+      "mergedAt": "2021-02-26T14:53:28Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "beb5f877383411f157ee3edfa15171ba8b62ffd8"
+      },
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "@jedisct1 you should add yourself as an author :-) ",
+          "createdAt": "2021-02-26T14:53:22Z",
+          "updatedAt": "2021-02-26T14:53:22Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk5NjQ4MDIz",
+          "commit": {
+            "abbreviatedOid": "e13d571"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-26T14:51:54Z",
+          "updatedAt": "2021-02-26T14:51:54Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 61,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwOTI4MDk4",
+      "title": "Hi!",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/61",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-26T15:10:42Z",
+      "updatedAt": "2021-02-26T16:39:58Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "beb5f877383411f157ee3edfa15171ba8b62ffd8",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/hello",
+      "headRefOid": "9f39dd90de0bbcc0ea9c1fc39730ef9db6797a9b",
+      "closedAt": "2021-02-26T15:36:36Z",
+      "mergedAt": "2021-02-26T15:36:36Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "39d04d97a288e23d954dff1e3e29cd45f2133849"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk5NjkwMTQx",
+          "commit": {
+            "abbreviatedOid": "9f39dd9"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-26T15:35:40Z",
+          "updatedAt": "2021-02-26T15:35:40Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 62,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwOTQ1Nzc3",
+      "title": "We're all equal :-)",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/62",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-26T15:37:43Z",
+      "updatedAt": "2021-02-26T15:39:04Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "39d04d97a288e23d954dff1e3e29cd45f2133849",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "alphaetize",
+      "headRefOid": "f34bb50e8294babeebbffc5bf6a887bacdcbbaf1",
+      "closedAt": "2021-02-26T15:39:04Z",
+      "mergedAt": "2021-02-26T15:39:04Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "b8edfe2879d08ae4ad0b7901d0174a6d91ab0fe6"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 63,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwOTY0NjQ5",
+      "title": "inverse_mod() must work on a non-prime field",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/63",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "`n` will not be a prime.\r\n\r\nRename parameters for consistency with its actual use.",
+      "createdAt": "2021-02-26T16:07:35Z",
+      "updatedAt": "2021-02-26T16:20:57Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "b8edfe2879d08ae4ad0b7901d0174a6d91ab0fe6",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/inverse-mod",
+      "headRefOid": "bc7c6ebcdebff3e6afc025b845ab9e072ffa2bf0",
+      "closedAt": "2021-02-26T16:20:57Z",
+      "mergedAt": "2021-02-26T16:20:57Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "cfb0ddb879bf02a43cfef50fc5813cab1e591a95"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk5NzMxOTA0",
+          "commit": {
+            "abbreviatedOid": "bc7c6eb"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-26T16:20:52Z",
+          "updatedAt": "2021-02-26T16:20:52Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 64,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgwOTc3ODg0",
+      "title": "Don't throw \"invalid blind\"",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/64",
+      "state": "CLOSED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Applications should not have to deal with such a return code -- how are they even supposed to handle it? how are APIs supposed to describe that error?\r\n\r\nJust retry (at least in the spec).",
+      "createdAt": "2021-02-26T16:28:45Z",
+      "updatedAt": "2021-02-26T18:13:24Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "cfb0ddb879bf02a43cfef50fc5813cab1e591a95",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/invalidblind",
+      "headRefOid": "2775d869b7743c68153271eca0c573a17b5f0ad3",
+      "closedAt": "2021-02-26T18:13:23Z",
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Our implementation intends to log that as en error to be able to find potential issues. The likelihood of finding this in the field is incredibly limited.",
+          "createdAt": "2021-02-26T17:31:26Z",
+          "updatedAt": "2021-02-26T17:31:26Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Having assertions all over the code is always a good thing, but this is an implementation detail.\r\n\r\nThat being said, anything that can help spot a broken RNG is worth it. So, no problem, let's keep it as is. Thanks!\r\n\r\n\r\n\r\n",
+          "createdAt": "2021-02-26T18:13:23Z",
+          "updatedAt": "2021-02-26T18:13:23Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 65,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgxMTAyMjk0",
+      "title": "Function names should be aligned with general description.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/65",
+      "state": "MERGED",
+      "author": "FredericJacobs",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-26T20:31:34Z",
+      "updatedAt": "2021-02-26T21:01:11Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "cfb0ddb879bf02a43cfef50fc5813cab1e591a95",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "fj/function_names",
+      "headRefOid": "46b7d1b519b120ab287b929168900b48700a0e50",
+      "closedAt": "2021-02-26T20:48:34Z",
+      "mergedAt": "2021-02-26T20:48:34Z",
+      "mergedBy": "jedisct1",
+      "mergeCommit": {
+        "oid": "6a86673e7ea1b64573573744a9da184cf49b8842"
+      },
+      "comments": [
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Better consistency, this is great! \ud83d\udc4d ",
+          "createdAt": "2021-02-26T20:47:17Z",
+          "updatedAt": "2021-02-26T20:47:17Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "body": "Hmm, should we be mixing camel case and snake case? (\"blind_sign\" vs \"blindSign\") I'd prefer we rename `rsabssa_blindSign` to `rsabssa_blind_sign`.",
+          "createdAt": "2021-02-26T20:49:31Z",
+          "updatedAt": "2021-02-26T20:49:31Z"
+        },
+        {
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, right! These should indeed be all snake case.",
+          "createdAt": "2021-02-26T21:01:11Z",
+          "updatedAt": "2021-02-26T21:01:11Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NTk5OTMwMTU2",
+          "commit": {
+            "abbreviatedOid": "46b7d1b"
+          },
+          "author": "jedisct1",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-02-26T20:47:28Z",
+          "updatedAt": "2021-02-26T20:47:28Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 66,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgxMTE2NzE4",
+      "title": "Don't mix different casing conventions",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/66",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-02-26T21:04:27Z",
+      "updatedAt": "2021-02-26T22:16:59Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "6a86673e7ea1b64573573744a9da184cf49b8842",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/snakecase",
+      "headRefOid": "b0584fc75cc29ec4494af649239ea203f6cc2761",
+      "closedAt": "2021-02-26T21:37:36Z",
+      "mergedAt": "2021-02-26T21:37:36Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "89efbc0d4277c8ae12a6e28707d0dd23c856dbb2"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 67,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTgxOTkwMDEz",
+      "title": "Check that r has an inverse before using it",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/67",
+      "state": "MERGED",
+      "author": "jedisct1",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-03-01T11:45:01Z",
+      "updatedAt": "2021-03-01T14:05:45Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "89efbc0d4277c8ae12a6e28707d0dd23c856dbb2",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "jedisct1/rinv",
+      "headRefOid": "b55838ad941bcf7aa82c828844b9b8e02294868b",
+      "closedAt": "2021-03-01T13:49:07Z",
+      "mergedAt": "2021-03-01T13:49:07Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "a90941f1e2de63a12fc457f22288020756506153"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "MDE3OlB1bGxSZXF1ZXN0UmV2aWV3NjAwNzQ2OTE2",
+          "commit": {
+            "abbreviatedOid": "b55838a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2021-03-01T13:49:02Z",
+          "updatedAt": "2021-03-01T13:49:02Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 68,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTg2NzI0NDk0",
+      "title": "Unify around \"msg\" for message variables.",
+      "url": "https://github.com/chris-wood/draft-wood-cfrg-blind-signatures/pull/68",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-03-08T12:10:35Z",
+      "updatedAt": "2021-03-08T12:22:20Z",
+      "baseRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "baseRefName": "master",
+      "baseRefOid": "a90941f1e2de63a12fc457f22288020756506153",
+      "headRepository": "chris-wood/draft-wood-cfrg-blind-signatures",
+      "headRefName": "caw/final-nits",
+      "headRefOid": "fa0e54c01917b85df208e67d7dc85fd5140a651e",
+      "closedAt": "2021-03-08T12:22:20Z",
+      "mergedAt": "2021-03-08T12:22:20Z",
+      "mergedBy": "FredericJacobs",
+      "mergeCommit": {
+        "oid": "3df82b869b65f99c17f4f6c42ee846a9c5a89ead"
+      },
+      "comments": [
+        {
+          "author": "FredericJacobs",
+          "authorAssociation": "COLLABORATOR",
+          "body": "LGTM",
+          "createdAt": "2021-03-08T12:22:12Z",
+          "updatedAt": "2021-03-08T12:22:12Z"
+        }
+      ],
+      "reviews": []
+    }
+  ]
+}
