@@ -203,16 +203,16 @@ in this document:
 # Blind Signature Protocol {#core-protocol}
 
 The RSA Blind Signature Protocol is a two-party protocol between a client and server
-where they interact to compute `sig = Sign(skS, input_msg)`, where `input_msg = Prepare(msg)`
-is a prepared version of the private message `msg` provided by the client, and `skS` is the
-signing key provided by the server. See {{cert-oid}} for details on how `skS` is generated
+where they interact to compute `sig = Sign(sk, input_msg)`, where `input_msg = Prepare(msg)`
+is a prepared version of the private message `msg` provided by the client, and `sk` is the
+private signing key provided by the server. See {{cert-oid}} for details on how `sk` is generated
 and used in this protocol. Upon completion of this protocol, the server learns nothing,
 whereas the client learns `sig`. In particular, this means the server learns nothing of `msg`
-or `input_msg` and the client learns nothing of `skS`.
+or `input_msg` and the client learns nothing of `sk`.
 
 The protocol consists of four functions -- Prepare, Blind, BlindSign, and Finalize -- and requires
 one round of interaction between client and server. Let `msg` be the client's private input
-message, and `(skS, pkS)` be the server's private and public key pair.
+message, and `(sk, pk)` be the server's private and public key pair.
 
 The protocol begins by the client preparing the message to be signed by computing:
 
@@ -223,45 +223,45 @@ input_msg = Prepare(msg)
 The client then initiates the blind signature protocol by computing:
 
 ~~~
-blinded_msg, inv = Blind(pkS, input_msg)
+blinded_msg, inv = Blind(pk, input_msg)
 ~~~
 
 The client then sends `blinded_msg` to the server, which then processes the message
 by computing:
 
 ~~~
-blind_sig = BlindSign(skS, blinded_msg)
+blind_sig = BlindSign(sk, blinded_msg)
 ~~~
 
 The server then sends `blind_sig` to the client, which then finalizes the protocol by computing:
 
 ~~~
-sig = Finalize(pkS, input_msg, blind_sig, inv)
+sig = Finalize(pk, input_msg, blind_sig, inv)
 ~~~
 
 The output of the protocol is `input_msg` and `sig`. Upon completion, correctness requires that
 clients can verify signature `sig` over the prepared message `input_msg` using the server
-public key `pkS` by invoking the RSASSA-PSS-VERIFY routine defined in
+public key `pk` by invoking the RSASSA-PSS-VERIFY routine defined in
 {{Section 8.1.2 of !RFC8017}}. The Finalize function performs this check before returning the signature.
 See {{verification}} for more details about verifying signatures produced through this protocol.
 
 In pictures, the protocol runs as follows:
 
 ~~~
-   Client(pkS, msg)                      Server(skS, pkS)
+   Client(pk, msg)                      Server(sk, pk)
   -------------------------------------------------------
   input_msg = Prepare(msg)
-  blinded_msg, inv = Blind(pkS, input_msg)
+  blinded_msg, inv = Blind(pk, input_msg)
 
                         blinded_msg
                         ---------->
 
-                 blind_sig = BlindSign(skS, blinded_msg)
+                 blind_sig = BlindSign(sk, blinded_msg)
 
                          blind_sig
                         <----------
 
-  sig = Finalize(pkS, input_msg, blind_sig, inv)
+  sig = Finalize(pk, input_msg, blind_sig, inv)
 ~~~
 
 In the remainder of this section, we specify the Prepare, Blind, BlindSign, and Finalize
@@ -289,8 +289,8 @@ Outputs:
 - input_msg, a byte string that is 32 bytes longer than msg
 
 Steps:
-1. msgPrefix = random(32)
-2. input_msg = concat(msgPrefix, msg)
+1. msg_prefix = random(32)
+2. input_msg = concat(msg_prefix, msg)
 3. output input_msg
 ~~~
 
@@ -313,20 +313,20 @@ for invalid inputs. However, this error cannot occur based on how RSAVP1 is invo
 so this error is not included in the list of errors for Blind.
 
 ~~~
-Blind(pkS, msg)
+Blind(pk, msg)
 
 Parameters:
-- kLen, the length in bytes of the RSA modulus n
+- modulus_len, the length in bytes of the RSA modulus n
 - Hash, the hash function used to hash the message
 - MGF, the mask generation function
-- sLen, the length in bytes of the salt
+- salt_len, the length in bytes of the salt (denoted sLen in RFC8017)
 
 Inputs:
-- pkS, server public key (n, e)
+- pk, server public key (n, e)
 - msg, message to be signed, a byte string
 
 Outputs:
-- blinded_msg, a byte string of length kLen
+- blinded_msg, a byte string of length modulus_len
 - inv, an integer used to unblind the signature in Finalize
 
 Errors:
@@ -337,7 +337,7 @@ Errors:
 
 Steps:
 1. encoded_msg = EMSA-PSS-ENCODE(msg, bit_len(n))
-   with Hash, MGF, and sLen as defined in the parameters
+   with Hash, MGF, and salt_len as defined in the parameters
 2. If EMSA-PSS-ENCODE raises an error, raise the error and stop
 3. m = bytes_to_int(encoded_msg)
 4. c = is_coprime(m, n)
@@ -347,9 +347,9 @@ Steps:
 7. inv = inverse_mod(r, n)
 8. If inverse_mod fails, raise an "blinding error" error
    and stop
-9. x = RSAVP1(pkS, r)
-10. z = m * x mod n
-11. blinded_msg = int_to_bytes(z, kLen)
+9. x = RSAVP1(pk, r)
+10. z = (m * x) mod n
+11. blinded_msg = int_to_bytes(z, modulus_len)
 12. output blinded_msg, inv
 ~~~
 
@@ -363,18 +363,18 @@ blinded message input and returns the output encoded as a byte string.
 RSASP1 is as defined in {{Section 5.2.1 of !RFC8017}}.
 
 ~~~
-BlindSign(skS, blinded_msg)
+BlindSign(sk, blinded_msg)
 
 Parameters:
-- kLen, the length in bytes of the RSA modulus n
+- modulus_len, the length in bytes of the RSA modulus n
 
 Inputs:
-- skS, server private key
+- sk, server private key
 - blinded_msg, encoded and blinded message to be signed, a
   byte string
 
 Outputs:
-- blind_sig, a byte string of length kLen
+- blind_sig, a byte string of length modulus_len
 
 Errors:
 - "signing failure": Raised when the signing operation fails
@@ -383,10 +383,10 @@ Errors:
 
 Steps:
 1. m = bytes_to_int(blinded_msg)
-2. s = RSASP1(skS, m)
-3. m' = RSAVP1(pkS, s)
+2. s = RSASP1(sk, m)
+3. m' = RSAVP1(pk, s)
 4. If m != m', raise "signing failure" and stop
-5. blind_sig = int_to_bytes(s, kLen)
+5. blind_sig = int_to_bytes(s, modulus_len)
 6. output blind_sig
 ~~~
 
@@ -398,23 +398,23 @@ upon success. Note that this function will internally hash the input message
 as is done in Blind.
 
 ~~~
-Finalize(pkS, msg, blind_sig, inv)
+Finalize(pk, msg, blind_sig, inv)
 
 Parameters:
-- kLen, the length in bytes of the RSA modulus n
+- modulus_len, the length in bytes of the RSA modulus n
 - Hash, the hash function used to hash the message
 - MGF, the mask generation function
-- sLen, the length in bytes of the salt
+- salt_len, the length in bytes of the salt (denoted sLen in RFC8017)
 
 Inputs:
-- pkS, server public key (n, e)
+- pk, server public key (n, e)
 - msg, message to be signed, a byte string
 - blind_sig, signed and blinded element, a byte string of
-  length kLen
+  length modulus_len
 - inv, inverse of the blind, an integer
 
 Outputs:
-- sig, a byte string of length kLen
+- sig, a byte string of length modulus_len
 
 Errors:
 - "invalid signature": Raised when the signature is invalid
@@ -422,12 +422,12 @@ Errors:
   have the expected length.
 
 Steps:
-1. If len(blind_sig) != kLen, raise "unexpected input size" and stop
+1. If len(blind_sig) != modulus_len, raise "unexpected input size" and stop
 2. z = bytes_to_int(blind_sig)
-3. s = z * inv mod n
-4. sig = int_to_bytes(s, kLen)
-5. result = RSASSA-PSS-VERIFY(pkS, msg, sig) with
-   Hash, MGF, and sLen as defined in the parameters
+3. s = (z * inv) mod n
+4. sig = int_to_bytes(s, modulus_len)
+5. result = RSASSA-PSS-VERIFY(pk, msg, sig) with
+   Hash, MGF, and salt_len as defined in the parameters
 6. If result = "valid signature", output sig, else
    raise "invalid signature" and stop
 ~~~
@@ -437,9 +437,9 @@ Steps:
 As described in {{core-protocol}}, the output of the protocol is the prepared
 message `input_msg` and the signature `sig`. The message that applications
 consume is `msg`, from which `input_msg` is derived. Clients verify the
-`msg` signature using the server's public key `pkS` by invoking the
+`msg` signature using the server's public key `pk` by invoking the
 RSASSA-PSS-VERIFY routine defined in {{Section 8.1.2 of !RFC8017}}
-with `(n, e)` as `pkS`, M as `input_msg`, and `S` as `sig`.
+with `(n, e)` as `pk`, M as `input_msg`, and `S` as `sig`.
 
 Verification and the message that applications consume therefore depends on
 which preparation function is used. In particular, if the PrepareIdentity
@@ -553,8 +553,8 @@ channels through Prepare and Blind.
 Beyond timing side channels, {{?FAULTS=DOI.10.1007/3-540-69053-0_4}} describes the importance
 of implementation safeguards that protect against fault attacks that can also leak the
 private signing key. These safeguards require that implementations check that the result
-of the private key operation when signing is correct, i.e., given s = RSASP1(skS, m),
-verify that m = RSAVP1(pkS, s), as is required by BlindSign. Applying this (or equivalent)
+of the private key operation when signing is correct, i.e., given s = RSASP1(sk, m),
+verify that m = RSAVP1(pk, s), as is required by BlindSign. Applying this (or equivalent)
 safeguard is necessary to mitigate fault attacks, even for implementations that are not
 based on the Chinese remainder theorem.
 
@@ -616,7 +616,7 @@ but since clients can verify the resulting message signature using the public ke
 ## Key Substitution Attacks
 
 RSA is well known to permit key substitution attacks, wherein an attacker generates a key pair
-(skA, pkA) that verifies some known (message, signature) pair produced under a different (skS, pkS)
+(skA, pkA) that verifies some known (message, signature) pair produced under a different (sk, pk)
 key pair {{WM99}}. This means it may be possible for an attacker to use a (message, signature) pair
 from one context in another. Entities that verify signatures must take care to ensure a
 (message, signature) pair verifies with a valid public key from the expected issuer.
@@ -653,7 +653,7 @@ This document makes no IANA requests.
 This section includes test vectors for the blind signature protocol defined in {{core-protocol}}.
 The following parameters are specified for each test vector:
 
-- p, q, n, e, d: RSA private and public key parameters, each encoded as a hexadecimal string.
+- p, q, n, e, d: RSA private and public key (sk and pk) parameters, each encoded as a hexadecimal string.
 - msg: Input messsage being signed, encoded as a hexadecimal string. The hash is computed using SHA-384.
 - msg\_prefix: Message randomizer prefix, encoded as a hexadecimal string. This is only present for variants
   that use the randomization preparation function.
