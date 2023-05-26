@@ -249,7 +249,7 @@ In pictures, the protocol runs as follows:
 
 ~~~
    Client(pk, msg)                      Server(sk, pk)
-  -------------------------------------------------------
+  -----------------------------------------------------
   input_msg = Prepare(msg)
   blinded_msg, inv = Blind(pk, input_msg)
 
