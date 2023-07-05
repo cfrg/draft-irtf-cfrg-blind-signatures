@@ -9,3 +9,7 @@ else
 	git clone -q --depth 10 $(CLONE_ARGS) \
 	    -b main https://github.com/martinthomson/i-d-template $(LIBDIR)
 endif
+
+testvectors:
+	@cd poc; pipenv install
+	@cd poc; pipenv run python3 rsabssa.py
