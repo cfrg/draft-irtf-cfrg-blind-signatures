@@ -5,10 +5,10 @@
 Network Working Group                                           F. Denis
 Internet-Draft                                               Fastly Inc.
 Intended status: Informational                                 F. Jacobs
-Expires: 27 November 2023                                     Apple Inc.
+Expires: 7 January 2024                                       Apple Inc.
                                                               C. A. Wood
                                                               Cloudflare
-                                                             26 May 2023
+                                                             6 July 2023
 
 
                           RSA Blind Signatures
@@ -46,7 +46,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 November 2023.
+   This Internet-Draft will expire on 7 January 2024.
 
 Copyright Notice
 
@@ -767,11 +767,11 @@ Steps:
               presentation/schmitt>.
 
    [PRIVACY-PASS]
-              Celi, S., Davidson, A., Faz-Hernandez, A., Valdez, S., and
-              C. A. Wood, "Privacy Pass Issuance Protocol", Work in
-              Progress, Internet-Draft, draft-ietf-privacypass-protocol-
-              10, 6 March 2023, <https://datatracker.ietf.org/doc/html/
-              draft-ietf-privacypass-protocol-10>.
+              Celi, S., Davidson, A., Valdez, S., and C. A. Wood,
+              "Privacy Pass Issuance Protocol", Work in Progress,
+              Internet-Draft, draft-ietf-privacypass-protocol-11, 26
+              June 2023, <https://datatracker.ietf.org/doc/html/draft-
+              ietf-privacypass-protocol-11>.
 
    [RemoteTimingAttacks]
               Boneh, D. and D. Brumley, "Remote Timing Attacks are
