@@ -20,8 +20,10 @@ def wrap_print(arg, *args):
     for hunk in (
         string[0 + i : line_length + i] for i in range(0, len(string), line_length)
     ):
-        if hunk and len(hunk.strip()) > 0:
-            print(hunk)
+        if hunk:
+            stripped_hunk = hunk.strip()
+            if len(stripped_hunk) > 0:
+                print(stripped_hunk)
 
 
 def OS2IP(b: bytes) -> int:
