@@ -25,7 +25,7 @@ This requires that you have the necessary software installed.  See
 | [blind-rsa-signatures](https://github.com/jedisct1/blind-rsa-signatures)                             | C        | OpenSSL or BoringSSL |
 | [zig-blind-rsa-signatures](https://github.com/jedisct1/zig-blind-rsa-signatures)                     | Zig      | OpenSSL or BoringSSL |
 | [rust-blind-rsa-signatures](https://github.com/jedisct1/rust-blind-rsa-signatures)                   | Rust     | `rsa` crate          |
-| [CIRCL blind signatures](https://github.com/cloudflare/circl/tree/master/blindsign)                  | Go       | -                    |
+| [CIRCL blind signatures](https://github.com/cloudflare/circl/tree/main/blindsign)                    | Go       | -                    |
 | [blindrsa-ts](https://github.com/cloudflare/blindrsa-ts)                                             | Typescript |  sjcl              |
 
 ## Contributing
